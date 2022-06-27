@@ -19,13 +19,13 @@ return function(use)
 
                 g = {
                     name = 'Git',
-                    b = { ':G blame<CR>',                                'Blame ' },
-                    e = { ':Gedit:<CR>',                                 'Edit  ' },
-                    d = { ':Gitsigns toggle_linehl<CR>',                 'Diff Highlight' },
-                    l = { ':G log --oneline<CR>',                        'Log   ' },
-                    n = { ':Gitsigns next_hunk<CR>',                     'Next Hunk' },
-                    p = { ':Gitsigns prev_hunk<CR>',                     'Previous Hunk' },
-                    s = { ':G status<CR>',                               'Status' },
+                    b = { ':G blame<CR>',                                  'Blame' },
+                    e = { ':Gedit:<CR>',                                   'Edit' },
+                    d = { ':Gitsigns toggle_linehl<CR>',                   'Diff Highlight' },
+                    l = { ':G log --oneline<CR>',                          'Log' },
+                    n = { ':Gitsigns next_hunk<CR>',                       'Next Hunk' },
+                    p = { ':Gitsigns prev_hunk<CR>',                       'Previous Hunk' },
+                    s = { ':G status<CR>',                                 'Status' },
                     w = { function() gitsigns().blame_line{full=true} end, 'Blame Line' },
                     h = {
                         name = 'Git Hunk',
@@ -41,7 +41,7 @@ return function(use)
 
                 h = {
                     name = 'Harpoon',
-                    a = { ':lua require("harpoon.mark").add_file()<CR>', 'Add File' },
+                    a = { ':lua require("harpoon.mark").add_file()<CR>',        'Add File' },
                     l = { ':lua require("harpoon.ui").toggle_quick_menu()<CR>', 'List Files' },
                 },
 
@@ -81,6 +81,7 @@ return function(use)
                     h     = { ':Telescope harpoon marks<CR>',                                                                    'Harpoon Marks' },
                     k     = { ':lua require("telescope.builtin").keymaps()<CR>',                                                 'Vim Keymaps' },
                     m     = { ':lua require("telescope.builtin").man_pages()<CR>',                                               'Man Pages' },
+                    q     = { ':lua require("telescope.builtin").live_grep()<CR>',                                               'Grep Live' },
                     r     = { ':lua require("telescope.builtin").registers()<CR>',                                               'Vim Registers' },
                     s     = { ':Telescope session-lens search_session<CR>',                                                      'Sessions' },
                     g     = {

@@ -34,7 +34,6 @@ return require('packer').startup(function()
         end
     }
 
-    use 'github/copilot.vim'
     use 'junegunn/vim-easy-align'
     use 'rstacruz/vim-closer'
     use 'tpope/vim-endwise'
@@ -47,6 +46,12 @@ return require('packer').startup(function()
         xmap ga <Plug>(EasyAlign)
         nmap ga <Plug>(EasyAlign)
     ]]
+
+
+    -- Completion
+    -- --------------------------------------------------------------------------------
+    require('plugins/cmp')(use)
+    use 'github/copilot.vim'
 
 
     -- Languages / LSP

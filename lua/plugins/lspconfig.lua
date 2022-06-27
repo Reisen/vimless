@@ -1,11 +1,15 @@
 return function(use)
     use { 'neovim/nvim-lspconfig',
         config = function()
-            require 'lspconfig'.sumneko_lua.setup {
-                on_attach = function(client, buffer)
-                end,
+            -- Load CMP capabilities for LSP.
+            local capabilities = require('cmp_nvim_lsp').update_capabilities(
+                vim.lsp.protocol.make_client_capabilities()
+            )
 
-                settings = {
+            require 'lspconfig'.sumneko_lua.setup {
+                capabilities = capabilities,
+                on_attach    = function(client, buffer) end,
+                settings     = {
                     Lua = {
                         runtime = {
                             version = 'LuaJIT',
@@ -24,15 +28,14 @@ return function(use)
             }
 
             require 'lspconfig'.clangd.setup {
-                on_attach = function(client, buffer)
-                end,
+                capabilities = capabilities,
+                on_attach    = function(client, buffer) end,
             }
 
             require 'lspconfig'.hls.setup {
-                on_attach = function(client, buffer)
-                end,
-
-                handlers = {
+                capabilities = capabilities,
+                on_attach    = function(client, buffer) end,
+                handlers     = {
                     ["textDocument/publishDiagnostics"] = vim.lsp.with(
                         vim.lsp.diagnostic.on_publish_diagnostics, {
                             virtual_text = false
@@ -43,8 +46,8 @@ return function(use)
             }
 
             require 'lspconfig'.jedi_language_server.setup {
-                on_attach = function(client, buffer)
-                end,
+                capabilities = capabilities,
+                on_attach    = function(client, buffer) end,
             }
 
             -- Override LSP Configuration.
