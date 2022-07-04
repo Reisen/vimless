@@ -1,3 +1,15 @@
+-- Install Packer & Fennel
+local packer = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+if vim.fn.empty(vim.fn.glob(packer)) > 0 then
+    vim.fn.system({
+        'git',
+        'clone',
+        '--depth', '1',
+        'https://github.com/wbthomason/packer.nvim',
+        packer
+    })
+end
+
 return require('packer').startup(function()
     use 'wbthomason/packer.nvim'
 
@@ -7,8 +19,7 @@ return require('packer').startup(function()
     require('plugins/indent-blankline')(use)
     require('plugins/nvim-web-devicons')(use)
     require('plugins/onedark')(use)
-
-    use 'hashivim/vim-terraform'
+    require('plugins/lualine')(use)
 
 
     -- IDE
@@ -51,6 +62,7 @@ return require('packer').startup(function()
     -- Completion
     -- --------------------------------------------------------------------------------
     require('plugins/cmp')(use)
+
     use 'github/copilot.vim'
 
 
@@ -59,6 +71,10 @@ return require('packer').startup(function()
     require('plugins/rust')(use)
     require('plugins/lspconfig')(use)
     require('plugins/treesitter')(use)
+
+    use 'bakpakin/fennel.vim'
+    use 'hashivim/vim-terraform'
+    use { 'eraserhd/parinfer-rust', run = 'cargo build --release' }
 
 
     -- Fun

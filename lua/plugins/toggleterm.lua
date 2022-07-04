@@ -2,7 +2,7 @@ return function(use)
     use { 'akinsho/toggleterm.nvim',
         config = function()
             require("toggleterm").setup {
-                size         = 15,
+                size         = 40,
                 open_mapping = [[<c-\>]],
                 direction    = 'float',
                 shell        = 'fish',
@@ -10,8 +10,7 @@ return function(use)
                     width    = vim.o.columns,
                     height   = 30,
                     row      = 2,
-                    border   = 'none',
-                    winblend = 0,
+                    border   = 'single',
                 }
             }
 

@@ -35,14 +35,6 @@ return function(use)
             require 'lspconfig'.hls.setup {
                 capabilities = capabilities,
                 on_attach    = function(client, buffer) end,
-                handlers     = {
-                    ["textDocument/publishDiagnostics"] = vim.lsp.with(
-                        vim.lsp.diagnostic.on_publish_diagnostics, {
-                            virtual_text = false
-                        }
-                    ),
-                },
-
             }
 
             require 'lspconfig'.jedi_language_server.setup {
