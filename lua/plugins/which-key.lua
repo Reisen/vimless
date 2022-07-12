@@ -9,22 +9,26 @@ return function(use)
             -- Register Custom Keymapping.
             which_key.register({
                 j = { ':ReachOpen buffers<CR>', 'Reach Buffers' },
-                m = { ':ReachOpen marks<CR>', 'Reach Marks' },
+                m = { ':ReachOpen marks<CR>',   'Reach Marks' },
                 c = {
                     name = 'Comment',
-                    c = { ':normal gcc<CR>', 'Comment Line' },
-                    b = { ':normal gca{<CR>', 'Comment Block' },
+                    c = { ':normal gcc<CR>',    'Comment Line' },
+                    b = { ':normal gca{<CR>',   'Comment Block' },
+                },
+
+                e = {
+                    e = { ':9TermExec cmd="alot"<CR>', 'Email' },
                 },
 
                 g = {
                     name = 'Git',
-                    b = { ':G blame<CR>', 'Blame' },
-                    e = { ':Gedit:<CR>', 'Edit' },
+                    b = { ':G blame<CR>',                'Blame' },
+                    e = { ':Gedit:<CR>',                 'Edit' },
                     d = { ':Gitsigns toggle_linehl<CR>', 'Diff Highlight' },
-                    l = { ':G log --oneline<CR>', 'Log' },
-                    n = { ':Gitsigns next_hunk<CR>', 'Next Hunk' },
-                    p = { ':Gitsigns prev_hunk<CR>', 'Previous Hunk' },
-                    s = { ':G status<CR>', 'Status' },
+                    l = { ':G log --oneline<CR>',        'Log' },
+                    n = { ':Gitsigns next_hunk<CR>',     'Next Hunk' },
+                    p = { ':Gitsigns prev_hunk<CR>',     'Previous Hunk' },
+                    s = { ':G status<CR>',               'Status' },
                     w = { function() gitsigns().blame_line { full = true } end, 'Blame Line' },
                     h = {
                         name = 'Git Hunk',
@@ -38,37 +42,45 @@ return function(use)
                     },
                 },
 
-                h = {
-                    name = 'Harpoon',
-                    a = { ':lua require("harpoon.mark").add_file()<CR>', 'Add File' },
-                    l = { ':lua require("harpoon.ui").toggle_quick_menu()<CR>', 'List Files' },
-                },
-
                 p = {
                     name = 'Plugin Specific Bindings',
                     c = { ':lua require("cryptoprice").toggle()<CR>', 'Crypto Prices' },
-                    g = { ':Goyo<CR>', 'Goyo' },
+                    g = { ':Goyo<CR>',                                'Goyo' },
                     d = {
                         name = 'Diffview',
-                        o = { ':DiffviewOpen<CR>', 'Show Repository Diff' },
+                        o = { ':DiffviewOpen<CR>',          'Show Repository Diff' },
                         h = { ':DiffviewFileHistory %<CR>', 'Show File History   ' },
+                    },
+                    h = {
+                        name = 'Harpoon',
+                        a = { ':lua require("harpoon.mark").add_file()<CR>', 'Add File' },
+                        l = { ':lua require("harpoon.ui").toggle_quick_menu()<CR>', 'List Files' },
                     },
                     p = {
                         name  = 'Packer',
                         c     = { ':PackerCompile<CR>', 'Compile Config' },
-                        s     = { ':PackerSync<CR>', 'Sync Packer' },
-                        ["?"] = { ':PackerStatus<CR>', 'Status' },
+                        s     = { ':PackerSync<CR>',    'Sync Packer' },
+                        ["?"] = { ':PackerStatus<CR>',  'Status' },
                     },
-                    t = {
-                        name = 'Trouble',
-                        t = { ':TroubleToggle<CR>', 'Toggle Trouble' },
-                        d = { ':TroubleToggle document_diagnostics<CR>', 'Document Diagnostics' },
-                        w = { ':TroubleToggle workspace_diagnostics<CR>', 'Workspace Diagnostics' },
+                    r = {
+                        name = 'Rust.vim',
+                        a    = { ':RustCodeAction<CR>',   'Code Action' },
+                        c    = { ':RustOpenCargo<CR>',    'Open Cargo.toml' },
+                        d    = { ':RustMoveItemDown<CR>', 'Move Item Down' },
+                        e    = { ':RustExpandMacro<CR>',  'Expand Macro' },
+                        p    = { ':RustParentModule<CR>', 'Parent Module' },
+                        u    = { ':RustMoveItemUp<CR>',   'Move Item Up' },
                     },
                     s = {
                         name = 'Symbol Outliner',
                         t = { ':SymbolsOutline<CR>', 'Toggle Outliner' },
-                    }
+                    },
+                    t = {
+                        name = 'Trouble',
+                        t = { ':TroubleToggle<CR>',                       'Toggle Trouble' },
+                        d = { ':TroubleToggle document_diagnostics<CR>',  'Document Diagnostics' },
+                        w = { ':TroubleToggle workspace_diagnostics<CR>', 'Workspace Diagnostics' },
+                    },
                 },
 
                 f = {
@@ -76,7 +88,7 @@ return function(use)
                     ["*"] = { ':lua require("telescope.builtin").grep_string(' .. theme .. ')<CR>', 'Grep Directory' },
                     a     = { ':lua require("telescope.builtin").autocommands(' .. no_preview .. ')<CR>', 'Vim Autocommands' },
                     b     = { ':lua require("telescope.builtin").buffers(' .. theme .. ')<CR>', 'Vim Buffers' },
-                    f     = { ':lua require("telescope.builtin").git_files(' .. theme ..')<CR>', 'Find Files' },
+                    f     = { ':lua require("telescope.builtin").git_files(' .. theme .. ')<CR>', 'Find Files' },
                     h     = { ':Telescope harpoon marks<CR>', 'Harpoon Marks' },
                     k     = { ':lua require("telescope.builtin").keymaps()<CR>', 'Vim Keymaps' },
                     m     = { ':lua require("telescope.builtin").man_pages()<CR>', 'Man Pages' },
@@ -100,16 +112,6 @@ return function(use)
                         d    = { ':lua require("telescope.builtin").lsp_definitions()<CR>', 'Definitions' },
                         t    = { ':lua require("telescope.builtin").lsp_type_definitions()<CR>', 'Type Definitions' },
                     }
-                },
-
-                r = {
-                    name = 'Rust.vim',
-                    a    = { ':RustCodeAction<CR>', 'Code Action' },
-                    c    = { ':RustOpenCargo<CR>', 'Open Cargo.toml' },
-                    d    = { ':RustMoveItemDown<CR>', 'Move Item Down' },
-                    e    = { ':RustExpandMacro<CR>', 'Expand Macro' },
-                    p    = { ':RustParentModule<CR>', 'Parent Module' },
-                    u    = { ':RustMoveItemUp<CR>', 'Move Item Up' },
                 },
 
                 l = {
@@ -150,13 +152,22 @@ return function(use)
                     return binds
                 end)(),
 
+                -- Buffer Bindings
+                b = (function()
+                    local symbols = 'fldnp'
+                    local binds   = { name = 'Buffer Bindings', }
+                    for i = 1, #symbols do
+                        local v  = symbols:sub(i, i)
+                        binds[v] = { ':b' .. v .. '<CR>', 'CTRL-T_' .. v }
+                    end
+                    return binds
+                end)(),
+
                 -- Vim Bindings
                 v = {
                     name = 'Vim Bindings',
                     v    = { ':e $HOME/.config/nvim/init.vim<CR>', '.vimrc' },
-                    c    = { function()
-                        vim.o.background = vim.o.background == 'light' and 'dark' or 'light'
-                    end, 'Toggle Light/Dark' }
+                    c    = { function() vim.o.background = vim.o.background == 'light' and 'dark' or 'light' end, 'Toggle Light/Dark' }
                 },
 
                 -- Quicklist Bindings

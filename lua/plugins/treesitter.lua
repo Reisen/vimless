@@ -33,6 +33,8 @@ return function(use)
         end
     }
 
+    use 'nvim-treesitter/playground'
+
     use { 'nvim-treesitter/nvim-treesitter-textobjects',
         config = function()
         end

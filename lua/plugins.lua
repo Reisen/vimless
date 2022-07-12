@@ -15,11 +15,19 @@ return require('packer').startup(function()
 
     -- Theming
     -- --------------------------------------------------------------------------------
-    require('plugins/bufferline')(use)
-    require('plugins/indent-blankline')(use)
+    require('plugins/barbar')(use)
     require('plugins/nvim-web-devicons')(use)
-    require('plugins/onedark')(use)
+    require('plugins/indent-blankline')(use)
     require('plugins/lualine')(use)
+    require('plugins/twilight')(use)
+    require('plugins/zenbones')(use)
+    require('plugins/dracula')(use)
+
+    vim.cmd [[
+        set termguicolors
+        set background=dark
+        colorscheme dracula
+    ]]
 
 
     -- IDE
@@ -37,6 +45,7 @@ return require('packer').startup(function()
     require('plugins/toggleterm')(use)
     require('plugins/trouble')(use)
     require('plugins/which-key')(use)
+    require('plugins/neotree')(use)
 
     use { 'toppair/reach.nvim',
         config = function()
@@ -47,7 +56,6 @@ return require('packer').startup(function()
 
     use 'junegunn/vim-easy-align'
     use 'rstacruz/vim-closer'
-    use 'tpope/vim-endwise'
     use 'tpope/vim-fugitive'
     use 'tpope/vim-repeat'
     use 'tpope/vim-vinegar'

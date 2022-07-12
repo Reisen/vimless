@@ -4,13 +4,15 @@ return function(use)
             require("toggleterm").setup {
                 size         = 40,
                 open_mapping = [[<c-\>]],
-                direction    = 'float',
+                direction    = 'tab',
                 shell        = 'fish',
-                float_opts   = {
-                    width    = vim.o.columns,
+                float_opts   = {} or {
+                    width    = math.floor(vim.o.columns * 0.5),
                     height   = 30,
                     row      = 2,
-                    border   = 'single',
+                    border   = {
+                        '','','','','','-','',''
+                    }
                 }
             }
 
