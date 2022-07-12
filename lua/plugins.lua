@@ -80,7 +80,6 @@ return require('packer').startup(function()
     require('plugins/lspconfig')(use)
     require('plugins/treesitter')(use)
 
-    use 'bakpakin/fennel.vim'
     use 'hashivim/vim-terraform'
     use { 'eraserhd/parinfer-rust', run = 'cargo build --release' }
 
