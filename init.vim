@@ -1,13 +1,14 @@
 set autoindent
 set expandtab
+set fillchars+=diff:╱
+set nowrap
+set number
 set shiftwidth=4
+set signcolumn=auto:4
 set smartindent
 set softtabstop=4
 set tabstop=4
-set nowrap
 set timeoutlen=1000
-set signcolumn=auto:4
-set fillchars+=diff:╱
 let mapleader=" "
 
 " Fix Colours
@@ -17,4 +18,3 @@ endif
 
 " Lua Configuration
 lua require('plugins')
-

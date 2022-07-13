@@ -2,8 +2,10 @@ return function(use)
     use { 'lewis6991/gitsigns.nvim',
         config = function()
             require('gitsigns').setup {
-                current_line_blame      = false,
+                numhl                   = true,
+                current_line_blame      = true,
                 current_line_blame_opts = {
+                    delay         = 100,
                     virt_text_pos = 'right_align',
                 },
 
@@ -16,8 +18,7 @@ return function(use)
                 }
             }
 
-            -- Automatically add wider sign columns in
-            -- files that require many.
+            -- Automatically add wider sign columns in files that require many.
             vim.cmd [[
                 augroup sign-column-fix
                   autocmd!

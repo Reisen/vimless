@@ -17,7 +17,6 @@ return require('packer').startup(function()
     -- --------------------------------------------------------------------------------
     require('plugins/barbar')(use)
     require('plugins/nvim-web-devicons')(use)
-    require('plugins/indent-blankline')(use)
     require('plugins/lualine')(use)
     require('plugins/twilight')(use)
     require('plugins/zenbones')(use)
@@ -45,7 +44,6 @@ return require('packer').startup(function()
     require('plugins/toggleterm')(use)
     require('plugins/trouble')(use)
     require('plugins/which-key')(use)
-    require('plugins/neotree')(use)
 
     use { 'toppair/reach.nvim',
         config = function()
@@ -71,6 +69,7 @@ return require('packer').startup(function()
     -- --------------------------------------------------------------------------------
     require('plugins/cmp')(use)
 
+    vim.g.copilot_no_tab_map = true
     use 'github/copilot.vim'
 
 

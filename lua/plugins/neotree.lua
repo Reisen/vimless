@@ -6,6 +6,9 @@ return function(use)
         },
         config   = function()
             require 'neo-tree'.setup {
+                filesystem = {
+                    hijack_netrw_behavior = 'disabled',
+                }
             }
         end
     }

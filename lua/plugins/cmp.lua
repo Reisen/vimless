@@ -65,11 +65,10 @@ return function(use)
                 },
 
                 mapping = cmp.mapping.preset.insert({
-                    ['<C-b>']     = cmp.mapping.scroll_docs(-4),
-                    ['<C-f>']     = cmp.mapping.scroll_docs(4),
-                    ['<C-Space>'] = cmp.mapping.complete(),
+                    ['<C-b>']     = cmp.mapping.select_prev_item(),
+                    ['<C-f>']     = cmp.mapping.select_next_item(),
+                    ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
                     ['<C-e>']     = cmp.mapping.abort(),
-                    ['<CR>']      = cmp.mapping.confirm({ select = true }),
                     ['<Tab>']     = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_next_item()
@@ -88,7 +87,7 @@ return function(use)
                 }),
 
                 experimental = {
-                    ghost_text = false, -- Conflicts with Github Copilot.
+                   ghost_text = false, -- Conflicts with Github Copilot.
                 },
 
                 window = {
