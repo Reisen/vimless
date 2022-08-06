@@ -8,16 +8,21 @@ return function(use)
 
             -- Register Custom Keymapping.
             which_key.register({
-                j = { ':ReachOpen buffers<CR>', 'Reach Buffers' },
-                m = { ':ReachOpen marks<CR>',   'Reach Marks' },
+                -- Navigation Binds.
+                ['<Space>'] = {':wincmd p<CR>',           'Return to Previous Window'},
+                j           = { ':ReachOpen buffers<CR>', 'Reach Buffers' },
+                m           = { ':ReachOpen marks<CR>',   'Reach Marks' },
+
                 c = {
                     name = 'Comment',
-                    c = { ':normal gcc<CR>',    'Comment Line' },
-                    b = { ':normal gca{<CR>',   'Comment Block' },
+                    c = { ':normal gcc<CR>',  'Comment Line' },
+                    b = { ':normal gca{<CR>', 'Comment Block' },
                 },
 
                 e = {
-                    e = { ':9TermExec cmd="alot"<CR>', 'Email' },
+                    e = { ':1TermExec   direction=horizontal size=25 go_back=0 cmd="alot"<CR>', 'Email' },
+                    h = { ':1TermExec   direction=horizontal size=25 go_back=0 cmd="dijo"<CR>', 'Dijo' },
+                    j = { ':1ToggleTerm direction=horizontal size=25<CR>',                      'Open Bottom Terminal' },
                 },
 
                 g = {
@@ -43,13 +48,13 @@ return function(use)
                     g = { ':Goyo<CR>',                                'Goyo' },
                     d = {
                         name = 'Diffview',
-                        o = { ':DiffviewOpen<CR>',          'Show Repository Diff' },
-                        h = { ':DiffviewFileHistory %<CR>', 'Show File History   ' },
+                        o    = { ':DiffviewOpen<CR>',          'Show Repository Diff' },
+                        h    = { ':DiffviewFileHistory %<CR>', 'Show File History   ' },
                     },
                     h = {
                         name = 'Harpoon',
-                        a = { ':lua require("harpoon.mark").add_file()<CR>', 'Add File' },
-                        l = { ':lua require("harpoon.ui").toggle_quick_menu()<CR>', 'List Files' },
+                        a    = { ':lua require("harpoon.mark").add_file()<CR>',        'Add File' },
+                        l    = { ':lua require("harpoon.ui").toggle_quick_menu()<CR>', 'List Files' },
                     },
                     p = {
                         name  = 'Packer',
@@ -68,44 +73,41 @@ return function(use)
                     },
                     s = {
                         name = 'Symbol Outliner',
-                        t = { ':SymbolsOutline<CR>', 'Toggle Outliner' },
+                        t    = { ':SymbolsOutline<CR>', 'Toggle Outliner' },
                     },
                     t = {
                         name = 'Trouble',
-                        t = { ':TroubleToggle<CR>',                       'Toggle Trouble' },
-                        d = { ':TroubleToggle document_diagnostics<CR>',  'Document Diagnostics' },
-                        w = { ':TroubleToggle workspace_diagnostics<CR>', 'Workspace Diagnostics' },
+                        t    = { ':TroubleToggle<CR>',                       'Toggle Trouble' },
+                        d    = { ':TroubleToggle document_diagnostics<CR>',  'Document Diagnostics' },
+                        w    = { ':TroubleToggle workspace_diagnostics<CR>', 'Workspace Diagnostics' },
                     },
                 },
 
                 f = {
                     name  = 'Telescope',
-                    ["*"] = { ':lua require("telescope.builtin").grep_string(' .. theme .. ')<CR>', 'Grep Directory' },
+                    ["*"] = { ':lua require("telescope.builtin").grep_string(' .. theme .. ')<CR>',       'Grep Directory' },
                     a     = { ':lua require("telescope.builtin").autocommands(' .. no_preview .. ')<CR>', 'Vim Autocommands' },
-                    b     = { ':lua require("telescope.builtin").buffers(' .. theme .. ')<CR>', 'Vim Buffers' },
-                    f     = { ':lua require("telescope.builtin").git_files(' .. theme .. ')<CR>', 'Find Files' },
-                    h     = { ':Telescope harpoon marks<CR>', 'Harpoon Marks' },
-                    k     = { ':lua require("telescope.builtin").keymaps()<CR>', 'Vim Keymaps' },
-                    m     = { ':lua require("telescope.builtin").man_pages()<CR>', 'Man Pages' },
-                    q     = { ':lua require("telescope.builtin").live_grep()<CR>', 'Grep Live' },
-                    s     = { ':Telescope session-lens search_session<CR>', 'Sessions' },
-                    g     = {
-                        name = 'Telescope Git',
-                        b    = { ':lua require("telescope.builtin").git_branches()<CR>', 'Branches' },
-                        c    = { ':lua require("telescope.builtin").git_commits()<CR>', 'Commits' },
-                        f    = { ':lua require("telescope.builtin").git_bcommits()<CR>', 'File Commits' },
-                        s    = { ':lua require("telescope.builtin").git_status()<CR>', 'Status' },
-                        z    = { ':lua require("telescope.builtin").git_stash()<CR>', 'Stash' },
-                    },
+                    b     = { ':lua require("telescope.builtin").buffers(' .. theme .. ')<CR>',           'Vim Buffers' },
+                    B     = { ':lua require("telescope.builtin").git_branches()<CR>',                     'Git Branches' },
+                    C     = { ':lua require("telescope.builtin").git_commits()<CR>',                      'Git Commits' },
+                    F     = { ':lua require("telescope.builtin").git_bcommits()<CR>',                     'Git File History' },
+                    f     = { ':lua require("telescope.builtin").git_files(' .. theme .. ')<CR>',         'Find Files' },
+                    h     = { ':Telescope harpoon marks<CR>',                                             'Harpoon Marks' },
+                    k     = { ':lua require("telescope.builtin").keymaps()<CR>',                          'Vim Keymaps' },
+                    m     = { ':lua require("telescope.builtin").man_pages()<CR>',                        'Man Pages' },
+                    q     = { ':lua require("telescope.builtin").live_grep()<CR>',                        'Grep Live' },
+                    S     = { ':lua require("telescope.builtin").git_status()<CR>',                       'Git Status' },
+                    s     = { ':Telescope session-lens search_session<CR>',                               'Sessions' },
+                    Z     = { ':lua require("telescope.builtin").git_stash()<CR>',                        'Git Stashes' },
                     l     = {
                         name = 'Telescope LSP',
-                        r    = { ':lua require("telescope.builtin").lsp_references()<CR>', 'References' },
-                        s    = { ':lua require("telescope.builtin").lsp_document_symbols()<CR>', 'Document Symbols' },
+                        r    = { ':lua require("telescope.builtin").lsp_references()<CR>',        'References' },
+                        s    = { ':lua require("telescope.builtin").lsp_document_symbols()<CR>',  'Document Symbols' },
                         w    = { ':lua require("telescope.builtin").lsp_workspace_symbols()<CR>', 'Workspace Symbols' },
-                        e    = { ':lua require("telescope.builtin").diagnostics()<CR>', 'Errors' },
-                        i    = { ':lua require("telescope.builtin").lsp_implementations()<CR>', 'Implementations' },
-                        d    = { ':lua require("telescope.builtin").lsp_definitions()<CR>', 'Definitions' },
-                        t    = { ':lua require("telescope.builtin").lsp_type_definitions()<CR>', 'Type Definitions' },
+                        e    = { ':lua require("telescope.builtin").diagnostics()<CR>',           'Errors' },
+                        i    = { ':lua require("telescope.builtin").lsp_implementations()<CR>',   'Implementations' },
+                        d    = { ':lua require("telescope.builtin").lsp_definitions()<CR>',       'Definitions' },
+                        t    = { ':lua require("telescope.builtin").lsp_type_definitions()<CR>',  'Type Definitions' },
                     }
                 },
 
@@ -155,6 +157,10 @@ return function(use)
                         local v  = symbols:sub(i, i)
                         binds[v] = { ':b' .. v .. '<CR>', 'CTRL-T_' .. v }
                     end
+
+                    -- Delete all buffers but current.
+                    binds['o'] = { ':%bd|e#|bd#<CR>', 'Only Buffer' }
+
                     return binds
                 end)(),
 

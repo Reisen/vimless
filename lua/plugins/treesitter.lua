@@ -2,24 +2,17 @@ return function(use)
     use { 'nvim-treesitter/nvim-treesitter',
         run    = ':TSUpdate',
         config = function()
-            -- require 'nvim-treesitter.configs'.setup {
-            --     textobjects = {
-            --         select = {
-            --             enable    = true,
-            --             lookahead = true,
-            --             keymaps   = {
-            --                 ["af"] = "@function.outer",
-            --                 ["if"] = "@function.inner",
-            --                 ["ac"] = "@class.outer",
-            --                 ["ic"] = "@class.inner",
-            --                 ["ab"] = "@block.outer",
-            --                 ["ib"] = "@block.inner",
-            --             },
-            --         },
-            --     },
-            -- }
-
             require 'nvim-treesitter.configs'.setup {
+                incremental_selection = {
+                    enable = true,
+                    keymaps = {
+                        init_selection    = "gnn",
+                        node_incremental  = ".",
+                        scope_incremental = ";",
+                        node_decremental  = ",",
+                    },
+                },
+
                 textsubjects = {
                     enable         = true,
                     prev_selection = ',',
@@ -33,7 +26,14 @@ return function(use)
         end
     }
 
-    use 'nvim-treesitter/playground'
+    use { 'mfussenegger/nvim-treehopper',
+        config = function()
+            vim.cmd [[
+                omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
+                xnoremap <silent> m :lua require('tsht').nodes()<CR>
+            ]]
+        end
+    }
 
     use { 'nvim-treesitter/nvim-treesitter-textobjects',
         config = function()

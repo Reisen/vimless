@@ -1,36 +1,3 @@
-local kind_icons = {
-    Text          = "",
-    Method        = "",
-    Function      = "",
-    Constructor   = "",
-    Field         = "",
-    Variable      = "",
-    Class         = "ﴯ",
-    Interface     = "",
-    Module        = "",
-    Property      = "ﰠ",
-    Unit          = "",
-    Value         = "",
-    Enum          = "",
-    Keyword       = "",
-    Snippet       = "",
-    Color         = "",
-    File          = "",
-    Reference     = "",
-    Folder        = "",
-    EnumMember    = "",
-    Constant      = "",
-    Struct        = "",
-    Event         = "",
-    Operator      = "",
-    TypeParameter = "",
-}
-
-local has_words_before = function()
-    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
 return function(use)
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-nvim-lsp-signature-help'
@@ -65,25 +32,10 @@ return function(use)
                 },
 
                 mapping = cmp.mapping.preset.insert({
-                    ['<C-b>']     = cmp.mapping.select_prev_item(),
-                    ['<C-f>']     = cmp.mapping.select_next_item(),
-                    ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
-                    ['<C-e>']     = cmp.mapping.abort(),
-                    ['<Tab>']     = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_next_item()
-                        elseif vim.fn["vsnip#available"](1) == 1 then
-                            vim.api.nvim_feedkeys(
-                                vim.api.nvim_replace_termcodes("<Plug>(vsnip-expand-or-jump)", true, true, true),
-                                "",
-                                true
-                            )
-                        elseif has_words_before() then
-                            cmp.complete()
-                        else
-                            return fallback()
-                        end
-                    end)
+                    ['<C-b>'] = cmp.mapping.select_prev_item(),
+                    ['<C-f>'] = cmp.mapping.select_next_item(),
+                    ['<C-e>'] = cmp.mapping.abort(),
+                    ['<CR>']  = cmp.mapping.confirm({ select = true }),
                 }),
 
                 experimental = {

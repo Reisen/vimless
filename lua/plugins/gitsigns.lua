@@ -3,18 +3,18 @@ return function(use)
         config = function()
             require('gitsigns').setup {
                 numhl                   = true,
-                current_line_blame      = true,
+                current_line_blame      = false,
                 current_line_blame_opts = {
                     delay         = 100,
                     virt_text_pos = 'right_align',
                 },
 
                 signs = {
-                    add          = { text = '▌' },
-                    change       = { text = '▌' },
-                    delete       = { text = '▌' },
-                    topdelete    = { text = '▌' },
-                    changedelete = { text = '▌' },
+                    add          = { text = '┃ ' },
+                    change       = { text = '┇ ' },
+                    delete       = { text = '┣ ' },
+                    topdelete    = { text = '┣ ' },
+                    changedelete = { text = '┣ ' },
                 }
             }
 
@@ -22,16 +22,17 @@ return function(use)
             vim.cmd [[
                 augroup sign-column-fix
                   autocmd!
-                  autocmd BufEnter *.rs  setlocal signcolumn=yes:4
-                  autocmd BufEnter *.js  setlocal signcolumn=yes:4
-                  autocmd BufEnter *.ts  setlocal signcolumn=yes:4
-                  autocmd BufEnter *.hs  setlocal signcolumn=yes:4
-                  autocmd BufEnter *.sh  setlocal signcolumn=yes:4
-                  autocmd BufEnter *.lua setlocal signcolumn=yes:4
-                  autocmd BufEnter *.c   setlocal signcolumn=yes:4
-                  autocmd BufEnter *.h   setlocal signcolumn=yes:4
-                  autocmd BufEnter *.cpp setlocal signcolumn=yes:4
-                  autocmd BufEnter *.hpp setlocal signcolumn=yes:4
+                  autocmd BufEnter *.rs   setlocal signcolumn=yes:4
+                  autocmd BufEnter *.js   setlocal signcolumn=yes:4
+                  autocmd BufEnter *.ts   setlocal signcolumn=yes:4
+                  autocmd BufEnter *.hs   setlocal signcolumn=yes:4
+                  autocmd BufEnter *.sh   setlocal signcolumn=yes:4
+                  autocmd BufEnter *.lua  setlocal signcolumn=yes:4
+                  autocmd BufEnter *.c    setlocal signcolumn=yes:4
+                  autocmd BufEnter *.h    setlocal signcolumn=yes:4
+                  autocmd BufEnter *.cpp  setlocal signcolumn=yes:4
+                  autocmd BufEnter *.hpp  setlocal signcolumn=yes:4
+                  autocmd BufEnter *.html setlocal signcolumn=yes:4
                 augroup END
             ]]
         end

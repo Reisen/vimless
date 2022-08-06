@@ -4,9 +4,6 @@ return function(use)
     -- Dracula Theme.
     use { 'Mofiqul/dracula.nvim',
         config = function()
-            vim.cmd [[
-                colorscheme dracula
-            ]]
         end
     }
 end
