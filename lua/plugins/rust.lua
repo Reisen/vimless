@@ -4,7 +4,7 @@ return function(use)
 
     use { 'simrat39/rust-tools.nvim',
         config = function()
-            require('rust-tools').setup {
+            require 'rust-tools'.setup {
                 server = {
                     settings = {
                         ["rust-analyzer"] = {
@@ -12,6 +12,14 @@ return function(use)
                                 command = 'clippy'
                             }
                         }
+                    }
+                },
+
+                tools = {
+                    crate_graph = {
+                        backend = "plain",
+                        output  = nil,
+                        full    = true,
                     }
                 }
             }
@@ -22,4 +30,35 @@ return function(use)
         config = function()
         end
     }
+
+    use { 'saecki/crates.nvim',
+        tag      = 'v0.2.1',
+        requires = { 'nvim-lua/plenary.nvim' },
+        config   = function()
+            require 'crates'.setup {
+                text = {
+                    loading    = "  Loading...",
+                    version    = "  %s",
+                    prerelease = "  %s",
+                    yanked     = "  %s yanked",
+                    nomatch    = "  Not found",
+                    upgrade    = "  %s",
+                    error      = "  Error fetching crate",
+                },
+                src = {
+                    text = {
+                        prerelease = " pre-release ",
+                        yanked     = " yanked ",
+                    },
+                },
+            }
+        end,
+    }
+
+    -- Autocommand that overrides doc-comment colours with comment colours.
+    vim.cmd [[ 
+        augroup rust-comment-hl
+        autocmd FileType rust hi link rustCommentLineDoc rustCommentLine
+        augroup END
+    ]]
 end

@@ -10,11 +10,24 @@ return function(use)
                 },
 
                 signs = {
-                    add          = { text = '┃ ' },
-                    change       = { text = '┇ ' },
-                    delete       = { text = '┣ ' },
-                    topdelete    = { text = '┣ ' },
-                    changedelete = { text = '┣ ' },
+                    add          = { text = '⋅' },
+                    change       = { text = '~' },
+                    delete       = { text = '-', show_count = true },
+                    topdelete    = { text = '^', show_count = true },
+                    changedelete = { text = '±', show_count = true },
+                },
+
+                count_chars = {
+                    [1]   = '₁',
+                    [2]   = '₂',
+                    [3]   = '₃',
+                    [4]   = '₄',
+                    [5]   = '₅',
+                    [6]   = '₆',
+                    [7]   = '₇',
+                    [8]   = '₈',
+                    [9]   = '₉',
+                    ['+'] = '.',
                 }
             }
 
@@ -22,6 +35,7 @@ return function(use)
             vim.cmd [[
                 augroup sign-column-fix
                   autocmd!
+                  autocmd BufEnter *.vim  setlocal signcolumn=yes:4
                   autocmd BufEnter *.rs   setlocal signcolumn=yes:4
                   autocmd BufEnter *.js   setlocal signcolumn=yes:4
                   autocmd BufEnter *.ts   setlocal signcolumn=yes:4

@@ -1,8 +1,11 @@
 return function(use)
     -- Override LSP Configuration.
     vim.diagnostic.config({
-        virtual_text = false,
-        underline    = false,
+        virtual_text  = false,
+        underline     = false,
+        virtual_lines = {
+            only_current_line = true,
+        }
     })
 
     -- LSP Configuration.
@@ -76,7 +79,18 @@ return function(use)
     -- Prettier LSP Diagnostics
     use { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
         config = function()
-            require('lsp_lines').setup()
+            require 'lsp_lines'.setup()
+        end,
+    }
+
+    -- Null LSP Diagnostics
+    use { 'jose-elias-alvarez/null-ls.nvim',
+        config = function()
+            require 'null-ls'.setup({
+                sources = {
+                    require 'null-ls'.builtins.code_actions.gitsigns,
+                },
+            })
         end,
     }
 end

@@ -5,8 +5,7 @@
 -- TODO: Create Hydra's instead of relying on which-key.
 
 local scrollbar = false
-local lualine   = false
-local barbar    = false
+local theme     = 'oxocarbon-lua'
 
 -- Install Packer & Fennel
 -- ------------------------------------------------------------------------------------
@@ -28,18 +27,9 @@ return require('packer').startup(function()
 
     -- Theming
     -- --------------------------------------------------------------------------------
+    require('themes')(use, theme)
     require('plugins/nvim-web-devicons')(use)
     require('plugins/twilight')(use)
-    require('plugins/zenbones')(use)
-    require('plugins/dracula')(use)
-
-    use { 'shaunsingh/oxocarbon.nvim', run = './install.sh' }
-
-    vim.cmd [[
-        set termguicolors
-        set background=dark
-        colorscheme tokyobones
-    ]]
 
 
     -- IDE
@@ -47,10 +37,10 @@ return require('packer').startup(function()
     require('plugins/auto-session')(use)
     require('plugins/diffview')(use)
     require('plugins/gitsigns')(use)
-    require('plugins/goyo')(use)
+    require('plugins/harpoon')(use)
+    require('plugins/hydra')(use)
     require('plugins/leap')(use)
     require('plugins/marks')(use)
-    require('plugins/symbols-outline')(use)
     require('plugins/telescope')(use)
     require('plugins/toggleterm')(use)
     require('plugins/trouble')(use)
@@ -60,18 +50,15 @@ return require('packer').startup(function()
     use { 'echasnovski/mini.nvim',
         config = function()
             require 'mini.comment'.setup {}
-            require 'mini.pairs'.setup {}
+            require 'mini.pairs'.setup   {}
             require 'mini.starter'.setup {}
-            require 'mini.tabline'.setup {}
         end
     }
 
     use 'ibhagwan/fzf-lua'
 
     -- Conditional Plugins
-    _ = scrollbar and require('plugins/scrollbar')(use)
-    _ = lualine   and require('plugins/lualine')(use)
-    _ = barbar    and require('plugins/barbar')(use)
+    __ = (scrollbar and require('plugins/scrollbar')(use))
 
     use { 'toppair/reach.nvim',
         config = function()
@@ -80,7 +67,6 @@ return require('packer').startup(function()
     }
 
     -- Quick `use` plugins.
-    --use 'rstacruz/vim-closer'
     use 'tpope/vim-fugitive'
     use 'tpope/vim-repeat'
     use 'tpope/vim-vinegar'
@@ -115,7 +101,7 @@ return require('packer').startup(function()
     use 'github/copilot.vim'
 
 
-    -- Languages / LSP
+    -- Languages & LSP
     -- --------------------------------------------------------------------------------
     require('plugins/rust')(use)
     require('plugins/lspconfig')(use)
@@ -124,6 +110,7 @@ return require('packer').startup(function()
     use 'hashivim/vim-terraform'
     use 'tomlion/vim-solidity'
     use 'iden3/vim-circom-syntax'
+    use 'LnL7/vim-nix'
     use { 'eraserhd/parinfer-rust', run = 'cargo build --release' }
 
 

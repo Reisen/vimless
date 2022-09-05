@@ -1,8 +1,8 @@
 set autoindent
 set expandtab
 set fillchars+=diff:╱
+set fillchars+=vert:▕
 set nowrap
-set number
 set shiftwidth=4
 set signcolumn=auto:4
 set smartindent
@@ -18,3 +18,13 @@ endif
 
 " Lua Configuration
 lua require('plugins')
+
+" Theme Helper
+function! SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+nnoremap <leader>. :call SynStack()<CR>
