@@ -23,12 +23,13 @@ return function(use)
 
                 sources = {
                     { name = 'nvim_lsp' },
-                    { name = 'vsnip' },
-                    { name = 'path' },
+                    { name = 'nvim_lsp_signature_help' },
                     { name = 'buffer' },
+                    { name = 'path' },
+                    { name = 'vsnip' },
+                    { name = 'crates' },
                     { name = 'calc' },
                     { name = 'cmdline' },
-                    { name = 'nvim_lsp_signature_help' },
                 },
 
                 mapping = cmp.mapping.preset.insert({

@@ -13,12 +13,16 @@ return function(use)
         requires = {
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
+            'SmiteshP/nvim-navic',
         },
         config = function()
             -- Load CMP capabilities for LSP.
             local capabilities = require('cmp_nvim_lsp').update_capabilities(
                 vim.lsp.protocol.make_client_capabilities()
             )
+
+            -- Setup Navic LSP.
+            vim.o.statusline = " > %{%v:lua.require'nvim-navic'.get_location()%}"
 
             -- Setup Mason before LSPConfig.
             require 'mason'.setup {}
@@ -27,7 +31,12 @@ return function(use)
             -- Setup LSPConfig itself.
             require 'lspconfig'.sumneko_lua.setup {
                 capabilities = capabilities,
-                on_attach    = function(_client, _buffer) end,
+                on_attach    = function(client, buffer)
+                    require 'nvim-navic'.attach(
+                        client,
+                        buffer
+                    )
+                end,
                 settings     = {
                     Lua = {
                         runtime = {
@@ -48,17 +57,32 @@ return function(use)
 
             require 'lspconfig'.clangd.setup {
                 capabilities = capabilities,
-                on_attach    = function(client, buffer) end,
+                on_attach    = function(client, buffer)
+                    require 'nvim-navic'.attach(
+                        client,
+                        buffer
+                    )
+                end,
             }
 
             require 'lspconfig'.hls.setup {
                 capabilities = capabilities,
-                on_attach    = function(client, buffer) end,
+                on_attach    = function(client, buffer)
+                    require 'nvim-navic'.attach(
+                        client,
+                        buffer
+                    )
+                end,
             }
 
             require 'lspconfig'.jedi_language_server.setup {
                 capabilities = capabilities,
-                on_attach    = function(client, buffer) end,
+                on_attach    = function(client, buffer)
+                    require 'nvim-navic'.attach(
+                        client,
+                        buffer
+                    )
+                end,
             }
 
             -- Sign Overrides

@@ -12,128 +12,168 @@ return function(use)
 
             -- Window Related Hints.
             local window_hint = p.dedent [[
-                ^ _h_: Move Left          _H_: Arrange Left
-                ^ _j_: Move Down          _J_: Arrange Down
-                ^ _k_: Move Up            _K_: Arrange Up
-                ^ _l_: Move Right         _L_: Arrange Right
+                ^ Navigation
+                ^ _h_: Move Left          
+                ^ _j_: Move Down          
+                ^ _k_: Move Up            
+                ^ _l_: Move Right         
 
-                ^ _s_: Split Horizontal   _v_: Split Vertical ^
+                ^ Arrange & Split
+                ^ _H_: Arrange Left
+                ^ _J_: Arrange Down
+                ^ _K_: Arrange Up
+                ^ _L_: Arrange Right
+                ^ _s_: Split Horizontal ^
+                ^ _v_: Split Vertical
+
+                ^ General
+                ^ _T_: Move to Tab
                 ^ _c_: Close Window
                 ^ _x_: Swap Window
-
-                ^ _T_: Move to Tab
                 ^ _q_: Quit ]]
 
             -- Tab Related Hints
             local tab_hint = p.dedent [[
+                ^ Navigation
                 ^ _h_: Prev Tab
                 ^ _l_: Next Tab
 
+                ^ General
                 ^ _c_: Close Tab
                 ^ _n_: New Empty Tab ^
                 ^ _q_: Quit ]]
 
             -- Buffer Related Hints
             local buffer_hint = p.dedent [[
-                ^ _1_: First Buffer   _9_: Last Buffer ^
+                ^ Navigation
+                ^ _1_: First Buffer
+                ^ _9_: Last Buffer
                 ^ _h_: Prev Buffer
                 ^ _l_: Next Buffer
 
+                ^ General
                 ^ _d_: Delete Focus Buffer
-                ^ _o_: Delete Other Buffers
+                ^ _o_: Delete Other Buffers ^
                 ^ _q_: Quit ]]
 
             -- Git Related Hints
             local git_hint = p.dedent [[
+                ^ Navigation
                 ^ _p_: Prev Hunk
                 ^ _n_: Next Hunk
-                ^ _s_: Stage Hunk       _S_: Stage File
-                ^ _r_: Reset Hunk       _R_: Reset File
+
+                ^ Staging
+                ^ _s_: Stage Hunk
+                ^ _S_: Stage File
+                ^ _r_: Reset Hunk
+                ^ _R_: Reset File
                 ^ _u_: Undo Stage
 
-                ^ _b_: Blame            _B_: Blame Line
-                ^ _d_: Diff Highlight   _D_: Diff Highlight Line ^
-                ^ _v_: Diff File        _V_: Diff Repository
-
+                ^ Diffing
+                ^ _b_: Blame (_B_: Blame Line)
+                ^ _d_: Diff Highlight
+                ^ _D_: Diff Highlight Line
+                ^ _v_: Diff File (_V_: Repository) ^
                 ^ _e_: Git Edit View
                 ^ _l_: Git Log View
+
                 ^ _q_: Quit ]]
 
             -- Rust Related Hints
             local rust_hint = p.dedent [[
-                ^ _u_:  Move Item Up        _d_:  Move Item Down ^
+                ^ Actions
+                ^ _a_: Rust Code Actions
+                ^ _e_: Expand Macro
+                ^ _f_: Format Code
+                ^ _k_: Move Item Up
+                ^ _j_: Move Item Down
 
-                ^ _co_: Goto Cargo.toml
-                ^ _ci_: Show Crate Info
-                ^ _cu_: Update Crate        _cU_: Upgrade Crate
+                ^ Crates
+                ^ _u_: Update Crate (_U_: Upgrade) ^
+                ^ _i_: Show Crate Info
+                ^ _d_: Show Crate Dependencies
+                ^ _o_: Show Crate Options/Features
+                ^ _v_: Show Crate Versions
 
-                ^ _a_:  Rust Code Actions
-                ^ _e_:  Expand Macro
-                ^ _f_:  Format Code
-                ^ _s_:  Goto Super Module
-                ^ _t_:  Cargo Tree
-                ^ _q_:  Quit ]]
+                ^ Navigation
+                ^ _c_: Goto Cargo.toml
+                ^ _s_: Goto Super Module
+                ^ _t_: Cargo Tree
+                ^ _q_: Quit ]]
 
             -- Jump Related Hints
             local jump_hint = p.dedent [[
-                ^ _j_:  Reach Buffer
-                ^ _m_:  Reach Marks
-                ^ _c_:  Reach Colorschemes
+                ^ Reach
+                ^ _j_: Buffer
+                ^ _m_: Marks
+                ^ _c_: Colorschemes ^
 
-                ^ _hm_: Harpoon Mark
-                ^ _hj_: Harpoon Jump
+                ^ Harpoon
+                ^ _h_: Harpoon Jump
+                ^ _._: Harpoon Mark
 
-                ^ _t_:  Jump to Type
-                ^ _d_:  Jump to Definition
-                ^ _i_:  Jump to Implementation
-                ^ _p_:  Prev Diagnostic          _n_:  Next Diagnostic ^
-
-                ^ _l_:  List Diagnostics
-                ^ _r_:  List References
-
-                ^ _q_:  Quit ]]
+                ^ Navigation
+                ^ _l_: Last Buffer
+                ^ _q_: Quit ]]
 
             -- Vim Hints
             local vim_hint = p.dedent [[
-                ^ _pc_: Compile Plugins
+                ^ Packer
+                ^ _pc_: Compile Plugins ^
                 ^ _ps_: Sync Plugins
                 ^ _p?_: Plugin Info
 
+                ^ General
                 ^ _t_:  Toggle Trouble
-
-                ^ _q_: Quit ]]
+                ^ _q_:  Quit ]]
 
             -- LSP Hints
             local lsp_hint = p.dedent [[
-                ^ _p_: Prev Diagnostic       _n_: Next Diagnostic
-
-                ^ _a_: Code Action
-                ^ _d_: Goto Definition       _D_: Goto Declaration
-                ^ _f_: Format File
+                ^ Navigation
+                ^ _d_: Goto Definition (_D_: Declaration) ^
                 ^ _i_: Goto Implementation
+                ^ _n_: Next Diagnostic
+                ^ _p_: Prev Diagnostic
+                ^ _t_: Type Definition
+
+                ^ LSP Actions
+                ^ _a_: Code Action
+                ^ _f_: Format File
                 ^ _K_: Documentation
                 ^ _l_: Diagnostics Loclist
-                ^ _r_: References            _R_: Rename
-                ^ _t_: Type Definition
+                ^ _r_: References            
+                ^ _R_: Rename
 
                 ^ _q_: Quit ]]
 
             -- FZF Hints
             local fzf_hint = p.dedent [[
+                ^ Navigation
+                ^ _j_:  Jump
                 ^ _*_:  Grep Word
                 ^ _a_:  Buffer Lines
                 ^ _g_:  Grep
 
+                ^ Git Related
                 ^ _b_:  Git Branches
-                ^ _c_:  Git Commits           _C_:  Git File Commits
+                ^ _c_:  Git Commits (_C_: File) ^
                 ^ _f_:  Git Files
                 ^ _z_:  Git Stash
 
-                ^ _lr_: LSP References
-                ^ _li_: LSP Implementations
+                ^ LSP
                 ^ _ld_: LSP Definitions
+                ^ _lD_: LSP Document Symbols
+                ^ _lr_: LSP References         
+                ^ _lW_: LSP Workspace Symbols
+                ^ _li_: LSP Implementations
+                ^ _lt_: LSP Type Definitions
+                ^ _lc_: LSP Incoming Calls
+                ^ _lC_: LSP Outgoing Calls
 
-                ^ _q_: Quit ]]
+                ^ General
+                ^ _o_:  Vim Options
+                ^ _r_:  Vim Registers
+                ^ _q_:  Quit ]]
 
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
@@ -263,23 +303,43 @@ return function(use)
                     on_key         = function() vim.wait(50) end,
                 },
                 heads  = {
-                    { 'u',  function() vim.cmd 'RustMoveItemUp' end,   {}},
-                    { 'd',  function() vim.cmd 'RustMoveItemDown' end, {}},
+                    { 'k',  c.cmd 'RustMoveItemUp',                   { exit = true }},
+                    { 'j',  c.cmd 'RustMoveItemDown',                 { exit = true }},
 
-                    { 'a',  function() vim.cmd 'RustCodeAction' end,          { exit = true }},
-                    { 'e',  function() vim.cmd 'RustExpandMacro' end,         { exit = true }},
-                    { 's',  function() vim.cmd 'RustParentModule' end,        { exit = true }},
-                    { 't',  function() vim.cmd 'Cargo tree' end,              { exit = true }},
-                    { 'f',  function() vim.cmd 'RustFmt' end,                 { exit = true }},
+                    { 'a',  c.cmd 'RustCodeAction',                   { exit = true }},
+                    { 'e',  c.cmd 'RustExpandMacro',                  { exit = true }},
+                    { 's',  c.cmd 'RustParentModule',                 { exit = true }},
+                    { 't',  c.cmd 'Cargo tree',                       { exit = true }},
+                    { 'f',  c.cmd 'RustFmt',                          { exit = true }},
 
-                    { 'co', function() vim.cmd 'RustOpenCargo' end,           { exit = true }},
-                    { 'cu', function() require('crates').update_crate() end,  { exit = true }},
-                    { 'cU', function() require('crates').upgrade_crate() end, { exit = true }},
-                    { 'ci', function() require('crates').show_popup() end,    { exit = true }},
+                    { 'c', c.cmd 'RustOpenCargo',                     { exit = true }},
+                    { 'u', require('crates').update_crate,            { exit = true }},
+                    { 'U', require('crates').upgrade_crate,           { exit = true }},
+                    { 'i', require('crates').show_popup,              { exit = true }},
+                    { 'd', require('crates').show_dependencies_popup, { exit = true }},
+                    { 'o', require('crates').show_features_popup,     { exit = true }},
+                    { 'v', require('crates').show_versions_popup,     { exit = true }},
 
-                    { 'q', nil,                                               { exit = true }},
+                    { 'q', nil,                                       { exit = true }},
                 },
             })
+
+            -- Configure Reach for Buffer Jumping
+            local reach_options = {
+                handle       = 'auto',
+                show_current = true,
+                sort         = function(a, b)
+                    return vim.fn.getbufinfo(a)[1].lastused > vim.fn.getbufinfo(b)[1].lastused
+                end,
+            }
+
+            -- Function to swap to the last buffer for this window.
+            local function swap_to_last_buffer()
+                local last_buffer = vim.fn.bufnr('#')
+                if last_buffer ~= -1 then
+                    vim.cmd('buffer ' .. last_buffer)
+                end
+            end
 
             hydra({
                 name   = 'Jump',
@@ -291,21 +351,14 @@ return function(use)
                     invoke_on_body = true,
                 },
                 heads  = {
-                    { 'j',  c.cmd('ReachOpen buffers'),            { exit = true }},
-                    { 'm',  c.cmd('ReachOpen marks'),              { exit = true }},
-                    { 'c',  c.cmd('ReachOpen colorschemes'),       { exit = true }},
-                    { 'd',  vim.lsp.buf.definition,                { exit = true }},
-                    { 'i',  vim.lsp.buf.implementation,            { exit = true }},
-                    { 'n',  vim.diagnostic.goto_next,              { exit = true }},
-                    { 'p',  vim.diagnostic.goto_prev,              { exit = true }},
-                    { 't',  vim.lsp.buf.type_definition,           { exit = true }},
-                    { 'l',  vim.diagnostic.setloclist,             { exit = true }},
-                    { 'r',  vim.lsp.buf.references,                { exit = true }},
+                    { 'j', function() require'reach'.buffers(reach_options) end, { exit = true }},
+                    { 'm', c.cmd('ReachOpen marks'),                             { exit = true }},
+                    { 'c', c.cmd('ReachOpen colorschemes'),                      { exit = true }},
+                    { 'h', require'harpoon.ui'.toggle_quick_menu,                 { exit = true }},
+                    { '.', require'harpoon.mark'.add_file,                        { exit = true }},
+                    { 'l', swap_to_last_buffer,                                   { exit = true }},
 
-                    { 'hm', require'harpoon.mark'.add_file,        { exit = true }},
-                    { 'hj', require'harpoon.ui'.toggle_quick_menu, { exit = true }},
-
-                    { 'q', nil,                                    { exit = true }},
+                    { 'q', nil,                                                   { exit = true }},
                 },
 
             })
@@ -357,6 +410,29 @@ return function(use)
                 }
             })
 
+            -- Create Telescope and Theme objects for use in the Hydra
+            local telescope = require'telescope.builtin'
+            local ivy       = require'telescope.themes'.get_ivy {
+                border      = false,
+                borderchars = {
+                    prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                    results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                    preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                },
+            }
+
+            -- Ivy but with sort_mru included in the options.
+            local ivy_bufs  = require'telescope.themes'.get_ivy {
+                border                = false,
+                sort_mru              = true,
+                ignore_current_buffer = true,
+                borderchars           = {
+                    prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                    results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                    preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                },
+            }
+
             hydra({
                 name  = 'FZF',
                 mode  = 'n',
@@ -367,18 +443,26 @@ return function(use)
                     invoke_on_body = true,
                 },
                 heads = {
-                    { '*',  c.cmd('FzfLua grep_cword'),          { exit = true }},
-                    { 'g',  c.cmd('FzfLua grep'),                { exit = true }},
-                    { 'a',  c.cmd('FzfLua blines'),              { exit = true }},
-                    { 'b',  c.cmd('FzfLua git_branches'),        { exit = true }},
-                    { 'c',  c.cmd('FzfLua git_commits'),         { exit = true }},
-                    { 'C',  c.cmd('FzfLua git_bcommits'),        { exit = true }},
-                    { 'f',  c.cmd('FzfLua git_files'),           { exit = true }},
-                    { 'z',  c.cmd('FzfLua git_stash'),           { exit = true }},
-                    { 'lr', c.cmd('FzfLua lsp_references'),      { exit = true }},
-                    { 'li', c.cmd('FzfLua lsp_implementations'), { exit = true }},
-                    { 'ld', c.cmd('FzfLua lsp_definitions'),     { exit = true }},
-                    { 'q',  nil,                                 { exit = true }},
+                    { '*',  function() telescope.grep_string(ivy) end,               { exit = true }},
+                    { 'g',  function() telescope.live_grep(ivy) end,                 { exit = true }},
+                    { 'o',  function() telescope.vim_options(ivy) end,               { exit = true }},
+                    { 'a',  function() telescope.current_buffer_fuzzy_find(ivy) end, { exit = true }},
+                    { 'b',  function() telescope.git_branches(ivy) end,              { exit = true }},
+                    { 'C',  function() telescope.git_bcommits(ivy) end,              { exit = true }},
+                    { 'c',  function() telescope.git_commits(ivy) end,               { exit = true }},
+                    { 'f',  function() telescope.git_files(ivy) end,                 { exit = true }},
+                    { 'j',  function() telescope.buffers(ivy_bufs) end,              { exit = true }},
+                    { 'r',  function() telescope.registers(ivy) end,                 { exit = true }},
+                    { 'z',  function() telescope.git_stash(ivy) end,                 { exit = true }},
+                    { 'lr', function() telescope.lsp_references(ivy) end,            { exit = true }},
+                    { 'li', function() telescope.lsp_implementations(ivy) end,       { exit = true }},
+                    { 'ld', function() telescope.lsp_definitions(ivy) end,           { exit = true }},
+                    { 'lt', function() telescope.lsp_type_definitions(ivy) end,      { exit = true }},
+                    { 'lD', function() telescope.lsp_document_symbols(ivy) end,      { exit = true }},
+                    { 'lW', function() telescope.lsp_workspace_symbols(ivy) end,     { exit = true }},
+                    { 'lc', function() telescope.lsp_incoming_calls(ivy) end,        { exit = true }},
+                    { 'lC', function() telescope.lsp_outgoing_calls(ivy) end,        { exit = true }},
+                    { 'q',  nil,                                                     { exit = true }},
                 }
             })
         end

@@ -7,6 +7,7 @@ return function(use, theme)
     use 'B4mbus/oxocarbon-lua.nvim'
     use 'Mofiqul/dracula.nvim'
     use 'mcchrish/zenbones.nvim'
+    use 'folke/tokyonight.nvim'
 
     vim.cmd ([[
         set termguicolors

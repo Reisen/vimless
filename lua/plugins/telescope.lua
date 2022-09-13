@@ -26,25 +26,19 @@ return function(use)
                         '┘',
                         '└',
                     },
-                    entry_prefix     = '  ',
-                    prompt_prefix    = '  ',
-                    selection_caret  = '  ',
                     color_devicons   = true,
                     path_display     = { 'smart' },
                     sorting_strategy = 'ascending',
                     layout_strategy  = 'horizontal',
-                    layout_config    = {
-                        width          = 0.87,
-                        height         = 0.80,
+
+                    preview = {
+                        hide_on_startup = true
+                    },
+
+                    layout_config = {
                         preview_cutoff = 50,
-                        horizontal = {
-                            prompt_position = 'top',
-                            preview_width   = 0.55,
-                            results_width   = 0.8,
-                        },
-                        vertical = {
-                            mirror = false,
-                        },
+                        horizontal     = { prompt_position = 'bottom', },
+                        vertical       = { mirror = false, },
                     },
                 }
             }

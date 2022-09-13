@@ -3,9 +3,16 @@ return function(use)
     vim.g.rustfmt_autosave = 1
 
     use { 'simrat39/rust-tools.nvim',
-        config = function()
+        requires = 'SmiteshP/nvim-navic',
+        config   = function()
             require 'rust-tools'.setup {
                 server = {
+                    on_attach = function(client, buffer)
+                        require 'nvim-navic'.attach(
+                            client,
+                            buffer
+                        )
+                    end,
                     settings = {
                         ["rust-analyzer"] = {
                             checkOnSave = {
@@ -17,7 +24,7 @@ return function(use)
 
                 tools = {
                     crate_graph = {
-                        backend = "plain",
+                        backend = "plaintext",
                         output  = nil,
                         full    = true,
                     }
@@ -32,7 +39,6 @@ return function(use)
     }
 
     use { 'saecki/crates.nvim',
-        tag      = 'v0.2.1',
         requires = { 'nvim-lua/plenary.nvim' },
         config   = function()
             require 'crates'.setup {

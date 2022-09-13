@@ -1,11 +1,9 @@
 -- Neovim Configuration, 100% Lua Inside!
 --
--- TODO: Change neovim LSP symbols from E/W/H to colored CDOT.
--- TODO: Setup theme switching.
--- TODO: Create Hydra's instead of relying on which-key.
+-- TODO: Rust Crate Graph as ASCII.
 
 local scrollbar = false
-local theme     = 'oxocarbon-lua'
+local theme     = 'tokyonight'
 
 -- Install Packer & Fennel
 -- ------------------------------------------------------------------------------------
@@ -45,6 +43,8 @@ return require('packer').startup(function()
     require('plugins/toggleterm')(use)
     require('plugins/trouble')(use)
     require('plugins/which-key')(use)
+    require('plugins/octo')(use)
+    require('plugins/mind')(use)
 
     -- Mini.ai
     use { 'echasnovski/mini.nvim',
@@ -55,8 +55,6 @@ return require('packer').startup(function()
         end
     }
 
-    use 'ibhagwan/fzf-lua'
-
     -- Conditional Plugins
     __ = (scrollbar and require('plugins/scrollbar')(use))
 
@@ -66,11 +64,40 @@ return require('packer').startup(function()
         end
     }
 
+    use { 'sidebar-nvim/sidebar.nvim',
+        config = function()
+            require 'sidebar-nvim'.setup {
+                open     = true,
+                sections = {
+                    'containers',
+                    'todos',
+                    'git',
+                    'symbols',
+                    'diagnostics',
+                },
+
+                git         = {},
+                diagnostics = {},
+
+                todos = {
+                    initially_closed = true,
+                },
+
+                containers = {
+                    use_podman   = true,
+                    attach_shell = '/bin/sh',
+                    interval     = 10000,
+                },
+            }
+        end
+    }
+
     -- Quick `use` plugins.
     use 'tpope/vim-fugitive'
     use 'tpope/vim-repeat'
     use 'tpope/vim-vinegar'
     use 'unblevable/quick-scope'
+    use 'ibhagwan/fzf-lua'
 
     -- EasyAlign Bindings.
     use { 'junegunn/vim-easy-align',

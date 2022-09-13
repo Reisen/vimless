@@ -1,7 +1,8 @@
 set autoindent
 set expandtab
 set fillchars+=diff:╱
-set fillchars+=vert:▕
+"set fillchars+=vert:▕
+set fillchars+=vert:\ 
 set nowrap
 set shiftwidth=4
 set signcolumn=auto:4
