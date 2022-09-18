@@ -1,11 +1,12 @@
 -- Neovim Configuration, 100% Lua Inside!
 --
 -- TODO: Rust Crate Graph as ASCII.
+-- TODO: Find a way to Container Shell in tab.
 
 local scrollbar = false
 local theme     = 'tokyonight'
 
--- Install Packer & Fennel
+-- Install Packer
 -- ------------------------------------------------------------------------------------
 local packer = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 if vim.fn.empty(vim.fn.glob(packer)) > 0 then
@@ -29,28 +30,39 @@ return require('packer').startup(function()
     require('plugins/nvim-web-devicons')(use)
     require('plugins/twilight')(use)
 
+    use { 'gen740/SmoothCursor.nvim',
+        config = function()
+            require('smoothcursor').setup {
+                priority = 10,
+                fancy    = {
+                    enable = true,
+                },
+            }
+        end
+    }
+
 
     -- IDE
     -- --------------------------------------------------------------------------------
     require('plugins/auto-session')(use)
+    require('plugins/comment')(use)
     require('plugins/diffview')(use)
     require('plugins/gitsigns')(use)
     require('plugins/harpoon')(use)
     require('plugins/hydra')(use)
     require('plugins/leap')(use)
     require('plugins/marks')(use)
+    require('plugins/mind')(use)
+    require('plugins/octo')(use)
     require('plugins/telescope')(use)
     require('plugins/toggleterm')(use)
     require('plugins/trouble')(use)
     require('plugins/which-key')(use)
-    require('plugins/octo')(use)
-    require('plugins/mind')(use)
 
     -- Mini.ai
     use { 'echasnovski/mini.nvim',
         config = function()
             require 'mini.comment'.setup {}
-            require 'mini.pairs'.setup   {}
             require 'mini.starter'.setup {}
         end
     }
@@ -61,34 +73,6 @@ return require('packer').startup(function()
     use { 'toppair/reach.nvim',
         config = function()
             require 'reach'.setup {}
-        end
-    }
-
-    use { 'sidebar-nvim/sidebar.nvim',
-        config = function()
-            require 'sidebar-nvim'.setup {
-                open     = true,
-                sections = {
-                    'containers',
-                    'todos',
-                    'git',
-                    'symbols',
-                    'diagnostics',
-                },
-
-                git         = {},
-                diagnostics = {},
-
-                todos = {
-                    initially_closed = true,
-                },
-
-                containers = {
-                    use_podman   = true,
-                    attach_shell = '/bin/sh',
-                    interval     = 10000,
-                },
-            }
         end
     }
 

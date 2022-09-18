@@ -4,8 +4,13 @@
 return function(use)
     use {
         'anuvyklack/hydra.nvim',
+        requires = {
+            'lewis6991/gitsigns.nvim',
+            'nvim-lua/plenary.nvim',
+            'saecki/crates.nvim',
+        },
         config = function()
-            local p           = require('plenary.strings')
+            local p           = require 'plenary.strings'
             local hydra       = require 'hydra'
             local c           = require 'hydra.keymap-util'
             local gitsigns    = require 'gitsigns'
@@ -151,8 +156,9 @@ return function(use)
                 ^ Navigation
                 ^ _j_:  Jump
                 ^ _*_:  Grep Word
-                ^ _a_:  Buffer Lines
-                ^ _g_:  Grep
+                ^ _/_:  Grep
+                ^ _e_:  File Explorer
+                ^ _p_:  Projects
 
                 ^ Git Related
                 ^ _b_:  Git Branches
@@ -161,18 +167,30 @@ return function(use)
                 ^ _z_:  Git Stash
 
                 ^ LSP
+                ^ _ll_: LSP Diagnostics
                 ^ _ld_: LSP Definitions
-                ^ _lD_: LSP Document Symbols
+                ^ _lt_: LSP Types
                 ^ _lr_: LSP References         
-                ^ _lW_: LSP Workspace Symbols
                 ^ _li_: LSP Implementations
-                ^ _lt_: LSP Type Definitions
+                ^ _ls_: LSP Symbols
+                ^ _lS_: LSP Symbols (Workspace)
                 ^ _lc_: LSP Incoming Calls
                 ^ _lC_: LSP Outgoing Calls
 
                 ^ General
                 ^ _o_:  Vim Options
                 ^ _r_:  Vim Registers
+                ^ _q_:  Quit ]]
+
+            -- Octo Hints
+            local octo_hint = p.dedent [[
+                ^ Navigation
+                ^ _g_: Gists
+                ^ _i_: Issues
+                ^ _p_: Pull Requests
+                ^ _r_: Repos
+                ^ _s_: Search
+
                 ^ _q_:  Quit ]]
 
             -- Hint Options that are shared by all Hydras.
@@ -326,7 +344,7 @@ return function(use)
 
             -- Configure Reach for Buffer Jumping
             local reach_options = {
-                handle       = 'auto',
+                handle       = 'dynamic',
                 show_current = true,
                 sort         = function(a, b)
                     return vim.fn.getbufinfo(a)[1].lastused > vim.fn.getbufinfo(b)[1].lastused
@@ -354,11 +372,11 @@ return function(use)
                     { 'j', function() require'reach'.buffers(reach_options) end, { exit = true }},
                     { 'm', c.cmd('ReachOpen marks'),                             { exit = true }},
                     { 'c', c.cmd('ReachOpen colorschemes'),                      { exit = true }},
-                    { 'h', require'harpoon.ui'.toggle_quick_menu,                 { exit = true }},
-                    { '.', require'harpoon.mark'.add_file,                        { exit = true }},
-                    { 'l', swap_to_last_buffer,                                   { exit = true }},
+                    { 'h', require'harpoon.ui'.toggle_quick_menu,                { exit = true }},
+                    { '.', require'harpoon.mark'.add_file,                       { exit = true }},
+                    { 'l', swap_to_last_buffer,                                  { exit = true }},
 
-                    { 'q', nil,                                                   { exit = true }},
+                    { 'q', nil,                                                  { exit = true }},
                 },
 
             })
@@ -412,26 +430,44 @@ return function(use)
 
             -- Create Telescope and Theme objects for use in the Hydra
             local telescope = require'telescope.builtin'
-            local ivy       = require'telescope.themes'.get_ivy {
-                border      = false,
-                borderchars = {
-                    prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-                    results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-                    preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+
+            local ivy = require'telescope.themes'.get_dropdown {
+                border        = true,
+                layout_config = { height = 10 },
+                borderchars   = {
+                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                },
+            }
+
+            local cursor = require'telescope.themes'.get_cursor {
+                border        = true,
+                layout_config = { height = 10 },
+                borderchars   = {
+                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                 },
             }
 
             -- Ivy but with sort_mru included in the options.
-            local ivy_bufs  = require'telescope.themes'.get_ivy {
-                border                = false,
+            local ivy_bufs  = require'telescope.themes'.get_dropdown {
                 sort_mru              = true,
                 ignore_current_buffer = true,
+                layout_config         = { height = 10 },
                 borderchars           = {
-                    prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-                    results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-                    preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                 },
             }
+
+            -- Extensions
+            local file_browser = require'telescope'.extensions.file_browser
+            local harpoon      = require'telescope'.extensions.harpoon
+            local octo         = require'telescope'.extensions.octo
+            local projects     = require'telescope'.extensions.project
 
             hydra({
                 name  = 'FZF',
@@ -443,26 +479,48 @@ return function(use)
                     invoke_on_body = true,
                 },
                 heads = {
-                    { '*',  function() telescope.grep_string(ivy) end,               { exit = true }},
-                    { 'g',  function() telescope.live_grep(ivy) end,                 { exit = true }},
-                    { 'o',  function() telescope.vim_options(ivy) end,               { exit = true }},
-                    { 'a',  function() telescope.current_buffer_fuzzy_find(ivy) end, { exit = true }},
+                    { '*',  function() telescope.grep_string(cursor) end,            { exit = true }},
+                    { '/',  function() telescope.live_grep(ivy) end,                 { exit = true }},
                     { 'b',  function() telescope.git_branches(ivy) end,              { exit = true }},
                     { 'C',  function() telescope.git_bcommits(ivy) end,              { exit = true }},
                     { 'c',  function() telescope.git_commits(ivy) end,               { exit = true }},
+                    { 'e',  function() file_browser.file_browser(ivy) end,           { exit = true }},
                     { 'f',  function() telescope.git_files(ivy) end,                 { exit = true }},
+                    { 'h',  function() harpoon.marks(ivy) end,                       { exit = true }},
                     { 'j',  function() telescope.buffers(ivy_bufs) end,              { exit = true }},
+                    { 'o',  function() telescope.vim_options(ivy) end,               { exit = true }},
+                    { 'p',  function() projects.project(ivy) end,                    { exit = true }},
                     { 'r',  function() telescope.registers(ivy) end,                 { exit = true }},
                     { 'z',  function() telescope.git_stash(ivy) end,                 { exit = true }},
-                    { 'lr', function() telescope.lsp_references(ivy) end,            { exit = true }},
-                    { 'li', function() telescope.lsp_implementations(ivy) end,       { exit = true }},
-                    { 'ld', function() telescope.lsp_definitions(ivy) end,           { exit = true }},
-                    { 'lt', function() telescope.lsp_type_definitions(ivy) end,      { exit = true }},
-                    { 'lD', function() telescope.lsp_document_symbols(ivy) end,      { exit = true }},
-                    { 'lW', function() telescope.lsp_workspace_symbols(ivy) end,     { exit = true }},
                     { 'lc', function() telescope.lsp_incoming_calls(ivy) end,        { exit = true }},
                     { 'lC', function() telescope.lsp_outgoing_calls(ivy) end,        { exit = true }},
+                    { 'ld', function() telescope.lsp_definitions(ivy) end,           { exit = true }},
+                    { 'li', function() telescope.lsp_implementations(ivy) end,       { exit = true }},
+                    { 'lr', function() telescope.lsp_references(ivy) end,            { exit = true }},
+                    { 'ls', function() telescope.lsp_document_symbols(ivy) end,      { exit = true }},
+                    { 'lS', function() telescope.lsp_workspace_symbols(ivy) end,     { exit = true }},
+                    { 'lt', function() telescope.lsp_type_definitions(ivy) end,      { exit = true }},
+                    { 'll', function() telescope.diagnostics(ivy) end,               { exit = true }},
                     { 'q',  nil,                                                     { exit = true }},
+                }
+            })
+
+            hydra({
+                name  = 'Octo',
+                mode  = 'n',
+                body  = '<leader>o',
+                hint  = octo_hint,
+                config = {
+                    hint           = hint_options,
+                    invoke_on_body = true,
+                },
+                heads = {
+                    { 'g',  function() octo.gists(ivy) end,  { exit = true }},
+                    { 'i',  function() octo.issues(ivy) end, { exit = true }},
+                    { 'p',  function() octo.prs(ivy) end,    { exit = true }},
+                    { 'r',  function() octo.repos(ivy) end,  { exit = true }},
+                    { 's',  function() octo.search(ivy) end, { exit = true }},
+                    { 'q',  nil,                             { exit = true }},
                 }
             })
         end

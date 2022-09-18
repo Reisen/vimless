@@ -28,7 +28,7 @@ return function(use)
             require 'mason'.setup {}
             require 'mason-lspconfig'.setup {}
 
-            -- Setup LSPConfig itself.
+            -- Lua Language Server.
             require 'lspconfig'.sumneko_lua.setup {
                 capabilities = capabilities,
                 on_attach    = function(client, buffer)
@@ -55,6 +55,7 @@ return function(use)
                 },
             }
 
+            -- C/C++ Language Server
             require 'lspconfig'.clangd.setup {
                 capabilities = capabilities,
                 on_attach    = function(client, buffer)
@@ -65,6 +66,7 @@ return function(use)
                 end,
             }
 
+            -- Haskell Language Server
             require 'lspconfig'.hls.setup {
                 capabilities = capabilities,
                 on_attach    = function(client, buffer)
@@ -75,7 +77,30 @@ return function(use)
                 end,
             }
 
+            -- Python Language Server.
             require 'lspconfig'.jedi_language_server.setup {
+                capabilities = capabilities,
+                on_attach    = function(client, buffer)
+                    require 'nvim-navic'.attach(
+                        client,
+                        buffer
+                    )
+                end,
+            }
+
+            -- Nix Language Server
+            require 'lspconfig'.rnix.setup {
+                capabilities = capabilities,
+                on_attach    = function(client, buffer)
+                    require 'nvim-navic'.attach(
+                        client,
+                        buffer
+                    )
+                end,
+            }
+
+            -- Vim Language Server
+            require 'lspconfig'.vimls.setup {
                 capabilities = capabilities,
                 on_attach    = function(client, buffer)
                     require 'nvim-navic'.attach(
