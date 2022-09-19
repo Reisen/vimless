@@ -112,10 +112,10 @@ return function(use)
 
             -- Sign Overrides
             local signs = {
-                Error = '•',
-                Warn  = '•',
-                Hint  = '•',
-                Info  = '•',
+                Error = 'E',
+                Warn  = 'W',
+                Hint  = 'H',
+                Info  = 'I',
             }
 
             for type, icon in pairs(signs) do

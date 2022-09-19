@@ -34,8 +34,23 @@ return require('packer').startup(function()
         config = function()
             require('smoothcursor').setup {
                 priority = 10,
+                linehl   = true,
                 fancy    = {
                     enable = true,
+                    head   = {
+                        cursor = 'o',
+                        texthl = 'SmoothCursor',
+                        linehl = nil
+                    },
+                    body   = {
+                        { cursor = "●", texthl = "SmoothCursorRed" },
+                        { cursor = "●", texthl = "SmoothCursorOrange" },
+                        { cursor = "•", texthl = "SmoothCursorYellow" },
+                        { cursor = "•", texthl = "SmoothCursorGreen" },
+                        { cursor = "•", texthl = "SmoothCursorAqua" },
+                        { cursor = ".", texthl = "SmoothCursorBlue" },
+                        { cursor = ".", texthl = "SmoothCursorPurple" },
+                    }
                 },
             }
         end

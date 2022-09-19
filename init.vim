@@ -1,11 +1,12 @@
 set autoindent
 set expandtab
+set cursorline
 set fillchars+=diff:╱
 "set fillchars+=vert:▕
 set fillchars+=vert:\ 
 set nowrap
 set shiftwidth=4
-set signcolumn=auto:4
+set signcolumn=yes:1
 set smartindent
 set softtabstop=4
 set tabstop=4
