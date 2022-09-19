@@ -10,11 +10,11 @@ return function(use)
                 },
 
                 signs = {
-                    add          = { text = '⋅' },
-                    change       = { text = '⋅' },
-                    delete       = { text = '⋅', show_count = true },
-                    topdelete    = { text = '⋅', show_count = true },
-                    changedelete = { text = '⋅', show_count = true },
+                    add          = { text = '+' },
+                    change       = { text = '~' },
+                    delete       = { text = '-', show_count = true },
+                    topdelete    = { text = '_', show_count = true },
+                    changedelete = { text = '_', show_count = true },
                 },
 
                 count_chars = {

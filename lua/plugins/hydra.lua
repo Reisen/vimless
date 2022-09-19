@@ -1,3 +1,5 @@
+---@diagnostic disable: need-check-nil
+
 -- Hydra's are small hint windows that provide quick access to common actions.
 -- We provide here a default set of Hydra definitions that make it easy to
 -- navigate all the <Space> bound actions this vim configuration provides.
@@ -21,7 +23,6 @@ return function(use)
                 ^ _b_: Buffers
                 ^ _f_: FZF / Search
                 ^ _g_: Git
-                ^ _j_: Jump
                 ^ _l_: LSP
                 ^ _o_: Octo / Github
                 ^ _r_: Rust
@@ -174,12 +175,14 @@ return function(use)
                 ^ _*_:  Grep Word
                 ^ _/_:  Grep
                 ^ _e_:  File Explorer
+                ^ _h_:  Harpoon
                 ^ _p_:  Projects
 
                 ^ Git Related
                 ^ _b_:  Git Branches
                 ^ _c_:  Git Commits (_C_: File) ^
                 ^ _f_:  Git Files
+                ^ _s_:  Git Status
                 ^ _z_:  Git Stash
 
                 ^ LSP
@@ -196,6 +199,7 @@ return function(use)
                 ^ General
                 ^ _o_:  Vim Options
                 ^ _r_:  Vim Registers
+                ^ _t_:  Colorscheme Switcher
                 ^ _q_:  Quit ]]
 
             -- Octo Hints
@@ -310,9 +314,9 @@ return function(use)
                         end,
                         {}
                     },
-                    { 'R', gitsigns.reset_buffer,                        {}},
-                    { 'S', gitsigns.stage_buffer,                        {}},
-                    { 'u', gitsigns.undo_stage_hunk,                     {}},
+                    { 'R', gitsigns.reset_buffer,                              {}},
+                    { 'S', gitsigns.stage_buffer,                              {}},
+                    { 'u', gitsigns.undo_stage_hunk,                           {}},
 
                     { 'B', function() gitsigns.blame_line { full = true } end, { exit = true }},
                     { 'b', function() vim.cmd 'G blame' end,                   { exit = true }},
@@ -375,7 +379,7 @@ return function(use)
                 end
             end
 
-            local jump_hydra = hydra({
+            local jump_hydra = false and hydra({
                 name   = 'Jump',
                 mode   = 'n',
                 body   = '<leader>j',
@@ -449,7 +453,7 @@ return function(use)
 
             local ivy = require'telescope.themes'.get_dropdown {
                 border        = true,
-                layout_config = { height = 10 },
+                layout_config = { height = 16 },
                 borderchars   = {
                     prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
@@ -459,7 +463,7 @@ return function(use)
 
             local cursor = require'telescope.themes'.get_cursor {
                 border        = true,
-                layout_config = { height = 10 },
+                layout_config = { height = 16 },
                 borderchars   = {
                     prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
@@ -471,7 +475,7 @@ return function(use)
             local ivy_bufs  = require'telescope.themes'.get_dropdown {
                 sort_mru              = true,
                 ignore_current_buffer = true,
-                layout_config         = { height = 10 },
+                layout_config         = { height = 16 },
                 borderchars           = {
                     prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
@@ -507,6 +511,8 @@ return function(use)
                     { 'o',  function() telescope.vim_options(ivy) end,               { exit = true }},
                     { 'p',  function() projects.project(ivy) end,                    { exit = true }},
                     { 'r',  function() telescope.registers(ivy) end,                 { exit = true }},
+                    { 's',  function() telescope.git_status(ivy) end,                { exit = true }},
+                    { 't',  function() telescope.colorscheme(ivy) end,               { exit = true }},
                     { 'z',  function() telescope.git_stash(ivy) end,                 { exit = true }},
                     { 'lc', function() telescope.lsp_incoming_calls(ivy) end,        { exit = true }},
                     { 'lC', function() telescope.lsp_outgoing_calls(ivy) end,        { exit = true }},
@@ -554,7 +560,6 @@ return function(use)
                     { 'o', function() octo_hydra:activate() end,   { exit = true }},
                     { 'b', function() buffer_hydra:activate() end, { exit = true }},
                     { 'g', function() git_hydra:activate() end,    { exit = true }},
-                    { 'j', function() jump_hydra:activate() end,   { exit = true }},
                     { 'l', function() lsp_hydra:activate() end,    { exit = true }},
                     { 'o', function() octo_hydra:activate() end,   { exit = true }},
                     { 'r', function() rust_hydra:activate() end,   { exit = true }},
