@@ -15,6 +15,22 @@ return function(use)
             local c           = require 'hydra.keymap-util'
             local gitsigns    = require 'gitsigns'
 
+            -- Hydra of Hydras
+            local hydra_hint = p.dedent [[
+                ^ Hydras
+                ^ _b_: Buffers
+                ^ _f_: FZF / Search
+                ^ _g_: Git
+                ^ _j_: Jump
+                ^ _l_: LSP
+                ^ _o_: Octo / Github
+                ^ _r_: Rust
+                ^ _t_: Tabs
+                ^ _v_: Vim
+                ^ _w_: Windows
+
+                ^ _q_: Quit ]]
+
             -- Window Related Hints.
             local window_hint = p.dedent [[
                 ^ Navigation
@@ -201,7 +217,7 @@ return function(use)
             }
 
             -- Initialize Hydras
-            hydra({
+            local window_hydra = hydra({
                 name   = 'Window Management',
                 mode   = 'n',
                 body   = '<leader>w',
@@ -228,7 +244,7 @@ return function(use)
                 },
             })
 
-            hydra({
+            local tab_hydra = hydra({
                 name   = 'Tab Management',
                 mode   = 'n',
                 body   = '<leader>t',
@@ -246,7 +262,7 @@ return function(use)
                 },
             })
 
-            hydra({
+            local buffer_hydra = hydra({
                 name   = 'Buffer Management',
                 mode   = 'n',
                 body   = '<leader>b',
@@ -267,7 +283,7 @@ return function(use)
                 },
             })
 
-            hydra({
+            local git_hydra = hydra({
                 name   = 'Git',
                 mode   = {'n', 'x'},
                 body   = '<leader>g',
@@ -310,7 +326,7 @@ return function(use)
                 },
             })
 
-            hydra({
+            local rust_hydra = hydra({
                 name   = 'Rust',
                 mode   = 'n',
                 body   = '<leader>r',
@@ -359,7 +375,7 @@ return function(use)
                 end
             end
 
-            hydra({
+            local jump_hydra = hydra({
                 name   = 'Jump',
                 mode   = 'n',
                 body   = '<leader>j',
@@ -381,7 +397,7 @@ return function(use)
 
             })
 
-            hydra({
+            local vim_hydra = hydra({
                 name   = 'VIM',
                 mode   = 'n',
                 body   = '<leader>v',
@@ -399,7 +415,7 @@ return function(use)
                 }
             })
 
-            hydra({
+            local lsp_hydra = hydra({
                 name   = 'LSP',
                 mode   = 'n',
                 body   = '<leader>l',
@@ -469,7 +485,7 @@ return function(use)
             local octo         = require'telescope'.extensions.octo
             local projects     = require'telescope'.extensions.project
 
-            hydra({
+            local fzf_hydra = hydra({
                 name  = 'FZF',
                 mode  = 'n',
                 body  = '<leader>f',
@@ -505,7 +521,7 @@ return function(use)
                 }
             })
 
-            hydra({
+            local octo_hydra = hydra({
                 name  = 'Octo',
                 mode  = 'n',
                 body  = '<leader>o',
@@ -521,6 +537,31 @@ return function(use)
                     { 'r',  function() octo.repos(ivy) end,  { exit = true }},
                     { 's',  function() octo.search(ivy) end, { exit = true }},
                     { 'q',  nil,                             { exit = true }},
+                }
+            })
+
+            hydra({
+                name   = 'Hydra',
+                mode   = 'n',
+                body   = '<leader>h',
+                hint   = hydra_hint,
+                config = {
+                    hint           = hint_options,
+                    invoke_on_body = true,
+                },
+                heads = {
+                    { 'f', function() fzf_hydra:activate() end,    { exit = true }},
+                    { 'o', function() octo_hydra:activate() end,   { exit = true }},
+                    { 'b', function() buffer_hydra:activate() end, { exit = true }},
+                    { 'g', function() git_hydra:activate() end,    { exit = true }},
+                    { 'j', function() jump_hydra:activate() end,   { exit = true }},
+                    { 'l', function() lsp_hydra:activate() end,    { exit = true }},
+                    { 'o', function() octo_hydra:activate() end,   { exit = true }},
+                    { 'r', function() rust_hydra:activate() end,   { exit = true }},
+                    { 't', function() tab_hydra:activate() end,    { exit = true }},
+                    { 'v', function() vim_hydra:activate() end,    { exit = true }},
+                    { 'w', function() window_hydra:activate() end, { exit = true }},
+                    { 'q', nil,                                    { exit = true }},
                 }
             })
         end
