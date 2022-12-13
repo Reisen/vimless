@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line: unused-local
 return function(use)
     -- use { 'rmagatti/auto-session',
     --     config = function()

@@ -9,6 +9,7 @@ return function(use, theme)
     use 'mcchrish/zenbones.nvim'
     use 'folke/tokyonight.nvim'
 
+    -- Choose default startup theme set in initial config.
     vim.cmd ([[
         set termguicolors
         set background=dark

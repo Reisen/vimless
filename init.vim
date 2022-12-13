@@ -1,9 +1,8 @@
 set autoindent
 set expandtab
-set cursorline
 set fillchars+=diff:╱
-"set fillchars+=vert:▕
-set fillchars+=vert:\ 
+"set fillchars+=vert:\ 
+set fillchars+=vert:▕
 set nowrap
 set shiftwidth=4
 set signcolumn=yes:1
@@ -11,6 +10,8 @@ set smartindent
 set softtabstop=4
 set tabstop=4
 set timeoutlen=1000
+set splitkeep=screen
+set number
 let mapleader=" "
 
 " Fix Colours

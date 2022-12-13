@@ -4,7 +4,7 @@ return function(use)
             vim.g.tokyonight_style                    = "day"
             vim.g.tokyonight_dark_float               = false
             vim.g.tokyonight_dark_sidebar             = true
-            vim.g.tokyonight_day_brightness           = 0.5
+            vim.g.tokyonight_day_brightness           = 0.8
             vim.g.tokyonight_italic_comments          = false
             vim.g.tokyonight_italic_keywords          = false
             vim.g.tokyonight_transparent              = false

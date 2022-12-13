@@ -3,9 +3,7 @@ return function(use)
     vim.diagnostic.config({
         virtual_text  = false,
         underline     = false,
-        virtual_lines = {
-            only_current_line = true,
-        }
+        virtual_lines = { only_current_line = false, }
     })
 
     -- LSP Configuration.
@@ -17,12 +15,10 @@ return function(use)
         },
         config = function()
             -- Load CMP capabilities for LSP.
-            local capabilities = require('cmp_nvim_lsp').update_capabilities(
-                vim.lsp.protocol.make_client_capabilities()
-            )
+            local capabilities = require'cmp_nvim_lsp'.default_capabilities()
 
             -- Setup Navic LSP.
-            vim.o.statusline = " > %{%v:lua.require'nvim-navic'.get_location()%}"
+            vim.o.statusline = "%f > %{%v:lua.require'nvim-navic'.get_location()%}"
 
             -- Setup Mason before LSPConfig.
             require 'mason'.setup {}
@@ -57,6 +53,17 @@ return function(use)
 
             -- C/C++ Language Server
             require 'lspconfig'.clangd.setup {
+                capabilities = capabilities,
+                on_attach    = function(client, buffer)
+                    require 'nvim-navic'.attach(
+                        client,
+                        buffer
+                    )
+                end,
+            }
+
+            -- Go Language Server
+            require 'lspconfig'.gopls.setup {
                 capabilities = capabilities,
                 on_attach    = function(client, buffer)
                     require 'nvim-navic'.attach(
@@ -112,10 +119,10 @@ return function(use)
 
             -- Sign Overrides
             local signs = {
-                Error = 'E',
-                Warn  = 'W',
-                Hint  = 'H',
-                Info  = 'I',
+                Error = " ",
+                Warn  = " ",
+                Hint  = " ",
+                Info  = " ",
             }
 
             for type, icon in pairs(signs) do

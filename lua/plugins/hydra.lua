@@ -123,21 +123,6 @@ return function(use)
                 ^ _t_: Cargo Tree
                 ^ _q_: Quit ]]
 
-            -- Jump Related Hints
-            local jump_hint = p.dedent [[
-                ^ Reach
-                ^ _j_: Buffer
-                ^ _m_: Marks
-                ^ _c_: Colorschemes ^
-
-                ^ Harpoon
-                ^ _h_: Harpoon Jump
-                ^ _._: Harpoon Mark
-
-                ^ Navigation
-                ^ _l_: Last Buffer
-                ^ _q_: Quit ]]
-
             -- Vim Hints
             local vim_hint = p.dedent [[
                 ^ Packer
@@ -146,6 +131,7 @@ return function(use)
                 ^ _p?_: Plugin Info
 
                 ^ General
+                ^ _m_:  Toggle Minimap
                 ^ _t_:  Toggle Trouble
                 ^ _q_:  Quit ]]
 
@@ -166,6 +152,7 @@ return function(use)
                 ^ _r_: References            
                 ^ _R_: Rename
 
+                ^ _v_: Toggle Visuals
                 ^ _q_: Quit ]]
 
             -- FZF Hints
@@ -318,8 +305,8 @@ return function(use)
                     { 'S', gitsigns.stage_buffer,                              {}},
                     { 'u', gitsigns.undo_stage_hunk,                           {}},
 
-                    { 'B', function() gitsigns.blame_line { full = true } end, { exit = true }},
-                    { 'b', function() vim.cmd 'G blame' end,                   { exit = true }},
+                    { 'b', function() gitsigns.blame_line { full = true } end, { exit = true }},
+                    { 'B', function() vim.cmd 'G blame' end,                   { exit = true }},
                     { 'd', function() vim.cmd 'Gitsigns toggle_linehl' end,    { exit = true }},
                     { 'D', function() vim.cmd 'Gitsigns toggle_numhl' end,     { exit = true }},
                     { 'e', function() vim.cmd 'Gedit:' end,                    { exit = true }},
@@ -362,45 +349,6 @@ return function(use)
                 },
             })
 
-            -- Configure Reach for Buffer Jumping
-            local reach_options = {
-                handle       = 'dynamic',
-                show_current = true,
-                sort         = function(a, b)
-                    return vim.fn.getbufinfo(a)[1].lastused > vim.fn.getbufinfo(b)[1].lastused
-                end,
-            }
-
-            -- Function to swap to the last buffer for this window.
-            local function swap_to_last_buffer()
-                local last_buffer = vim.fn.bufnr('#')
-                if last_buffer ~= -1 then
-                    vim.cmd('buffer ' .. last_buffer)
-                end
-            end
-
-            local jump_hydra = false and hydra({
-                name   = 'Jump',
-                mode   = 'n',
-                body   = '<leader>j',
-                hint   = jump_hint,
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                },
-                heads  = {
-                    { 'j', function() require'reach'.buffers(reach_options) end, { exit = true }},
-                    { 'm', c.cmd('ReachOpen marks'),                             { exit = true }},
-                    { 'c', c.cmd('ReachOpen colorschemes'),                      { exit = true }},
-                    { 'h', require'harpoon.ui'.toggle_quick_menu,                { exit = true }},
-                    { '.', require'harpoon.mark'.add_file,                       { exit = true }},
-                    { 'l', swap_to_last_buffer,                                  { exit = true }},
-
-                    { 'q', nil,                                                  { exit = true }},
-                },
-
-            })
-
             local vim_hydra = hydra({
                 name   = 'VIM',
                 mode   = 'n',
@@ -411,11 +359,12 @@ return function(use)
                     invoke_on_body = true,
                 },
                 heads  = {
-                    { 'pc', c.cmd('PackerCompile'), { exit = true }},
-                    { 'ps', c.cmd('PackerSync'),    { exit = true }},
-                    { 'p?', c.cmd('PackerStatus'),  { exit = true }},
-                    { 't',  c.cmd('TroubleToggle'), { exit = true }},
-                    { 'q',  nil,                    { exit = true }},
+                    { 'pc', c.cmd('PackerCompile'),   { exit = true }},
+                    { 'ps', c.cmd('PackerSync'),      { exit = true }},
+                    { 'p?', c.cmd('PackerStatus'),    { exit = true }},
+                    { 'm',  require'mini.map'.toggle, { exit = true }},
+                    { 't',  c.cmd('TroubleToggle'),   { exit = true }},
+                    { 'q',  nil,                      { exit = true }},
                 }
             })
 
@@ -444,6 +393,7 @@ return function(use)
                     { 'l', vim.diagnostic.setloclist,   { exit = true }},
                     { 'r', vim.lsp.buf.references,      { exit = true }},
                     { 't', vim.lsp.buf.type_definition, { exit = true }},
+                    { 'v', require'lsp_lines'.toggle,   { exit = true }},
                     { 'q', nil,                         { exit = true }},
                 }
             })

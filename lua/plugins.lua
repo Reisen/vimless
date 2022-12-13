@@ -4,7 +4,8 @@
 -- TODO: Find a way to Container Shell in tab.
 
 local scrollbar = false
-local theme     = 'tokyonight'
+local sidebar   = false
+local theme     = 'tokyonight-moon'
 
 -- Install Packer
 -- ------------------------------------------------------------------------------------
@@ -38,18 +39,18 @@ return require('packer').startup(function()
                 fancy    = {
                     enable = true,
                     head   = {
-                        cursor = 'o',
-                        texthl = 'SmoothCursor',
+                        cursor = '▍',
+                        texthl = 'SmoothCursorOrange',
                         linehl = nil
                     },
                     body   = {
-                        { cursor = "●", texthl = "SmoothCursorRed" },
-                        { cursor = "●", texthl = "SmoothCursorOrange" },
-                        { cursor = "•", texthl = "SmoothCursorYellow" },
-                        { cursor = "•", texthl = "SmoothCursorGreen" },
-                        { cursor = "•", texthl = "SmoothCursorAqua" },
-                        { cursor = ".", texthl = "SmoothCursorBlue" },
-                        { cursor = ".", texthl = "SmoothCursorPurple" },
+                        { cursor = '▍', texthl = 'SmoothCursorRed' },
+                        { cursor = '▍', texthl = 'SmoothCursorOrange' },
+                        { cursor = '▍', texthl = 'SmoothCursorYellow' },
+                        { cursor = '▍', texthl = 'SmoothCursorGreen' },
+                        { cursor = '▍', texthl = 'SmoothCursorAqua' },
+                        { cursor = '▍', texthl = 'SmoothCursorBlue' },
+                        { cursor = '▍', texthl = 'SmoothCursorPurple' },
                     }
                 },
             }
@@ -73,48 +74,47 @@ return require('packer').startup(function()
     require('plugins/toggleterm')(use)
     require('plugins/trouble')(use)
     require('plugins/which-key')(use)
+    require('plugins/reach')(use)
+    require('plugins/dirbuf')(use)
+    require('plugins/neotest')(use)
 
     -- Mini.ai
     use { 'echasnovski/mini.nvim',
         config = function()
             require 'mini.comment'.setup {}
             require 'mini.starter'.setup {}
+            require 'mini.map'.setup     {
+                integrations = {
+                    require 'mini.map'.gen_integration.builtin_search(),
+                    require 'mini.map'.gen_integration.diagnostic(),
+                    require 'mini.map'.gen_integration.gitsigns(),
+                },
+                symbols = {
+                    encode      = require 'mini.map'.gen_encode_symbols.dot('4x2'),
+                    scroll_line = '  ',
+                    scroll_view = '  ',
+                },
+                window = {
+                    width                  = 14,
+                    winblend               = 100,
+                    show_integration_count = false,
+                },
+            }
         end
     }
 
     -- Conditional Plugins
     __ = (scrollbar and require('plugins/scrollbar')(use))
-
-    use { 'toppair/reach.nvim',
-        config = function()
-            local reach_options = {
-                handle       = 'dynamic',
-                show_current = true,
-                sort         = function(a, b)
-                    return vim.fn.getbufinfo(a)[1].lastused > vim.fn.getbufinfo(b)[1].lastused
-                end,
-            }
-
-            -- Bind Reach to <leader>j
-            function _G.reach_jumper()
-                require('reach').buffers(reach_options)
-            end
-
-            vim.api.nvim_set_keymap('n', '<leader>j', '<cmd>lua reach_jumper()<CR>', {
-                noremap = true,
-                silent  = true,
-            })
-
-            require 'reach'.setup {}
-        end
-    }
+    __ = (sidebar   and require('plugins/sidebar')(use))
 
     -- Quick `use` plugins.
     use 'tpope/vim-fugitive'
     use 'tpope/vim-repeat'
     use 'tpope/vim-vinegar'
+    use 'tpope/vim-surround'
     use 'unblevable/quick-scope'
     use 'ibhagwan/fzf-lua'
+    use 'uga-rosa/ccc.nvim'
 
     -- EasyAlign Bindings.
     use { 'junegunn/vim-easy-align',
@@ -127,13 +127,25 @@ return require('packer').startup(function()
     }
 
     -- Zen Mode Bindings
-    use { 'Pocco81/true-zen.nvim',
+    use { 'folke/zen-mode.nvim',
         config = function()
-            vim.api.nvim_set_keymap("n", "<leader>zn", ":TZNarrow<CR>", {})
-            vim.api.nvim_set_keymap("v", "<leader>zn", ":'<,'>TZNarrow<CR>", {})
-            vim.api.nvim_set_keymap("n", "<leader>zf", ":TZFocus<CR>", {})
-            vim.api.nvim_set_keymap("n", "<leader>zm", ":TZMinimalist<CR>", {})
-            vim.api.nvim_set_keymap("n", "<leader>za", ":TZAtaraxis<CR>", {})
+            require 'zen-mode'.setup {
+                window = {
+                    backdrop = 1,
+                    width    = 0.7,
+                    height   = 0.9,
+                },
+                plugins = {
+                    gitsigns = { enabled = false },
+                    twilight = { enabled = false },
+                },
+            }
+
+            -- Bind :ZenMode to <leader>z
+            vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>ZenMode<CR>', {
+                noremap = true,
+                silent  = true,
+            })
         end,
     }
 
@@ -160,8 +172,8 @@ return require('packer').startup(function()
 
     -- Fun
     -- --------------------------------------------------------------------------------
-    vim.g.cryptoprice_base_currency = "usd"
-    vim.g.cryptoprice_crypto_list   = { "bitcoin", "ethereum", "solana" }
+    vim.g.cryptoprice_base_currency = 'usd'
+    vim.g.cryptoprice_crypto_list   = { 'bitcoin', 'ethereum', 'solana' }
     vim.g.cryptoprice_window_width  = 60
     vim.g.cryptoprice_window_height = 10
     use 'gaborvecsei/cryptoprice.nvim'

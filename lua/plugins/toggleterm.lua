@@ -16,9 +16,15 @@ return function(use)
                 }
             }
 
+            -- Bind <esc> to switch to normal mode while in a terminal.
             function _G.set_terminal_keymaps()
-                local opts = { noremap = true }
-                vim.api.nvim_buf_set_keymap(0, 't', '<esc>', [[<C-\><C-n>]], opts)
+                vim.api.nvim_buf_set_keymap(
+                    0,
+                    't',
+                    '<esc>',
+                    [[<C-\><C-n>]],
+                    { noremap = true }
+                )
             end
 
             vim.cmd [[

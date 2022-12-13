@@ -1,6 +1,6 @@
 return function(use)
     -- Enable Rust.vim's automatic Rustfmt on save.
-    vim.g.rustfmt_autosave = 1
+    vim.g.rustfmt_autosave      = 1
 
     use { 'simrat39/rust-tools.nvim',
         requires = 'SmiteshP/nvim-navic',
