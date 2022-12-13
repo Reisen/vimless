@@ -10,9 +10,13 @@ set smartindent
 set softtabstop=4
 set tabstop=4
 set timeoutlen=1000
-set splitkeep=screen
 set number
 let mapleader=" "
+
+" If `splitkeep` is available, set it.
+if exists('*splitkeep')
+    set splitkeep=screen
+endif
 
 " Fix Colours
 if !has("gui_running")
