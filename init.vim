@@ -10,7 +10,6 @@ set smartindent
 set softtabstop=4
 set tabstop=4
 set timeoutlen=1000
-set number
 let mapleader=" "
 
 " If `splitkeep` is available, set it.

@@ -6,7 +6,7 @@ return function(use)
                 auto_close   = false,
                 auto_preview = true,
                 auto_fold    = true,
-                position     = 'left',
+                position     = 'bottom',
                 signs        = {
                     error       = "",
                     warning     = "",

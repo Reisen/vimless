@@ -4,7 +4,7 @@ return function(use, theme)
     -- Lush is used in other themes, so comes first.
     use 'rktjmp/lush.nvim'
 
-    use 'B4mbus/oxocarbon-lua.nvim'
+    use 'nyoom-engineering/oxocarbon.nvim'
     use 'Mofiqul/dracula.nvim'
     use 'mcchrish/zenbones.nvim'
     use 'folke/tokyonight.nvim'

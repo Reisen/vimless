@@ -164,6 +164,7 @@ return function(use)
                 ^ _e_:  File Explorer
                 ^ _h_:  Harpoon
                 ^ _p_:  Projects
+                ^ _n_:  TODO / Notes
 
                 ^ Git Related
                 ^ _b_:  Git Branches
@@ -438,6 +439,7 @@ return function(use)
             local harpoon      = require'telescope'.extensions.harpoon
             local octo         = require'telescope'.extensions.octo
             local projects     = require'telescope'.extensions.project
+            local todo         = require'telescope'.extensions['todo-comments']
 
             local fzf_hydra = hydra({
                 name  = 'FZF',
@@ -458,6 +460,7 @@ return function(use)
                     { 'f',  function() telescope.git_files(ivy) end,                 { exit = true }},
                     { 'h',  function() harpoon.marks(ivy) end,                       { exit = true }},
                     { 'j',  function() telescope.buffers(ivy_bufs) end,              { exit = true }},
+                    { 'n',  function() todo.todo(ivy) end,                           { exit = true }},
                     { 'o',  function() telescope.vim_options(ivy) end,               { exit = true }},
                     { 'p',  function() projects.project(ivy) end,                    { exit = true }},
                     { 'r',  function() telescope.registers(ivy) end,                 { exit = true }},

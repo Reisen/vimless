@@ -5,20 +5,27 @@
 
 local scrollbar = false
 local sidebar   = false
-local theme     = 'tokyonight-moon'
+local theme     = 'tokyonight-storm'
 
 -- Install Packer
 -- ------------------------------------------------------------------------------------
-local packer = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
-if vim.fn.empty(vim.fn.glob(packer)) > 0 then
-    vim.fn.system({
-        'git',
-        'clone',
-        '--depth', '1',
-        'https://github.com/wbthomason/packer.nvim',
-        packer
-    })
+function ensure_packer()
+    local packer = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+    if vim.fn.empty(vim.fn.glob(packer)) > 0 then
+        vim.fn.system({
+            'git',
+            'clone',
+            '--depth', '1',
+            'https://github.com/wbthomason/packer.nvim',
+            packer
+        })
+        vim.cmd [[packadd packer.nvim]]
+        return true
+    end
+    return false
 end
+
+local packer_installed = ensure_packer()
 
 -- Configure Plugins
 -- ------------------------------------------------------------------------------------
@@ -27,7 +34,6 @@ return require('packer').startup(function()
 
     -- Theming
     -- --------------------------------------------------------------------------------
-    require('themes')(use, theme)
     require('plugins/nvim-web-devicons')(use)
     require('plugins/twilight')(use)
 
@@ -177,4 +183,10 @@ return require('packer').startup(function()
     vim.g.cryptoprice_window_width  = 60
     vim.g.cryptoprice_window_height = 10
     use 'gaborvecsei/cryptoprice.nvim'
+
+    if packer_installed then
+        require('packer').sync()
+    end
+
+    require('themes')(use, theme)
 end)
