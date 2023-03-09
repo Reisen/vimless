@@ -1,7 +1,6 @@
 set autoindent
 set expandtab
 set fillchars+=diff:╱
-"set fillchars+=vert:\ 
 set fillchars+=vert:▕
 set nowrap
 set shiftwidth=4
@@ -10,6 +9,7 @@ set smartindent
 set softtabstop=4
 set tabstop=4
 set timeoutlen=1000
+set laststatus=0
 let mapleader=" "
 
 " If `splitkeep` is available, set it.

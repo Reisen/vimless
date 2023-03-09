@@ -5,11 +5,11 @@
 
 local scrollbar = false
 local sidebar   = false
-local theme     = 'tokyonight-storm'
+local theme     = 'tokyonight'
 
 -- Install Packer
 -- ------------------------------------------------------------------------------------
-function ensure_packer()
+local function ensure_packer()
     local packer = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
     if vim.fn.empty(vim.fn.glob(packer)) > 0 then
         vim.fn.system({
@@ -37,35 +37,10 @@ return require('packer').startup(function()
     require('plugins/nvim-web-devicons')(use)
     require('plugins/twilight')(use)
 
-    use { 'gen740/SmoothCursor.nvim',
-        config = function()
-            require('smoothcursor').setup {
-                priority = 10,
-                linehl   = true,
-                fancy    = {
-                    enable = true,
-                    head   = {
-                        cursor = '▍',
-                        texthl = 'SmoothCursorOrange',
-                        linehl = nil
-                    },
-                    body   = {
-                        { cursor = '▍', texthl = 'SmoothCursorRed' },
-                        { cursor = '▍', texthl = 'SmoothCursorOrange' },
-                        { cursor = '▍', texthl = 'SmoothCursorYellow' },
-                        { cursor = '▍', texthl = 'SmoothCursorGreen' },
-                        { cursor = '▍', texthl = 'SmoothCursorAqua' },
-                        { cursor = '▍', texthl = 'SmoothCursorBlue' },
-                        { cursor = '▍', texthl = 'SmoothCursorPurple' },
-                    }
-                },
-            }
-        end
-    }
-
-
     -- IDE
     -- --------------------------------------------------------------------------------
+    require('plugins/centerbuf')(use)
+    require('plugins/barbecue')(use)
     require('plugins/auto-session')(use)
     require('plugins/comment')(use)
     require('plugins/diffview')(use)

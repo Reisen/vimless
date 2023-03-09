@@ -1,7 +1,7 @@
 return function(use)
     -- Override LSP Configuration.
     vim.diagnostic.config({
-        virtual_text  = false,
+        virtual_text  = true,
         underline     = false,
         virtual_lines = { only_current_line = false, }
     })
@@ -17,15 +17,12 @@ return function(use)
             -- Load CMP capabilities for LSP.
             local capabilities = require'cmp_nvim_lsp'.default_capabilities()
 
-            -- Setup Navic LSP.
-            vim.o.statusline = "%f > %{%v:lua.require'nvim-navic'.get_location()%}"
-
             -- Setup Mason before LSPConfig.
             require 'mason'.setup {}
             require 'mason-lspconfig'.setup {}
 
             -- Lua Language Server.
-            require 'lspconfig'.sumneko_lua.setup {
+            require 'lspconfig'.lua_ls.setup {
                 capabilities = capabilities,
                 on_attach    = function(client, buffer)
                     require 'nvim-navic'.attach(
@@ -133,11 +130,11 @@ return function(use)
     }
 
     -- Prettier LSP Diagnostics
-    use { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
-        config = function()
-            require 'lsp_lines'.setup()
-        end,
-    }
+    -- use { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+    --     config = function()
+    --         require 'lsp_lines'.setup()
+    --     end,
+    -- }
 
     -- Null LSP Diagnostics
     use { 'jose-elias-alvarez/null-ls.nvim',

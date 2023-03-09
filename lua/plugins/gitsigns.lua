@@ -13,12 +13,11 @@ return function(use)
                 },
 
                 signs = {
-                    add          = { text = '▍', show_count = false },
-                    change       = { text = '▍', show_count = false },
-                    delete       = { text = '▍', show_count = false },
-                    topdelete    = { text = '▍', show_count = false },
-                    changedelete = { text = '▍', show_count = false },
-                    amazing      = { text = '▍', show_count = false },
+                    add          = { text = '+', show_count = false },
+                    change       = { text = '~', show_count = false },
+                    delete       = { text = '-', show_count = false },
+                    topdelete    = { text = '_', show_count = false },
+                    changedelete = { text = '-', show_count = false },
                 },
 
                 -- count_chars = {

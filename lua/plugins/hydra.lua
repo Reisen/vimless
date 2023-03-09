@@ -152,7 +152,6 @@ return function(use)
                 ^ _r_: References            
                 ^ _R_: Rename
 
-                ^ _v_: Toggle Visuals
                 ^ _q_: Quit ]]
 
             -- FZF Hints
@@ -394,7 +393,6 @@ return function(use)
                     { 'l', vim.diagnostic.setloclist,   { exit = true }},
                     { 'r', vim.lsp.buf.references,      { exit = true }},
                     { 't', vim.lsp.buf.type_definition, { exit = true }},
-                    { 'v', require'lsp_lines'.toggle,   { exit = true }},
                     { 'q', nil,                         { exit = true }},
                 }
             })
