@@ -5,7 +5,7 @@ set fillchars+=diff:⋅
 set fillchars+=vert:▕
 set nowrap
 set shiftwidth=4
-set signcolumn=yes:1
+set signcolumn=auto:1
 set smartindent
 set softtabstop=4
 set tabstop=4

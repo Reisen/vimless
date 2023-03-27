@@ -21,10 +21,10 @@ function _G.ChatGPTSubmit(mode)
 
     -- A set of common roles (if no prompt was given).
     local system_role = user_input ~= '' and user_input or ({
-        reviewer  = "You are a senior software engineer tasked with reviewing a pull request. You must search for bugs, inconsistent formatting, inconsistent or poor variable naming, logic errors, security vulnerabilities, memory leaks, poor documentation, and other issues. You should include suggested code changes where possible.",
-        improver  = "You are a senior software engineer tasked with improving code. You must search for bugs, inconsistent formatting, inconsistent or poor variable naming, logic errors, security vulnerabilities, memory leaks, poor documentation, and other issues. Your reply should be exactly, and only, the code you have improved.",
-        explainer = "You are a senior software engineer tasked with explaining code. You must search for bugs, inconsistent formatting, inconsistent or poor variable naming, logic errors, security vulnerabilities, memory leaks, poor documentation, and other issues. Explain the code and your findings.",
-        generator = "You are tasked with producing code from an explanation. The code should be high quality and follow best practices, a be kept short when possible. Variable names should be clear but not overly long. The code should be well documented and easy to understand. Your reply should only contain the code.",
+        reviewer  = "You are an expert software engineer tasked with reviewing a pull request.",
+        improver  = "You are an expert software engineer tasked with improving code. You will be sent code that you must improve, and you will only reply with the improved code. Make the code shorter, clearer, with better variable naming and documentation. Fix bugs where necessary, and refactor if it can be improved.",
+        explainer = "You are an expert software engineer tasked with explaining code.",
+        generator = "You are an expert software engineer tasked with producing code from an explanation. The code should be easy to understand, high quality, terse when reasonable, and follow best practices.",
     })[mode]
 
     -- Submit the result to ChatGPT.
@@ -37,17 +37,38 @@ function _G.ChatGPTSubmit(mode)
     ]], api_key, vim.fn.json_encode({
         model       = 'gpt-3.5-turbo',
         messages    = {
+            -- The `text` may contain characters that get escaped in bash as it
+            -- is inserted between single quotes. Make sure to sub any
+            -- characters that would get escaped.
             { role = "system", content = system_role, },
-            { role = "user",   content = text,        },
+            { role = "user",   content = text:gsub("'", "\\'"), },
         },
-        max_tokens  = 4000,
+        max_tokens  = 2000,
         temperature = 0.9,
         top_p       = 1,
     }))
 
     local result = vim.fn.system(cmd)
-    local json = vim.fn.json_decode(result).choices[1].message.content:gsub("^%s*(.-)%s*$", "%1")
-    vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, vim.split(json, "\n"))
+    local json = vim.fn.json_decode(result)
+
+    -- Verify JSON structure (a bit ugly but works for now).
+    local choices = json.choices
+    if not choices or type(choices) ~= "table" or #choices == 0 then
+        print(result)
+        return
+    end
+
+    local firstChoice = choices[1]
+    if not firstChoice.message or type(firstChoice.message) ~= "table" then
+        print(result)
+        return
+    end
+
+    local messageContent = firstChoice.message.content
+    if not messageContent or type(messageContent) ~= "string" then
+        local content = json.choices[1].message.content:gsub("^%s*(.-)%s*$", "%1")
+        vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, vim.split(content, "\n"))
+    end
 end
 
 return function(use)
