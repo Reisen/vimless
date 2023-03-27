@@ -10,7 +10,7 @@ return function(use, theme)
     use { 'folke/tokyonight.nvim',
         config = function()
             require 'tokyonight'.setup {
-                transparent    = true,
+                transparent    = false,
                 day_brightness = 0.4,
                 dim_inactive   = true,
             }
@@ -19,7 +19,7 @@ return function(use, theme)
                 " Override the Background to be completely transparent.
                 " au ColorScheme * hi Normal ctermbg=none guibg=none
                 set termguicolors
-                set background=light
+                set background=dark
                 colorscheme tokyonight
             ]])
         end

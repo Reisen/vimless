@@ -58,6 +58,7 @@ return require('packer').startup(function()
     require('plugins/reach')(use)
     require('plugins/dirbuf')(use)
     require('plugins/neotest')(use)
+    require('plugins/chatgpt')(use)
 
     -- Mini.ai
     use { 'echasnovski/mini.nvim',

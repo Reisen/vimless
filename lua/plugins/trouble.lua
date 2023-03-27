@@ -8,11 +8,11 @@ return function(use)
                 auto_fold    = true,
                 position     = 'bottom',
                 signs        = {
-                    error       = "",
-                    warning     = "",
-                    hint        = "",
-                    information = "",
-                    other       = "﫠"
+                    error       = "E",
+                    warning     = "W",
+                    hint        = "H",
+                    information = "I",
+                    other       = "O"
                 },
             }
         end

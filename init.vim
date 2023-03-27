@@ -1,6 +1,7 @@
 set autoindent
 set expandtab
-set fillchars+=diff:╱
+" set fillchars+=diff:╱
+set fillchars+=diff:⋅
 set fillchars+=vert:▕
 set nowrap
 set shiftwidth=4

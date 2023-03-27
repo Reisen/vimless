@@ -18,6 +18,7 @@ return function(use)
                     delete       = { text = '-', show_count = false },
                     topdelete    = { text = '_', show_count = false },
                     changedelete = { text = '-', show_count = false },
+                    untracked    = { text = '+', show_count = false },
                 },
 
                 -- count_chars = {
