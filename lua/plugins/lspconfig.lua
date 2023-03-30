@@ -20,106 +20,54 @@ return function(use)
             -- Setup Mason before LSPConfig.
             require 'mason'.setup {}
             require 'mason-lspconfig'.setup {}
-
-            -- Lua Language Server.
-            require 'lspconfig'.lua_ls.setup {
-                capabilities = capabilities,
-                on_attach    = function(client, buffer)
-                    require 'nvim-navic'.attach(
-                        client,
-                        buffer
-                    )
+            require 'mason-lspconfig'.setup_handlers {
+                -- Provide an automated handler for LSP servers that supports
+                -- navic automatically.
+                function(server_name)
+                    require 'lspconfig'[server_name].setup {
+                        capabilities = capabilities,
+                        on_attach    = function(client, buffer)
+                            require 'nvim-navic'.attach(
+                                client,
+                                buffer
+                            )
+                        end,
+                    }
                 end,
-                settings     = {
-                    Lua = {
-                        runtime = {
-                            version = 'LuaJIT',
+
+                -- Lua requires extra handling to configure the expected
+                -- runtime, diagnostics and library paths. So we sadly can't
+                -- just use the default handler above.
+                lua_ls = function()
+                    require 'lspconfig'.lua_ls.setup {
+                        capabilities = capabilities,
+                        on_attach    = function(client, buffer)
+                            require 'nvim-navic'.attach(
+                                client,
+                                buffer
+                            )
+                        end,
+
+                        settings = {
+                            Lua = {
+                                runtime     = { version = 'LuaJIT', },
+                                workspace   = { library = vim.api.nvim_get_runtime_file('', true), },
+                                telemetry   = { enable = false, },
+                                diagnostics = {
+                                    globals = { 'use', 'vim' },
+                                },
+                            },
                         },
-                        diagnostics = {
-                            globals = { 'use', 'vim' },
-                        },
-                        workspace = {
-                            library = vim.api.nvim_get_runtime_file('', true),
-                        },
-                        telemetry = {
-                            enable = false,
-                        },
-                    },
-                },
-            }
-
-            -- C/C++ Language Server
-            require 'lspconfig'.clangd.setup {
-                capabilities = capabilities,
-                on_attach    = function(client, buffer)
-                    require 'nvim-navic'.attach(
-                        client,
-                        buffer
-                    )
-                end,
-            }
-
-            -- Go Language Server
-            require 'lspconfig'.gopls.setup {
-                capabilities = capabilities,
-                on_attach    = function(client, buffer)
-                    require 'nvim-navic'.attach(
-                        client,
-                        buffer
-                    )
-                end,
-            }
-
-            -- Haskell Language Server
-            require 'lspconfig'.hls.setup {
-                capabilities = capabilities,
-                on_attach    = function(client, buffer)
-                    require 'nvim-navic'.attach(
-                        client,
-                        buffer
-                    )
-                end,
-            }
-
-            -- Python Language Server.
-            require 'lspconfig'.jedi_language_server.setup {
-                capabilities = capabilities,
-                on_attach    = function(client, buffer)
-                    require 'nvim-navic'.attach(
-                        client,
-                        buffer
-                    )
-                end,
-            }
-
-            -- Nix Language Server
-            require 'lspconfig'.rnix.setup {
-                capabilities = capabilities,
-                on_attach    = function(client, buffer)
-                    require 'nvim-navic'.attach(
-                        client,
-                        buffer
-                    )
-                end,
-            }
-
-            -- Vim Language Server
-            require 'lspconfig'.vimls.setup {
-                capabilities = capabilities,
-                on_attach    = function(client, buffer)
-                    require 'nvim-navic'.attach(
-                        client,
-                        buffer
-                    )
+                    }
                 end,
             }
 
             -- Sign Overrides
             local signs = {
-                Error = " ",
-                Warn  = " ",
-                Hint  = " ",
-                Info  = " ",
+                Error = "E",
+                Warn  = "W",
+                Hint  = "H",
+                Info  = "I",
             }
 
             for type, icon in pairs(signs) do

@@ -40,7 +40,6 @@ return require('packer').startup(function()
     -- IDE
     -- --------------------------------------------------------------------------------
     require('plugins/centerbuf')(use)
-    require('plugins/barbecue')(use)
     require('plugins/auto-session')(use)
     require('plugins/comment')(use)
     require('plugins/diffview')(use)

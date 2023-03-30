@@ -131,7 +131,8 @@ return function(use)
                 ^ _p?_: Plugin Info
 
                 ^ General
-                ^ _m_:  Toggle Minimap
+                ^ _c_:  Toggle Codemap
+                ^ _m_:  Open Mason
                 ^ _t_:  Toggle Trouble
                 ^ _q_:  Quit ]]
 
@@ -157,8 +158,8 @@ return function(use)
             -- FZF Hints
             local fzf_hint = p.dedent [[
                 ^ Navigation
-                ^ _j_:  Jump
-                ^ _*_:  Grep Word
+                ^ _j_:  Jump to Buffer
+                ^ _*_:  Grep Word Under Cursor
                 ^ _/_:  Grep
                 ^ _e_:  File Explorer
                 ^ _h_:  Harpoon
@@ -362,7 +363,8 @@ return function(use)
                     { 'pc', c.cmd('PackerCompile'),   { exit = true }},
                     { 'ps', c.cmd('PackerSync'),      { exit = true }},
                     { 'p?', c.cmd('PackerStatus'),    { exit = true }},
-                    { 'm',  require'mini.map'.toggle, { exit = true }},
+                    { 'c',  require'mini.map'.toggle, { exit = true }},
+                    { 'm',  c.cmd('Mason'),           { exit = true }},
                     { 't',  c.cmd('TroubleToggle'),   { exit = true }},
                     { 'q',  nil,                      { exit = true }},
                 }
