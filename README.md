@@ -15,6 +15,9 @@ should be a surprise. The basic editor will feel just like vim, but you can
 adopt several seemingly small improvements that combined will greatly increase
 your editing efficiency.
 
+This document includes a lot of hints that many vim veterans will know, but are
+included so vim newbie's can pick up some tips along the way.
+
 Don't want to read? Install and press `<space>h` to get started.
 
 
@@ -44,25 +47,30 @@ Quick Tips and Features
 
 You can explore the config to find all the features available, or read the help
 sections throughout this document, but as a nice introduction to get started
-fast here are the features and binds you will find useful:
+fast here is an assorted list of features and binds you might find useful to
+get started:
 
+- Discover Vimless features through `<space>h`. (hydra)
 - Press `-` to immediately access the filesystem, pressing `-` again traverses up.
+- You can edit the tree directly in this buffer! Just `:w` your changes! (dirbuf)
 - Switch to a terminal with `Ctrl+\` instantly.
-- You can edit the filesystem tree directly in the editor! Just `:w` your changes! (dirbuf)
 - Rapidly navigate windows and tabs with `<space>w` / `<space>t`.
-- Display all project errors with `<space>vt`. (trouble)
+- See all project errors/diagnostics with `<space>vt`. (trouble)
+- Alternatively find errors using `<space>fll` for an FZF-like approach. (telescope)
+- In general, fuzzy find _anything_ with `<space>f`. (hydra, telescope, lsp, git)
 - Toggle comments with `gcc` or entire selections with `gc`.
 - Better marks with `m<letter>` to set and `dm<letter>` to delete, with visible mark highlights.
-- Discover Vimless features through `<space>h`. (hydra)
 - Jump instantly to recently used files with `<space>j` with a single letter. (reach)
 - Jump to any text in-buffer by pressing `s` or `S` followed by two characters. (leap)
 - Jump to any text on-screen with `gs` to jump around multiple windows. (leap)
-- Find anything you can think of with `<space>f`. (hydra, telescope, lsp, git)
 - Access all LSP powers with `<space>l`. I.E: Try `<space>lR` to do rename refactoring. (lsp)
 - Powerful Git integration with combined plugins. See "Using Git".
 - Manage Github PR's/Issues easily through `<space>o`. (octo.nvim)
 - Strong integrated Rust support via `<space>r` (rust-tools, rust, crates)
 - Powerful auto-completion powered by `nvim-cmp` that should "Just Work". (cmp, lsp)
+- Press `<space>z` to toggle focus a specific window when you want less clutter.
+- Press `<space>v` to see vim related actions, `<space>vs` will sync your plugins. (vim-plug)
+- Opened too many files and starting to lose track? `<space>bo` will close every buffer but the focused one.
 
 See more later in the README.
 
@@ -71,10 +79,14 @@ Of the above, the key things added that make navigation extra fast:
 - `s`, `S` and `gs` leap commands.
 - `<space>j` jumplist for moving around open files.
 - `<space>ff` and LSP jumps.
-- Mastering `Ctrl+o` / `Ctrl+p` for moving back and forward through all the
-  above moves to fast forward around the document you're exploring.
+- Mastering `Ctrl+o` / `Ctrl+p` for moving back and forward through cursor history.
 
-Not that much to learn!
+Not that much to learn! The last suggestion is a standard vim trick, but often
+under-utilized by many. Being able to move backwards quickly after making a few
+jumps over a few files makes moving through code risk-free and fast. Jumped to
+the wrong place? `Ctrl+o`, jumped to the top of the file to check imports and
+want to go back to edit where you were? `Ctrl+o`. This is often easier to manage
+than thinking about marks.
 
 
 Workflows
@@ -185,7 +197,7 @@ uses the text itself as the question/instruction:
 By default, fugitive and gitsigns provide most of the interaction with Git.
 Gitsigns provides the visual aspect (signs in gutter) and fugitive provides
 interacting with git itself. You can hit `<space>g` to get access to some
-commong Git interactions.
+common Git interactions.
 
 To get started however, your best bet is to hit `<space>ge` to enter Git edit
 mode. This provides a window from fugitive with the current repository status
@@ -194,7 +206,7 @@ in full view. The most common actions I perform personally:
 - `-` toggles staging of an item.
 - `=` shows diffs for a file.
 - `czz` stashes everything, `czp` pops a stash.
-- `cc` creates a new commit, write a message and `:wa`
+- `cc` creates a new commit, write a message and `:wq` to save/quit/commit.
 - `cf` while hovering over an unpushed commit creates a fixup commit.
 - `ca` amends the previous commit.
 - `rf` does a forced rebase, this is useful if you use fixup commits.
@@ -207,8 +219,11 @@ quickly move around a large file.
 
 Finally, it is possible to do full repository git management by pressing the
 `<space>gV` keymap, which you can navigate diffs and stage/unstage files with
-full context of the repository. Once done, switching back to `<space>ge` to
-finalise commits and push is the way to go.
+full context of the repository. This opens in a new tab so use `<space>tn` to
+switch back and forth between your code and diff view.
+
+Once done reviewing your changes, switching back to `<space>ge` to finalise
+commits and push is the way to go.
 
 ### Utilising Octo
 
@@ -230,3 +245,38 @@ focus on you can use:
 These are all you need to effectively review code, but it is thoroughly
 suggested to read the Octo.nvim README because there's a lot of power in being
 able to work with repos without leaving the editor.
+
+### Dirbuf
+
+As mentioned above, pressing `-` takes you to a view of the filesystem starting
+at the current directory of the open file. This is very similar to what
+`dirvish` and `vim-vinegar` show but dirbuf comes with extremely powerful file
+management that neither of those plugins do.
+
+The file list in this buffer is editable. You can enter insert mode and rename
+all the files in the list, or add new lines. When you save this buffer, all the
+changes made will be made by `dirbuf` atomically. It can handle recursively
+renaming multiple files and tricky situations where you have cyclic renames
+such as:
+
+```
+foo.txt -> bar.txt
+bar.txt -> baz.txt
+baz.txt -> foo.txt
+```
+
+It can figure out how to change these without mistakingly overwriting any file
+unintentionally. You will never want to use `mv`/`cp` again.
+
+### Terminals
+
+The default `Ctrl+\` bind for terminals swaps between the editor view and a
+full screen terminal. If you prefer to have an always showing terminal at the
+bottom tray similar to other IDE's, you can use the following command:
+
+```
+:ToggleTerm direction=horizontal size=20
+```
+
+You can also modify `lua/plugins/toggleterm.lua` to make this the default if
+preferred such that `Ctrl+\` opens the tray instead.
