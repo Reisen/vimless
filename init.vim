@@ -1,11 +1,13 @@
 set autoindent
 set expandtab
-" set fillchars+=diff:╱
-set fillchars+=diff:⋅
-set fillchars+=vert:▕
+set fillchars+=diff:╱
+set fillchars+=vert:\ 
+" set fillchars+=diff:⋅
+" set fillchars+=vert:▕
+
 set nowrap
 set shiftwidth=4
-set signcolumn=auto:1
+set signcolumn=yes:1
 set smartindent
 set softtabstop=4
 set tabstop=4
@@ -13,10 +15,8 @@ set timeoutlen=1000
 set laststatus=0
 let mapleader=" "
 
-" If `splitkeep` is available, set it.
-if exists('*splitkeep')
-    set splitkeep=screen
-endif
+" Check if `splitkeep` option exists.
+set splitkeep=screen
 
 " Fix Colours
 if !has("gui_running")

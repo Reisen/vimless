@@ -203,9 +203,9 @@ return function(use)
 
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
-                position = 'bottom',
-                border   = 'solid',
-                offset   = 1,
+                position = 'bottom-left',
+                border   = 'single',
+                offset   = 0,
             }
 
             -- Initialize Hydras
@@ -404,7 +404,7 @@ return function(use)
 
             local ivy = require'telescope.themes'.get_dropdown {
                 border        = true,
-                layout_config = { height = 16 },
+                layout_config = { height = 16, width = 0.99, anchor = 'S' },
                 borderchars   = {
                     prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
@@ -426,7 +426,7 @@ return function(use)
             local ivy_bufs  = require'telescope.themes'.get_dropdown {
                 sort_mru              = true,
                 ignore_current_buffer = true,
-                layout_config         = { height = 16 },
+                layout_config         = { height = 16, width = 0.99, anchor = 'S' },
                 borderchars           = {
                     prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },

@@ -12,6 +12,7 @@ return function(use)
             vim.g.tokyonight_sidebars                 = { 'packer' }
 
             -- Import Colours for styling other views.
+            ---@diagnostic disable-next-line: unused-local
             local _colors = require("tokyonight.colors").setup({})
 
             -- Enable theme and customize colours for other views.
@@ -20,6 +21,7 @@ return function(use)
                 autocmd!
                 autocmd ColorScheme * hi QuickScopePrimary   guifg='#FF0000' gui=bold
                 autocmd ColorScheme * hi QuickScopeSecondary guifg='#FF7799' gui=bold
+                autocmd ColorScheme * hi VertSplit           guibg=bg guifg=bg ctermbg=bg ctermfg=bg
                 augroup END
             ]]
         end

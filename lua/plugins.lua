@@ -36,6 +36,7 @@ return require('packer').startup(function()
     -- --------------------------------------------------------------------------------
     require('plugins/nvim-web-devicons')(use)
     require('plugins/twilight')(use)
+    require('themes')(use, theme)
 
     -- IDE
     -- --------------------------------------------------------------------------------
@@ -58,31 +59,7 @@ return require('packer').startup(function()
     require('plugins/dirbuf')(use)
     require('plugins/neotest')(use)
     require('plugins/chatgpt')(use)
-
-    -- Mini.ai
-    use { 'echasnovski/mini.nvim',
-        config = function()
-            require 'mini.comment'.setup {}
-            require 'mini.starter'.setup {}
-            require 'mini.map'.setup     {
-                integrations = {
-                    require 'mini.map'.gen_integration.builtin_search(),
-                    require 'mini.map'.gen_integration.diagnostic(),
-                    require 'mini.map'.gen_integration.gitsigns(),
-                },
-                symbols = {
-                    encode      = require 'mini.map'.gen_encode_symbols.dot('4x2'),
-                    scroll_line = '  ',
-                    scroll_view = '  ',
-                },
-                window = {
-                    width                  = 14,
-                    winblend               = 100,
-                    show_integration_count = false,
-                },
-            }
-        end
-    }
+    require('plugins/mini')(use)
 
     -- Conditional Plugins
     __ = (scrollbar and require('plugins/scrollbar')(use))
@@ -162,6 +139,4 @@ return require('packer').startup(function()
     if packer_installed then
         require('packer').sync()
     end
-
-    require('themes')(use, theme)
 end)

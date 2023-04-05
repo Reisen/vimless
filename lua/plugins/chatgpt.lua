@@ -48,7 +48,7 @@ return function(use)
                         -d '%s' \
                         https://api.openai.com/v1/chat/completions
                 ]], api_key, vim.fn.json_encode({
-                    model       = 'gpt-3.5-turbo',
+                    model       = 'gpt-4',
                     messages    = {
                         -- The `text` may contain characters that get escaped in bash as it
                         -- is inserted between single quotes. Make sure to sub any
