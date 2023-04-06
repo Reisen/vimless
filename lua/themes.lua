@@ -8,26 +8,26 @@ return function(use, theme)
     use 'mcchrish/zenbones.nvim'
     use 'preservim/vim-colors-pencil'
 
-    use { 'folke/tokyonight.nvim',
-        config = function()
-            require 'tokyonight'.setup {
-                transparent    = false,
-                day_brightness = 0.4,
-                dim_inactive   = true,
-            }
-
-            vim.cmd [[
-                " Set Themes, assume dark background.
-                set termguicolors
-                set background=dark
-
-                " Set Tokyonight as the colour scheme. Disable for now due to
-                " defaulting to catppuccin which has a similar colour scheme
-                " when using macchiato.
-                "colorscheme catppuccin-macchiato
-            ]]
-        end
-    }
+    -- use { 'folke/tokyonight.nvim',
+    --     config = function()
+    --         require 'tokyonight'.setup {
+    --             transparent    = false,
+    --             day_brightness = 0.4,
+    --             dim_inactive   = true,
+    --         }
+    --
+    --         vim.cmd [[
+    --             " Set Themes, assume dark background.
+    --             set termguicolors
+    --             set background=dark
+    --
+    --             " Set Tokyonight as the colour scheme. Disable for now due to
+    --             " defaulting to catppuccin which has a similar colour scheme
+    --             " when using macchiato.
+    --             "colorscheme catppuccin-macchiato
+    --         ]]
+    --     end
+    -- }
 
     use { 'catppuccin/nvim',
         as     = 'catppuccin',
@@ -41,8 +41,8 @@ return function(use, theme)
                 },
             }
 
-            vim.g.catppuccin_flavour = "macchiato"
-            vim.cmd.colorscheme "catppuccin-macchiato"
+            vim.g.catppuccin_flavor = "macchiato"
+            vim.cmd [[colorscheme catppuccin-macchiato]]
         end
     }
 end
