@@ -114,6 +114,7 @@ return function(use)
             'lewis6991/gitsigns.nvim',
             'nvim-lua/plenary.nvim',
             'saecki/crates.nvim',
+            'simrat39/rust-tools.nvim',
         },
         config = function()
             local hydra       = require 'hydra'
@@ -295,11 +296,12 @@ return function(use)
                 },
                 heads  = {
                     ["Window Navigation"] = {
-                        h = {'Left',             c.cmd('wincmd h'), {}},
-                        j = {'Down',             c.cmd('wincmd j'), {}},
-                        k = {'Up',               c.cmd('wincmd k'), {}},
-                        l = {'Right',            c.cmd('wincmd l'), {}},
-                        o = {'Focus Other',      c.cmd('wincmd o'), {}},
+                        h = {'Left',                c.cmd('wincmd h'), {}},
+                        j = {'Down',                c.cmd('wincmd j'), {}},
+                        k = {'Up',                  c.cmd('wincmd k'), {}},
+                        l = {'Right',               c.cmd('wincmd l'), {}},
+                        o = {'Close Other Windows', c.cmd('wincmd o'), {}},
+                        p = {'Previous Window',     c.cmd('wincmd p'), {}},
                     },
                     ["Window Swapping"] = {
                         H = {'Swap Left',        c.cmd('wincmd H'), {}},
@@ -502,12 +504,15 @@ return function(use)
                     },
 
                     ["Goto"] = {
-                        D = { 'Declaration',      vim.lsp.buf.declaration,     { exit = true }},
-                        K = { 'Documentation',    vim.lsp.buf.hover,           { exit = true }},
-                        d = { 'Definition',       vim.lsp.buf.definition,      { exit = true }},
-                        i = { 'Implementations',  vim.lsp.buf.implementation,  { exit = true }},
-                        r = { 'References',       vim.lsp.buf.references,      { exit = true }},
-                        t = { 'Type Definitions', vim.lsp.buf.type_definition, { exit = true }},
+                        D = { 'Declaration',          vim.lsp.buf.declaration,     { exit = true }},
+                        K = { 'Documentation',        vim.lsp.buf.hover,           { exit = true }},
+                        d = { 'Definition',           vim.lsp.buf.definition,      { exit = true }},
+                        sd = { 'Definition in Split', function()
+                            vim.lsp.buf.type_definition
+                        end, { exit = true }},
+                        i = { 'Implementations',      vim.lsp.buf.implementation,  { exit = true }},
+                        r = { 'References',           vim.lsp.buf.references,      { exit = true }},
+                        t = { 'Type Definitions',     vim.lsp.buf.type_definition, { exit = true }},
                     },
 
                     ["Refactoring"] = {
