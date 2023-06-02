@@ -507,8 +507,17 @@ return function(use)
                         D = { 'Declaration',          vim.lsp.buf.declaration,     { exit = true }},
                         K = { 'Documentation',        vim.lsp.buf.hover,           { exit = true }},
                         d = { 'Definition',           vim.lsp.buf.definition,      { exit = true }},
-                        sd = { 'Definition in Split', function()
-                            vim.lsp.buf.type_definition
+                        s = { 'Definition in Split', function()
+                            -- This opens a split to the right with the cursor
+                            -- in the same space. It then focuses that window,
+                            -- and invokes vim.lsp.definition to go to the
+                            -- file. It will then call `zt` to move it to the
+                            -- top of the file.
+                            vim.cmd 'wincmd v'
+                            vim.cmd 'wincmd l'
+                            vim.lsp.buf.definition()
+                            vim.wait(50)
+                            vim.cmd 'norm zt'
                         end, { exit = true }},
                         i = { 'Implementations',      vim.lsp.buf.implementation,  { exit = true }},
                         r = { 'References',           vim.lsp.buf.references,      { exit = true }},
