@@ -21,6 +21,8 @@ return function(use)
                     end,
                 },
 
+                -- Define a reasonable ordering for completion sources focused
+                -- on LSP as the main source, falling back only when necessary.
                 sources = {
                     { name = 'nvim_lsp' },
                     { name = 'nvim_lsp_signature_help' },

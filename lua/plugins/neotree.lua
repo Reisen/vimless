@@ -8,9 +8,12 @@ return function(use)
             require 'neo-tree'.setup {
                 filesystem = {
                     hijack_netrw_behavior = 'disabled',
+                },
+
+                source_selector = {
+                    winbar = false,
                 }
             }
         end
     }
 end
-

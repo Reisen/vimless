@@ -8,8 +8,8 @@ return function(use)
                 direction    = 'float',
                 float_opts   = {
                     width    = vim.o.columns,
-                    height   = vim.o.lines,
-                    winblend = 0,
+                    height   = vim.o.lines - 1,
+                    winblend = 10,
                     border   = 'none',
                 }
             }

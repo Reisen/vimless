@@ -3,7 +3,7 @@ return function(use)
         config = function()
             require 'gitsigns'.setup {
                 numhl                   = true,
-                linehl                  = false,
+                linehl                  = true,
                 signcolumn              = true,
                 current_line_blame      = false,
                 word_diff               = false,
@@ -13,12 +13,13 @@ return function(use)
                 },
 
                 signs = {
-                    add          = { text = '+', show_count = false },
-                    change       = { text = '~', show_count = false },
-                    delete       = { text = '-', show_count = false },
-                    topdelete    = { text = '_', show_count = false },
-                    changedelete = { text = '-', show_count = false },
-                    untracked    = { text = '+', show_count = false },
+                    -- Use Unicode medium width pipe drawing char.
+                    add          = { text = '│', show_count = false },
+                    change       = { text = '│', show_count = false },
+                    delete       = { text = '│', show_count = false },
+                    topdelete    = { text = '│', show_count = false },
+                    changedelete = { text = '│', show_count = false },
+                    untracked    = { text = '│', show_count = false },
                 },
 
                 -- count_chars = {

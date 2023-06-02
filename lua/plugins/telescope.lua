@@ -29,8 +29,8 @@ return function(use)
                             border        = true,
                             layout_config = { height = 10 },
                             borderchars   = {
-                                prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                                results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                                prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                                results = { ' ', '│', '─', '│', '│', '│', '┘', '└' },
                                 preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                             },
                         },
@@ -39,14 +39,7 @@ return function(use)
 
                 defaults = {
                     borderchars = {
-                        '─',
-                        '│',
-                        '─',
-                        '│',
-                        '┌',
-                        '┐',
-                        '┘',
-                        '└',
+                        '─', '│', '─', '│', '┌', '┐', '┘', '└',
                     },
 
                     mappings = {

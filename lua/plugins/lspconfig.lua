@@ -3,7 +3,8 @@ return function(use)
     vim.diagnostic.config({
         virtual_text  = true,
         underline     = false,
-        virtual_lines = { only_current_line = false, }
+        virtual_lines = { only_current_line = false },
+        right_align   = true,
     })
 
     -- LSP Configuration.
@@ -11,12 +12,9 @@ return function(use)
         requires = {
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
-            'SmiteshP/nvim-navic',
+            'nvim-lua/plenary.nvim',
         },
         config = function()
-            -- Load CMP capabilities for LSP.
-            local capabilities = require'cmp_nvim_lsp'.default_capabilities()
-
             -- Setup Mason before LSPConfig.
             require 'mason'.setup {}
             require 'mason-lspconfig'.setup {}
@@ -25,13 +23,13 @@ return function(use)
                 -- navic automatically.
                 function(server_name)
                     require 'lspconfig'[server_name].setup {
-                        capabilities = capabilities,
-                        on_attach    = function(client, buffer)
-                            require 'nvim-navic'.attach(
-                                client,
-                                buffer
-                            )
+                        on_attach    = function(client)
+                            client.server_capabilities.semanticTokensProvider = nil
                         end,
+                        flags = {
+                            allow_incremental_sync = false,
+                            debounce_text_changes  = 50,
+                        }
                     }
                 end,
 
@@ -40,7 +38,6 @@ return function(use)
                 -- just use the default handler above.
                 lua_ls = function()
                     require 'lspconfig'.lua_ls.setup {
-                        capabilities = capabilities,
                         on_attach    = function(client, buffer)
                             require 'nvim-navic'.attach(
                                 client,
@@ -64,10 +61,10 @@ return function(use)
 
             -- Sign Overrides
             local signs = {
-                Error = "E",
-                Warn  = "W",
-                Hint  = "H",
-                Info  = "I",
+                Error = "●",
+                Warn  = "●",
+                Hint  = "●",
+                Info  = "●",
             }
 
             for type, icon in pairs(signs) do
@@ -85,13 +82,16 @@ return function(use)
     -- }
 
     -- Null LSP Diagnostics
-    use { 'jose-elias-alvarez/null-ls.nvim',
-        config = function()
-            require 'null-ls'.setup({
-                sources = {
-                    require 'null-ls'.builtins.code_actions.gitsigns,
-                },
-            })
-        end,
-    }
+    -- use { 'jose-elias-alvarez/null-ls.nvim',
+    --     requires = {
+    --         'nvim-lua/plenary.nvim',
+    --     },
+    --     config = function()
+    --         require 'null-ls'.setup({
+    --             sources = {
+    --                 require 'null-ls'.builtins.code_actions.gitsigns,
+    --             },
+    --         })
+    --     end,
+    -- }
 end

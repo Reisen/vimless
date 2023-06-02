@@ -1,7 +1,4 @@
 -- Neovim Configuration, 100% Lua Inside!
---
--- TODO: Rust Crate Graph as ASCII.
--- TODO: Find a way to Container Shell in tab.
 
 local scrollbar = false
 local sidebar   = false
@@ -36,6 +33,7 @@ return require('packer').startup(function()
     -- --------------------------------------------------------------------------------
     require('plugins/nvim-web-devicons')(use)
     require('plugins/twilight')(use)
+    require('plugins/circles')(use)
     require('themes')(use, theme)
 
     -- IDE
@@ -60,6 +58,7 @@ return require('packer').startup(function()
     require('plugins/neotest')(use)
     require('plugins/chatgpt')(use)
     require('plugins/mini')(use)
+    require('plugins/neotree')(use)
 
     -- Conditional Plugins
     __ = (scrollbar and require('plugins/scrollbar')(use))
@@ -95,7 +94,7 @@ return require('packer').startup(function()
                 },
                 plugins = {
                     gitsigns = { enabled = false },
-                    twilight = { enabled = false },
+                    twilight = { enabled = false  },
                 },
             }
 

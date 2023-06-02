@@ -1,5 +1,7 @@
 set autoindent
 set expandtab
+set number
+set number
 set fillchars+=diff:╱
 set fillchars+=vert:\ 
 " set fillchars+=diff:⋅
@@ -21,6 +23,7 @@ set splitkeep=screen
 " Fix Colours
 if !has("gui_running")
     set t_Co=256
+    let base16colorspace=256
 endif
 
 " Lua Configuration
