@@ -177,7 +177,6 @@ return function(use)
             -- Rust Related Hints
             local rust_hint = p.dedent [[
                 ^ Actions
-                ^ _a_: Rust Code Actions
                 ^ _e_: Expand Macro
                 ^ _k_: Move Item Up
                 ^ _j_: Move Item Down
@@ -429,12 +428,11 @@ return function(use)
                     on_key         = function() vim.wait(50) end,
                 },
                 heads  = {
-                    { 'k', rust.move_item.move_up,                    { exit = true }},
-                    { 'j', rust.move_item.move_down,                  { exit = true }},
-                    { 'a', c.cmd 'RustCodeAction',                    { exit = true }},
-                    { 'e', rust.expand_macro.expand_macro,            { exit = true }},
-                    { 's', rust.parent_module.parent_module,          { exit = true }},
-                    { 'c', rust.open_cargo_toml.open_cargo_toml,      { exit = true }},
+                    { 'k', rust.move_item and rust.move_item.move_up or function()end,                     { exit = true }},
+                    { 'j', rust.move_item and rust.move_item.move_down or function()end,                   { exit = true }},
+                    { 'e', rust.expand_macro and rust.expand_macro.expand_macro or function()end,          { exit = true }},
+                    { 's', rust.parent_module and rust.parent_module.parent_module or function()end,       { exit = true }},
+                    { 'c', rust.open_cargo_toml and rust.open_cargo_toml.open_cargo_toml or function()end, { exit = true }},
 
                     { 'u', require('crates').update_crate,            { exit = true }},
                     { 'U', require('crates').upgrade_crate,           { exit = true }},
