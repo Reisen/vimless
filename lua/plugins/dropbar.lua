@@ -4,7 +4,7 @@ return function(use)
             require 'dropbar'.setup {
                 bar = {
                     padding = {
-                        left  = 6,
+                        left  = 0,
                         right = 0,
                     },
                 },

@@ -3,7 +3,7 @@ set expandtab
 set number
 set number
 set fillchars+=diff:╱
-set fillchars+=vert:\ 
+set fillchars+=vert:│
 " set fillchars+=diff:⋅
 " set fillchars+=vert:▕
 
@@ -16,6 +16,12 @@ set tabstop=4
 set timeoutlen=1000
 set laststatus=0
 let mapleader=" "
+
+" Status Line as Buffer Number, Space, Filename. The Buffer Number is right
+" aligned and assumed to be 3 digits. Center the whole thing.
+set winbar=\ \ %3n\ %f
+set winbar+=\ \ %{%v:lua.require'nvim-navic'.get_location()%}
+set statusline=\ 
 
 " Check if `splitkeep` option exists.
 set splitkeep=screen

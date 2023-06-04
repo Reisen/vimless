@@ -6,11 +6,19 @@ function M.generate(headers, hints)
     -- Before we do anything else we need to iterate over the columns to find
     -- the longest column array length.
     local longest = 0
-    for _, column in ipairs(hints) do
-        if #column > longest then
-            longest = #column
+    for _, header in ipairs(headers) do
+        local column = hints[header]
+        local column_size = 0
+        for _ in pairs(column) do
+            column_size = column_size + 1
+        end
+        if column_size > longest then
+            longest = column_size
         end
     end
+
+    -- Add header to length.
+    longest = longest + 2
 
     -- We start by iterating over the columns, we can render each column into a
     -- list of lines, this way when we have a list of lines for each column we
@@ -24,7 +32,7 @@ function M.generate(headers, hints)
             -- We can now iterate over the column and render each line, we keep
             -- track of the maximum width for this column so we can pad it out
             -- at the end. Note that we start with the length of the header as
-            -- our minimum.
+            -- our initial largest width.
             local width  = #header
             local lines  = {}
             for key, hint in pairs(column) do
@@ -38,18 +46,17 @@ function M.generate(headers, hints)
             table.insert(lines, 1, '')
             table.insert(lines, 1, header)
 
-            -- We now need to add empty lines if needed to fill the column so it
-            -- is as long as the longest column. Note that we inserted new lines
-            -- so longest should be adjusted also.
-            local adjustment = #lines - longest - 2
-            for _ = 1, adjustment do
+            -- Now we know the longest column is stored in `column`, and we want
+            -- to append empty lines to the end of the current column until it is
+            -- the same length
+            while #lines < longest do
                 table.insert(lines, '')
             end
 
-            -- We can now iterate over the lines and pad them out to the width of
-            -- the column (+4 chars to separate the column from the next).
+            -- We can now iterate over the lines and pad them out to the width
+            -- of the now known widest column.
             for i, line in ipairs(lines) do
-                lines[i] = line .. string.rep(' ', width - #line + 4)
+                lines[i] = line .. string.rep(' ', width - #line)
             end
 
             -- We can now add the column to the list of columns.
@@ -64,7 +71,9 @@ function M.generate(headers, hints)
     for i = 1, #columns[1] do
         local line = {}
         for _, column in ipairs(columns) do
-            table.insert(line, column[i])
+            if column[i] ~= nil then
+                table.insert(line, column[i] .. '    ')
+            end
         end
         table.insert(lines, table.concat(line) .. '\n')
     end
@@ -72,7 +81,7 @@ function M.generate(headers, hints)
     -- Now we concat the result, and we'll use regex to wrap all matches with
     -- `_` characters.
     local result = table.concat(lines)
-    return result:gsub('([%w%^%$%(%)%%%.%[%]%*%+%-%?=]+):', '_%1_ ')
+    return result:gsub('([%w%^%$%(%)%%%.%[%]%*%+%-%?=/]+):', '_%1_ ')
 end
 
 -- Given a Sectioned Table of Tables indexed by keycodes:
@@ -119,13 +128,14 @@ return function(use)
         config = function()
             local hydra       = require 'hydra'
             local c           = require 'hydra.keymap-util'
+            local d           = function (f) return function() f() end end
             local p           = require 'plenary.strings'
             local rust        = require 'rust-tools'
             local gitsigns    = require 'gitsigns'
             local genhydra    = function(hints)
-                local order       = hints.order or {}
-                hints.hint        = M.generate(order, hints.heads)
-                hints.heads       = M.flatten(hints.heads)
+                local order = hints.order or {}
+                hints.hint  = M.generate(order, hints.heads)
+                hints.heads = M.flatten(hints.heads)
                 return hydra(hints)
             end
 
@@ -275,7 +285,7 @@ return function(use)
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
                 position = 'top',
-                border   = 'solid',
+                border   = 'none',
                 offset   = 0,
             }
 
@@ -355,95 +365,128 @@ return function(use)
                 },
             })
 
-            local buffer_hydra = hydra({
+            local buffer_hydra = genhydra({
                 name   = 'Buffer Management',
                 mode   = 'n',
                 body   = '<leader>b',
-                hint   = buffer_hint,
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
                 },
+                order = {
+                    'Buffer Navigation',
+                    'Other',
+                },
                 heads  = {
-                    {'1', c.cmd('bfirst'),     {}},
-                    {'h', c.cmd('bprev'),      {}},
-                    {'l', c.cmd('bnext'),      {}},
-                    {'9', c.cmd('blast'),      {}},
+                    ["Buffer Navigation"] = {
+                        ['1'] = { 'First',    c.cmd('bfirst'), {}},
+                        h     = { 'Previous', c.cmd('bprev'),  {}},
+                        l     = { 'Next',     c.cmd('bnext'),  {}},
+                        ['9'] = { 'Last',     c.cmd('blast'),  {}},
+                    },
 
-                    {'d', c.cmd('bdel'),       { exit = true }},
-                    {'o', c.cmd('%bd|e#|bd#'), { exit = true }},
-                    {'q', nil,                 { exit = true }},
+                    ["Other"] = {
+                        d = { 'Delete Buffer',        c.cmd('bdel'),       { exit = true }},
+                        o = { 'Delete Other Buffers', c.cmd('%bd|e#|bd#'), { exit = true }},
+                        q = { 'Quite',                function() end,      { exit = true }},
+                    }
+
                 },
             })
 
-            local git_hydra = hydra({
+            local git_hydra = genhydra({
                 name   = 'Git',
                 mode   = {'n', 'x'},
                 body   = '<leader>g',
-                hint   = git_hint,
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
                     on_key         = function() vim.wait(50) end,
                 },
+                order = {
+                    "Diff",
+                    "Visual",
+                    "Git",
+                    "Other",
+                },
                 heads  = {
-                    { 'n', function() vim.cmd 'Gitsigns next_hunk' end,  {}},
-                    { 'p', function() vim.cmd 'Gitsigns prev_hunk' end,  {}},
-                    { 'r', function() vim.cmd 'Gitsigns reset_hunk' end, {}},
-                    { 's',
-                        function()
-                            local mode = vim.api.nvim_get_mode().mode:sub(1,1)
-                            if mode == 'V' then -- visual-line mode
-                               local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
-                               vim.api.nvim_feedkeys(esc, 'x', false) -- exit visual mode
-                               vim.cmd("'<,'>Gitsigns stage_hunk")
-                            else
-                               vim.cmd("Gitsigns stage_hunk")
-                            end
-                        end,
-                        {}
+                    ["Diff"] = {
+                        n = { 'Next Hunk',  function() vim.cmd 'Gitsigns next_hunk' end,  {}},
+                        p = { 'Prev Hunk',  function() vim.cmd 'Gitsigns prev_hunk' end,  {}},
+                        r = { 'Reset Hunk', function() vim.cmd 'Gitsigns reset_hunk' end, {}},
+                        s = { 'Stage Hunk',
+                            function()
+                                local mode = vim.api.nvim_get_mode().mode:sub(1,1)
+                                if mode == 'V' then -- visual-line mode
+                                   local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
+                                   vim.api.nvim_feedkeys(esc, 'x', false) -- exit visual mode
+                                   vim.cmd("'<,'>Gitsigns stage_hunk")
+                                else
+                                   vim.cmd("Gitsigns stage_hunk")
+                                end
+                            end,
+                            {}
+                        },
+                        R = { 'Reset Buffer',        gitsigns.reset_buffer,    {}},
+                        S = { 'Stage Buffer',        gitsigns.stage_buffer,    {}},
+                        u = { 'Undo Stage Hunk',     gitsigns.undo_stage_hunk, {}},
+                        d = { 'Diff (Project)',      function() vim.cmd 'DiffviewFileHistory %' end, { exit = true }},
+                        D = { 'Diff (Current File)', function() vim.cmd 'DiffviewOpen' end,          { exit = true }},
                     },
-                    { 'R', gitsigns.reset_buffer,                              {}},
-                    { 'S', gitsigns.stage_buffer,                              {}},
-                    { 'u', gitsigns.undo_stage_hunk,                           {}},
 
-                    { 'b', function() gitsigns.blame_line { full = true } end, { exit = true }},
-                    { 'B', function() vim.cmd 'G blame' end,                   { exit = true }},
-                    { 'd', function() vim.cmd 'Gitsigns toggle_linehl' end,    { exit = true }},
-                    { 'D', function() vim.cmd 'Gitsigns toggle_numhl' end,     { exit = true }},
-                    { 'e', function() vim.cmd 'Gedit:' end,                    { exit = true }},
-                    { 'l', function() vim.cmd 'G log --oneline' end,           { exit = true }},
-                    { 'v', function() vim.cmd 'DiffviewFileHistory %' end,     { exit = true }},
-                    { 'V', function() vim.cmd 'DiffviewOpen' end,              { exit = true }},
-                    { 'q', nil,                                                { exit = true }},
+                    ["Visual"] = {
+                        b = { 'Blame Current Line', function() gitsigns.blame_line { full = true } end, { exit = true }},
+                        B = { 'Blame Buffer',       function() vim.cmd 'G blame' end,                   { exit = true }},
+                        v = { 'Highlight Numbers',  function() vim.cmd 'Gitsigns toggle_linehl' end,    { exit = true }},
+                        V = { 'Highlight Lines',    function() vim.cmd 'Gitsigns toggle_numhl' end,     { exit = true }},
+                    },
+
+                    ["Git"] = {
+                        e = { 'Git Status', function() vim.cmd 'Gedit:' end,          { exit = true }},
+                        l = { 'Git Log',    function() vim.cmd 'G log --oneline' end, { exit = true }},
+                    },
+
+                    ["Other"] = {
+                        q = { 'Quit', function() end, { exit = true }},
+                    },
                 },
             })
 
-            local rust_hydra = hydra({
+            local rust_hydra = genhydra({
                 name   = 'Rust',
                 mode   = 'n',
                 body   = '<leader>r',
-                hint   = rust_hint,
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
                     on_key         = function() vim.wait(50) end,
                 },
-                heads  = {
-                    { 'k', rust.move_item and rust.move_item.move_up or function()end,                     { exit = true }},
-                    { 'j', rust.move_item and rust.move_item.move_down or function()end,                   { exit = true }},
-                    { 'e', rust.expand_macro and rust.expand_macro.expand_macro or function()end,          { exit = true }},
-                    { 's', rust.parent_module and rust.parent_module.parent_module or function()end,       { exit = true }},
-                    { 'c', rust.open_cargo_toml and rust.open_cargo_toml.open_cargo_toml or function()end, { exit = true }},
+                order = {
+                    "Crates",
+                    "Source",
+                    "Other",
+                },
+                heads = {
+                    ["Crates"] = {
+                        u = { 'Update Crate',  require('crates').update_crate,            { exit = true }},
+                        U = { 'Upgrade Crate', require('crates').upgrade_crate,           { exit = true }},
+                        i = { 'Update Crate',  require('crates').show_popup,              { exit = true }},
+                        d = { 'Update Crate',  require('crates').show_dependencies_popup, { exit = true }},
+                        o = { 'Update Crate',  require('crates').show_features_popup,     { exit = true }},
+                        v = { 'Update Crate',  require('crates').show_versions_popup,     { exit = true }},
+                    },
 
-                    { 'u', require('crates').update_crate,            { exit = true }},
-                    { 'U', require('crates').upgrade_crate,           { exit = true }},
-                    { 'i', require('crates').show_popup,              { exit = true }},
-                    { 'd', require('crates').show_dependencies_popup, { exit = true }},
-                    { 'o', require('crates').show_features_popup,     { exit = true }},
-                    { 'v', require('crates').show_versions_popup,     { exit = true }},
+                    ["Source"] = {
+                        k = { 'Move Item Up',    function() require('rust-tools').move_item.move_up() end,               { exit = true }},
+                        j = { 'Move Item Down',  function() require('rust-tools').move_item.move_down() end,             { exit = true }},
+                        e = { 'Expand Macro',    function() require('rust-tools').expand_macro.expand_macro() end,       { exit = true }},
+                        s = { 'Parent Module',   function() require('rust-tools').parent_module.parent_module() end,     { exit = true }},
+                        c = { 'Open Cargo.toml', function() require('rust-tools').open_cargo_toml.open_cargo_toml() end, { exit = true }},
+                    },
 
-                    { 'q', nil,                                       { exit = true }},
+                    ["Other"] = {
+                        q = { 'Quit', function() end, { exit = true }},
+                    }
                 },
             })
 
@@ -469,13 +512,13 @@ return function(use)
                     },
 
                     ["Toggle"] = {
-                        m = { 'Toggle Minimap', require'mini.map'.toggle,     { exit = true }},
-                        t = { 'Toggle Trouble', c.cmd('TroubleToggle'),       { exit = true }},
-                        n = { 'Toggle Neotree', c.cmd('NeoTreeRevealToggle'), { exit = true }},
+                        m = { 'Toggle Minimap', require'mini.map'.toggle,           { exit = true }},
+                        t = { 'Toggle Trouble', c.cmd('TroubleToggle'),             { exit = true }},
+                        n = { 'Toggle Neotree', c.cmd('NeoTreeShowToggle buffers'), { exit = true }},
                     },
 
                     ["Other"] = {
-                        q = { 'Quit',  nil,            { exit = true }},
+                        q = { 'Quit',  function() end, { exit = true }},
                     }
                 }
             })
@@ -507,6 +550,9 @@ return function(use)
                         D = { 'Declaration',          vim.lsp.buf.declaration,     { exit = true }},
                         K = { 'Documentation',        vim.lsp.buf.hover,           { exit = true }},
                         d = { 'Definition',           vim.lsp.buf.definition,      { exit = true }},
+                        i = { 'Implementations',      vim.lsp.buf.implementation,  { exit = true }},
+                        r = { 'References',           vim.lsp.buf.references,      { exit = true }},
+                        t = { 'Type Definitions',     vim.lsp.buf.type_definition, { exit = true }},
                         s = { 'Definition in Split', function()
                             -- This opens a split to the right with the cursor
                             -- in the same space. It then focuses that window,
@@ -519,9 +565,6 @@ return function(use)
                             vim.wait(50)
                             vim.cmd 'norm zt'
                         end, { exit = true }},
-                        i = { 'Implementations',      vim.lsp.buf.implementation,  { exit = true }},
-                        r = { 'References',           vim.lsp.buf.references,      { exit = true }},
-                        t = { 'Type Definitions',     vim.lsp.buf.type_definition, { exit = true }},
                     },
 
                     ["Refactoring"] = {
@@ -542,18 +585,17 @@ return function(use)
 
             local ivy = require'telescope.themes'.get_dropdown {
                 border        = true,
-                layout_config = { height = 20, width = 0.999, anchor = 'N' },
-                offset        = { 0, 0 },
+                layout_config = { height = 15, width = 0.9999, anchor = 'N' },
                 borderchars   = {
-                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                    results = { ' ', ' ', '─', ' ', ' ', ' ', ' ', ' ' },
-                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    prompt  = { '─', ' ', '', ' ', '', '', '', '' },
+                    results = { '',  ' ', '', ' ', '', '', '', '' },
+                    preview = { '',  ' ', '', ' ', '', '', '', '' },
                 },
             }
 
             local cursor = require'telescope.themes'.get_cursor {
                 border        = true,
-                layout_config = { height = 20 },
+                layout_config = { height = 15 },
                 borderchars   = {
                     prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
@@ -561,15 +603,20 @@ return function(use)
                 },
             }
 
-            -- Ivy but with sort_mru included in the options.
+            -- Settings for Ivy for an MRU list. This list is intended to only
+            -- show the file name and set fuzzy completion to exact such that
+            -- quick switching based on file name can be done in a single
+            -- keystroke.
             local ivy_bufs  = require'telescope.themes'.get_dropdown {
-                sort_mru              = true,
+                border                = true,
                 ignore_current_buffer = true,
-                layout_config         = { height = 20, width = 0.99, anchor = 'N' },
+                layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
+                path_display          = { 'tail' },
+                sort_mru              = true,
                 borderchars           = {
-                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                    results = { ' ', ' ', '─', ' ', ' ', ' ', ' ', ' ' },
-                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    prompt  = { '─', ' ', '', ' ', '', '', '', '' },
+                    results = { '',  ' ', '', ' ', '', '', '', '' },
+                    preview = { '',  ' ', '', ' ', '', '', '', '' },
                 },
             }
 
@@ -580,7 +627,7 @@ return function(use)
             local projects     = require'telescope'.extensions.project
             local todo         = require'telescope'.extensions['todo-comments']
 
-            local fzf_hydra = hydra({
+            local fzf_hydra = genhydra({
                 name  = 'FZF',
                 mode  = 'n',
                 body  = '<leader>f',
@@ -589,33 +636,69 @@ return function(use)
                     hint           = hint_options,
                     invoke_on_body = true,
                 },
+                order = {
+                    'Search',
+                    'LSP',
+                    'Git',
+                    'Vim',
+                    'Other',
+                },
                 heads = {
-                    { '*',  function() telescope.grep_string(cursor) end,            { exit = true }},
-                    { '/',  function() telescope.live_grep(ivy) end,                 { exit = true }},
-                    { 'b',  function() telescope.git_branches(ivy) end,              { exit = true }},
-                    { 'C',  function() telescope.git_bcommits(ivy) end,              { exit = true }},
-                    { 'c',  function() telescope.git_commits(ivy) end,               { exit = true }},
-                    { 'e',  function() file_browser.file_browser(ivy) end,           { exit = true }},
-                    { 'f',  function() telescope.git_files(ivy) end,                 { exit = true }},
-                    { 'h',  function() harpoon.marks(ivy) end,                       { exit = true }},
-                    { 'j',  function() telescope.buffers(ivy_bufs) end,              { exit = true }},
-                    { 'n',  function() todo.todo(ivy) end,                           { exit = true }},
-                    { 'o',  function() telescope.vim_options(ivy) end,               { exit = true }},
-                    { 'p',  function() projects.project(ivy) end,                    { exit = true }},
-                    { 'r',  function() telescope.registers(ivy) end,                 { exit = true }},
-                    { 's',  function() telescope.git_status(ivy) end,                { exit = true }},
-                    { 't',  function() telescope.colorscheme(ivy) end,               { exit = true }},
-                    { 'z',  function() telescope.git_stash(ivy) end,                 { exit = true }},
-                    { 'lc', function() telescope.lsp_incoming_calls(ivy) end,        { exit = true }},
-                    { 'lC', function() telescope.lsp_outgoing_calls(ivy) end,        { exit = true }},
-                    { 'ld', function() telescope.lsp_definitions(ivy) end,           { exit = true }},
-                    { 'li', function() telescope.lsp_implementations(ivy) end,       { exit = true }},
-                    { 'lr', function() telescope.lsp_references(ivy) end,            { exit = true }},
-                    { 'ls', function() telescope.lsp_document_symbols(ivy) end,      { exit = true }},
-                    { 'lS', function() telescope.lsp_workspace_symbols(ivy) end,     { exit = true }},
-                    { 'lt', function() telescope.lsp_type_definitions(ivy) end,      { exit = true }},
-                    { 'll', function() telescope.diagnostics(ivy) end,               { exit = true }},
-                    { 'q',  nil,                                                     { exit = true }},
+                    ["Search"] = {
+                        ['*'] = {'Word', function() telescope.grep_string(cursor) end, { exit = true }},
+                        ['/'] = {'Grep', function() telescope.live_grep(ivy) end,      { exit = true }},
+                    },
+
+                    ["Git"] = {
+                        b = { 'Branches',             function() telescope.git_branches(ivy) end, { exit = true }},
+                        c = { 'Commits',              function() telescope.git_commits(ivy) end,  { exit = true }},
+                        C = { 'Current File Commits', function() telescope.git_bcommits(ivy) end, { exit = true }},
+                        p = { 'Files (Entire Repo)',  function() telescope.git_files(ivy) end,    { exit = true }},
+                        f = { 'Files (CWD)',          function() telescope.find_files(ivy) end,   { exit = true }},
+                        r = { 'Files (Relative)',
+                            function() 
+                                -- Modify `ivy` to contain `cwd` that points to the current directory
+                                -- of the file open in the current buffer. We clone `ivy` first so we
+                                -- don't mutate it for other heads.
+                                --
+                                -- The vim.fn.expand call uses `:%:p:h` which means:
+                                --
+                                --  %   - The current file name
+                                --  :p  - Make it an absolute path
+                                --  :h  - Remove the file name, leaving only the path
+                                local ivy = vim.deepcopy(ivy)
+                                ivy.cwd = vim.fn.expand('%:p:h')
+                                telescope.find_files(ivy)
+                            end,
+                            { exit = true }
+                        },
+                        s = { 'Status',               function() telescope.git_status(ivy) end,   { exit = true }},
+                        z = { 'Stash',                function() telescope.git_stash(ivy) end,    { exit = true }},
+                    },
+
+                    ["Vim"] = {
+                        o = { 'Commands',     function() telescope.commands(ivy) end,     { exit = true }},
+                        o = { 'Options',      function() telescope.vim_options(ivy) end,  { exit = true }},
+                        t = { 'Colorschemes', function() telescope.colorscheme(ivy) end,  { exit = true }},
+                        j = { 'Buffers',      function() telescope.buffers(ivy_bufs) end, { exit = true }},
+                    },
+
+                    ["LSP"] = {
+                        lc = { 'Incoming Calls',         function() telescope.lsp_incoming_calls(ivy) end,    { exit = true }},
+                        lC = { 'Outgoing Calls',         function() telescope.lsp_outgoing_calls(ivy) end,    { exit = true }},
+                        ld = { 'Definitions',            function() telescope.lsp_definitions(ivy) end,       { exit = true }},
+                        li = { 'Implementations',        function() telescope.lsp_implementations(ivy) end,   { exit = true }},
+                        lr = { 'References',             function() telescope.lsp_references(ivy) end,        { exit = true }},
+                        ls = { 'Symbols (Current File)', function() telescope.lsp_document_symbols(ivy) end,  { exit = true }},
+                        lS = { 'Symbols (Project)',      function() telescope.lsp_workspace_symbols(ivy) end, { exit = true }},
+                        lt = { 'Type Definitions',       function() telescope.lsp_type_definitions(ivy) end,  { exit = true }},
+                        ll = { 'Diagnostics',            function() telescope.diagnostics(ivy) end,           { exit = true }},
+                    },
+
+                    ["Other"] = {
+                        e = { 'File Browser', function() file_browser.file_browser(ivy) end, { exit = true }},
+                        q = { 'Quit',         function() end,                                { exit = true }},
+                    },
                 }
             })
 

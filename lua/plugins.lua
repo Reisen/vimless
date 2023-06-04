@@ -61,10 +61,12 @@ return require('packer').startup(function()
     require('plugins/neotree')(use)
 
     -- Conditional Plugins
+    -- --------------------------------------------------------------------------------
     __ = (scrollbar and require('plugins/scrollbar')(use))
     __ = (sidebar   and require('plugins/sidebar')(use))
 
     -- Quick `use` plugins.
+    -- --------------------------------------------------------------------------------
     use 'tpope/vim-fugitive'
     use 'tpope/vim-repeat'
     use 'tpope/vim-vinegar'
@@ -73,7 +75,7 @@ return require('packer').startup(function()
     use 'ibhagwan/fzf-lua'
     use 'uga-rosa/ccc.nvim'
 
-    -- EasyAlign Bindings.
+    -- EasyAlign
     use { 'junegunn/vim-easy-align',
         config = function()
             vim.cmd [[

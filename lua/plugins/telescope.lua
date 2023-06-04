@@ -49,7 +49,7 @@ return function(use)
                     },
 
                     color_devicons   = true,
-                    path_display     = { 'smart' },
+                    path_display     = { 'absolute' },
                     sorting_strategy = 'ascending',
                     preview          = {
                         hide_on_startup = true

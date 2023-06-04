@@ -20,7 +20,7 @@ return function(use)
             require 'mason-lspconfig'.setup {}
             require 'mason-lspconfig'.setup_handlers {
                 -- Provide an automated handler for LSP servers that supports
-                -- navic automatically.
+                -- navic.
                 function(server_name)
                     require 'lspconfig'[server_name].setup {
                         on_attach    = function(client)

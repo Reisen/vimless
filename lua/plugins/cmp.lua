@@ -64,7 +64,6 @@ return function(use)
                         local split = string.gmatch(kind.kind, '([^%s]+)')
                         kind.kind = ' ' .. split() .. ' '
                         kind.menu = ' ' .. split() .. ' '
-
                         return kind
                     end
                 },
