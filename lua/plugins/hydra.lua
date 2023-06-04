@@ -75,7 +75,7 @@ function M.generate(headers, hints)
                 table.insert(line, column[i] .. '    ')
             end
         end
-        table.insert(lines, table.concat(line) .. '\n')
+        table.insert(lines, '    ' .. table.concat(line) .. '\n')
     end
 
     -- Now we concat the result, and we'll use regex to wrap all matches with

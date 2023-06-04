@@ -57,8 +57,8 @@ return function(use, theme)
 
                 " Now make the highlighted entry background dark so we can tell which item we're on.
                 " This is done via PMenu highlight group.
-                highlight  Pmenu     ctermbg=18  guibg=NONE
-                highlight  PmenuSel  ctermbg=19  guibg=NONE
+                highlight  Pmenu     ctermfg=7  guifg=NONE ctermbg=18  guibg=NONE
+                highlight  PmenuSel  ctermfg=7  guifg=NONE ctermbg=19  guibg=NONE
 
                 " Override Telescope highlights to make the viewer more aesthetic.
                 highlight TelescopeTitle  ctermfg=4  ctermbg=18  guifg=NONE  guibg=NONE
