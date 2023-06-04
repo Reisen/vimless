@@ -18,7 +18,7 @@ function M.generate(headers, hints)
     end
 
     -- Add header to length.
-    longest = longest + 2
+    longest = longest + 1
 
     -- We start by iterating over the columns, we can render each column into a
     -- list of lines, this way when we have a list of lines for each column we
@@ -43,7 +43,6 @@ function M.generate(headers, hints)
 
             -- Now sort the lines and prefix with the original header.
             table.sort(lines)
-            table.insert(lines, 1, '')
             table.insert(lines, 1, header)
 
             -- Now we know the longest column is stored in `column`, and we want
@@ -77,6 +76,9 @@ function M.generate(headers, hints)
         end
         table.insert(lines, '    ' .. table.concat(line) .. '\n')
     end
+
+    -- Append an empty line.
+    table.insert(lines, '')
 
     -- Now we concat the result, and we'll use regex to wrap all matches with
     -- `_` characters.
@@ -153,134 +155,6 @@ return function(use)
                 ^ _w_: Windows
 
                 ^ _q_: Quit ]]
-
-            -- Buffer Related Hints
-            local buffer_hint = p.dedent [[
-                ^ General                     Navigation ^
-                ^ _d_: Delete Focus Buffer    _1_: First Buffer ^
-                ^ _o_: Delete Other Buffers   _9_: Last Buffer 
-                ^ _q_: Quit                   _h_: Prev Buffer 
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^_l_: Next Buffer ^]]
-
-            -- Git Related Hints
-            local git_hint = p.dedent [[
-                ^ Navigation
-                ^ _p_: Prev Hunk
-                ^ _n_: Next Hunk
-
-                ^ Staging
-                ^ _s_: Stage Hunk
-                ^ _S_: Stage File
-                ^ _r_: Reset Hunk
-                ^ _R_: Reset File
-                ^ _u_: Undo Stage
-
-                ^ Diffing
-                ^ _b_: Blame (_B_: Blame Line)
-                ^ _d_: Diff Highlight
-                ^ _D_: Diff Highlight Line
-                ^ _v_: Diff File (_V_: Repository) ^
-                ^ _e_: Git Edit View
-                ^ _l_: Git Log View
-
-                ^ _q_: Quit ]]
-
-            -- Rust Related Hints
-            local rust_hint = p.dedent [[
-                ^ Actions
-                ^ _e_: Expand Macro
-                ^ _k_: Move Item Up
-                ^ _j_: Move Item Down
-
-                ^ Crates
-                ^ _u_: Update Crate (_U_: Upgrade) ^
-                ^ _i_: Show Crate Info
-                ^ _d_: Show Crate Dependencies
-                ^ _o_: Show Crate Options/Features
-                ^ _v_: Show Crate Versions
-
-                ^ Navigation
-                ^ _c_: Goto Cargo.toml
-                ^ _s_: Goto Super Module
-                ^ _q_: Quit ]]
-
-            -- Vim Hints
-            local vim_hint = p.dedent [[
-                ^ Packer
-                ^ _pc_: Compile Plugins ^
-                ^ _ps_: Sync Plugins
-                ^ _p?_: Plugin Info
-
-                ^ General
-                ^ _c_:  Toggle Codemap
-                ^ _m_:  Open Mason
-                ^ _t_:  Toggle Trouble
-                ^ _q_:  Quit ]]
-
-            -- LSP Hints
-            local lsp_hint = p.dedent [[
-                ^ Navigation
-                ^ _d_: Goto Definition (_D_: Declaration) ^
-                ^ _i_: Goto Implementation
-                ^ _n_: Next Diagnostic
-                ^ _p_: Prev Diagnostic
-                ^ _t_: Type Definition
-
-                ^ LSP Actions
-                ^ _a_: Code Action
-                ^ _f_: Format File
-                ^ _K_: Documentation
-                ^ _l_: Diagnostics Loclist
-                ^ _r_: References            
-                ^ _R_: Rename
-
-                ^ _q_: Quit ]]
-
-            -- FZF Hints
-            local fzf_hint = p.dedent [[
-                ^ Navigation
-                ^ _j_:  Jump to Buffer
-                ^ _*_:  Grep Word Under Cursor
-                ^ _/_:  Grep
-                ^ _e_:  File Explorer
-                ^ _h_:  Harpoon
-                ^ _p_:  Projects
-                ^ _n_:  TODO / Notes
-
-                ^ Git Related
-                ^ _b_:  Git Branches
-                ^ _c_:  Git Commits (_C_: File) ^
-                ^ _f_:  Git Files
-                ^ _s_:  Git Status
-                ^ _z_:  Git Stash
-
-                ^ LSP
-                ^ _ll_: LSP Diagnostics
-                ^ _ld_: LSP Definitions
-                ^ _lt_: LSP Types
-                ^ _lr_: LSP References         
-                ^ _li_: LSP Implementations
-                ^ _ls_: LSP Symbols
-                ^ _lS_: LSP Symbols (Workspace)
-                ^ _lc_: LSP Incoming Calls
-                ^ _lC_: LSP Outgoing Calls
-
-                ^ General
-                ^ _o_:  Vim Options
-                ^ _r_:  Vim Registers
-                ^ _t_:  Colorscheme Switcher
-                ^ _q_:  Quit ]]
-
-            -- Octo Hints
-            local octo_hint = p.dedent [[
-                ^ Navigation
-                ^ _g_: Gists
-                ^ _i_: Issues
-                ^ _p_: Pull Requests
-                ^ _r_: Repos
-                ^ _s_: Search
-
-                ^ _q_:  Quit ]]
 
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
@@ -631,7 +505,6 @@ return function(use)
                 name  = 'FZF',
                 mode  = 'n',
                 body  = '<leader>f',
-                hint  = fzf_hint,
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
@@ -702,46 +575,69 @@ return function(use)
                 }
             })
 
-            local octo_hydra = hydra({
+            local octo_hydra = genhydra({
                 name  = 'Octo',
                 mode  = 'n',
                 body  = '<leader>o',
-                hint  = octo_hint,
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
                 },
+                order = {
+                    'Github',
+                    'Other',
+                },
                 heads = {
-                    { 'g',  function() octo.gists(ivy) end,  { exit = true }},
-                    { 'i',  function() octo.issues(ivy) end, { exit = true }},
-                    { 'p',  function() octo.prs(ivy) end,    { exit = true }},
-                    { 'r',  function() octo.repos(ivy) end,  { exit = true }},
-                    { 's',  function() octo.search(ivy) end, { exit = true }},
-                    { 'q',  nil,                             { exit = true }},
+                    ["Github"] = {
+                        g = { 'Gists',  function() octo.gists(ivy) end,  { exit = true }},
+                        i = { 'Issues', function() octo.issues(ivy) end, { exit = true }},
+                        p = { 'PRs',    function() octo.prs(ivy) end,    { exit = true }},
+                        r = { 'Repos',  function() octo.repos(ivy) end,  { exit = true }},
+                    },
+
+                    ["Other"] = {
+                        s = { 'Search', function() octo.search(ivy) end, { exit = true }},
+                        q = { 'Quit',   function() end,                  { exit = true }},
+                    }
                 }
             })
 
-            hydra({
+            genhydra({
                 name   = 'Hydra',
                 mode   = 'n',
                 body   = '<leader>h',
-                hint   = hydra_hint,
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
                 },
+                order = {
+                    'Vim',
+                    'Plugins',
+                    'Languages',
+                    'Other',
+                },
                 heads = {
-                    { 'f', function() fzf_hydra:activate() end,    { exit = true }},
-                    { 'o', function() octo_hydra:activate() end,   { exit = true }},
-                    { 'b', function() buffer_hydra:activate() end, { exit = true }},
-                    { 'g', function() git_hydra:activate() end,    { exit = true }},
-                    { 'l', function() lsp_hydra:activate() end,    { exit = true }},
-                    { 'o', function() octo_hydra:activate() end,   { exit = true }},
-                    { 'r', function() rust_hydra:activate() end,   { exit = true }},
-                    { 't', function() tab_hydra:activate() end,    { exit = true }},
-                    { 'v', function() vim_hydra:activate() end,    { exit = true }},
-                    { 'w', function() window_hydra:activate() end, { exit = true }},
-                    { 'q', nil,                                    { exit = true }},
+                    ["Vim"] = {
+                        b = { 'Buffers', function() buffer_hydra:activate() end, { exit = true }},
+                        t = { 'Tabs',    function() tab_hydra:activate() end,    { exit = true }},
+                        v = { 'Vim',     function() vim_hydra:activate() end,    { exit = true }},
+                        w = { 'Windows', function() window_hydra:activate() end, { exit = true }},
+                        l = { 'LSP',     function() lsp_hydra:activate() end,    { exit = true }},
+                    },
+
+                    ["Plugins"] = {
+                        f = { 'Telescope', function() fzf_hydra:activate() end,  { exit = true }},
+                        o = { 'Octo',      function() octo_hydra:activate() end, { exit = true }},
+                        g = { 'Git',       function() git_hydra:activate() end,  { exit = true }},
+                    },
+
+                    ["Languages"] = {
+                        r = { 'Rust', function() rust_hydra:activate() end, { exit = true }},
+                    },
+
+                    ["Other"] = {
+                        q = { 'Quit', function() end, { exit = true }},
+                    }
                 }
             })
         end
