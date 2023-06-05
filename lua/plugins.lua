@@ -43,7 +43,6 @@ return require('packer').startup(function()
     require('plugins/comment')(use)
     require('plugins/diffview')(use)
     require('plugins/gitsigns')(use)
-    require('plugins/harpoon')(use)
     require('plugins/hydra')(use)
     require('plugins/leap')(use)
     require('plugins/marks')(use)
@@ -68,12 +67,24 @@ return require('packer').startup(function()
     -- Quick `use` plugins.
     -- --------------------------------------------------------------------------------
     use 'tpope/vim-fugitive'
+    use 'CKolkey/neogit'
     use 'tpope/vim-repeat'
     use 'tpope/vim-vinegar'
     use 'tpope/vim-surround'
     use 'unblevable/quick-scope'
     use 'ibhagwan/fzf-lua'
     use 'uga-rosa/ccc.nvim'
+
+    -- Github PR Reviews
+    use { 'ldelossa/gh.nvim',
+        requires = {
+            'ldelossa/litee.nvim',
+        },
+        config = function()
+            require('litee.lib').setup {}
+            require('litee.gh').setup {}
+        end,
+    }
 
     -- EasyAlign
     use { 'junegunn/vim-easy-align',

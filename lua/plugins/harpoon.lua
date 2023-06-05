@@ -7,8 +7,6 @@ return function(use)
                     width = 120,
                 }
             }
-
-            require 'telescope'.load_extension('harpoon')
         end
     }
 end

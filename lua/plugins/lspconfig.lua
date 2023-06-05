@@ -74,6 +74,17 @@ return function(use)
         end
     }
 
+    -- LSP Status Text
+    use { 'j-hui/fidget.nvim',
+        config = function()
+            require 'fidget'.setup {
+                text = {
+                    spinner = 'arc',
+                }
+            }
+        end,
+    }
+
     -- Prettier LSP Diagnostics
     -- use { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
     --     config = function()

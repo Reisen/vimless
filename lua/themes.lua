@@ -25,7 +25,6 @@ return function(use, theme)
                 highlight  SignColumn     ctermbg=NONE  guibg=NONE                
 
                 " Hide distracting UI elements like separators, vertical splits, and ~ lines.
-                highlight  VertSplit   ctermbg=NONE     guibg=NONE
                 highlight  EndOfBuffer ctermfg=bg       guifg=bg
 
                 " Override the DiffAdd/DiffDelete/DiffChange highlight groups
@@ -61,9 +60,9 @@ return function(use, theme)
                 highlight  PmenuSel  ctermfg=7  guifg=NONE ctermbg=19  guibg=NONE
 
                 " Override Telescope highlights to make the viewer more aesthetic.
-                highlight TelescopeTitle  ctermfg=4  ctermbg=18  guifg=NONE  guibg=NONE
-                highlight TelescopeBorder ctermfg=4  ctermbg=18  guifg=NONE  guibg=NONE
-                highlight TelescopeNormal ctermfg=7  ctermbg=18  guifg=NONE  guibg=NONE
+                highlight  TelescopeTitle   ctermfg=4  ctermbg=18  guifg=NONE  guibg=NONE
+                highlight  TelescopeBorder  ctermfg=4  ctermbg=18  guifg=NONE  guibg=NONE
+                highlight  TelescopeNormal  ctermfg=7  ctermbg=18  guifg=NONE  guibg=NONE
 
                 " Set Vim Visuals, Status and Winbar highlights.
                 highlight  VertSplit     ctermfg=bg  ctermbg=NONE  guifg=NONE  guibg=NONE
@@ -100,27 +99,20 @@ return function(use, theme)
     --     end
     -- }
 
-    -- use { 'catppuccin/nvim',
-    --     as     = 'catppuccin',
-    --     config = function()
-    --         require 'catppuccin'.setup {
-    --             flavor       = 'macchiato',
-    --             dim_inactive = {
-    --                 enable     = true,
-    --                 shade      = 'dark',
-    --                 percentage = 0.5,
-    --             },
-    --         }
-    --
-    --         vim.g.catppuccin_flavor = "macchiato"
-    --
-    --         vim.cmd [[
-    --             colorscheme catppuccin-macchiato
-    --
-    --             " Set HydraHint highlight to normal background.
-    --             highlight link HydraHint Normal
-    --         ]]
-    --     end
-    -- }
+    use { 'catppuccin/nvim',
+        as     = 'catppuccin',
+        config = function()
+            require 'catppuccin'.setup {
+                flavor       = 'macchiato',
+                dim_inactive = {
+                    enable     = true,
+                    shade      = 'dark',
+                    percentage = 0.5,
+                },
+            }
+
+            vim.g.catppuccin_flavor = "macchiato"
+        end
+    }
 end
 

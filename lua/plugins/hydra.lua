@@ -18,7 +18,7 @@ function M.generate(headers, hints)
     end
 
     -- Add header to length.
-    longest = longest + 1
+    longest = longest + 4
 
     -- We start by iterating over the columns, we can render each column into a
     -- list of lines, this way when we have a list of lines for each column we
@@ -43,7 +43,9 @@ function M.generate(headers, hints)
 
             -- Now sort the lines and prefix with the original header.
             table.sort(lines)
+            table.insert(lines, 1, '')
             table.insert(lines, 1, header)
+            table.insert(lines, 1, '')
 
             -- Now we know the longest column is stored in `column`, and we want
             -- to append empty lines to the end of the current column until it is
@@ -160,7 +162,7 @@ return function(use)
             local hint_options = {
                 position = 'top',
                 border   = 'none',
-                offset   = 0,
+                offset   = 1,
             }
 
             -- Initialize Hydras
@@ -171,6 +173,7 @@ return function(use)
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
+                    on_key         = function() vim.wait(50) end,
                 },
                 order = {
                     "Window Navigation",
@@ -184,8 +187,7 @@ return function(use)
                         j = {'Down',                c.cmd('wincmd j'), {}},
                         k = {'Up',                  c.cmd('wincmd k'), {}},
                         l = {'Right',               c.cmd('wincmd l'), {}},
-                        o = {'Close Other Windows', c.cmd('wincmd o'), {}},
-                        p = {'Previous Window',     c.cmd('wincmd p'), {}},
+                        o = {'Previous Window',     c.cmd('wincmd p'), {}},
                     },
                     ["Window Swapping"] = {
                         H = {'Swap Left',        c.cmd('wincmd H'), {}},
@@ -496,7 +498,6 @@ return function(use)
 
             -- Extensions
             local file_browser = require'telescope'.extensions.file_browser
-            local harpoon      = require'telescope'.extensions.harpoon
             local octo         = require'telescope'.extensions.octo
             local projects     = require'telescope'.extensions.project
             local todo         = require'telescope'.extensions['todo-comments']
@@ -518,8 +519,9 @@ return function(use)
                 },
                 heads = {
                     ["Search"] = {
-                        ['*'] = {'Word', function() telescope.grep_string(cursor) end, { exit = true }},
-                        ['/'] = {'Grep', function() telescope.live_grep(ivy) end,      { exit = true }},
+                        ['*'] = {'Word',           function() telescope.grep_string(cursor) end,            { exit = true }},
+                        ['/'] = {'Grep',           function() telescope.live_grep(ivy) end,                 { exit = true }},
+                        ['.'] = {'Current Buffer', function() telescope.current_buffer_fuzzy_find(ivy) end, { exit = true }},
                     },
 
                     ["Git"] = {
@@ -554,6 +556,7 @@ return function(use)
                         o = { 'Options',      function() telescope.vim_options(ivy) end,  { exit = true }},
                         t = { 'Colorschemes', function() telescope.colorscheme(ivy) end,  { exit = true }},
                         j = { 'Buffers',      function() telescope.buffers(ivy_bufs) end, { exit = true }},
+                        x = { 'Commands',     function() telescope.commands(ivy) end,     { exit = true }},
                     },
 
                     ["LSP"] = {
@@ -602,6 +605,71 @@ return function(use)
                 }
             })
 
+            local gh_hydra = genhydra({
+                name   = 'Github',
+                mode   = 'n',
+                config = {
+                    hint           = hint_options,
+                    invoke_on_body = true,
+                },
+                order = {
+                    'Commits',
+                    'PRs',
+                    'Reviews',
+                    'Threads',
+                    'Issues',
+                    'Litee',
+                    'Other',
+                },
+                heads = {
+                    ["Commits"] = {
+                        cc = { 'Close Commit',    "<cmd>GHCloseCommit<cr>",    { exit = true }},
+                        ce = { 'Expand Commit',   "<cmd>GHExpandCommit<cr>",   { exit = true }},
+                        co = { 'Open Commit',     "<cmd>GHOpenToCommit<cr>",   { exit = true }},
+                        cp = { 'Popout Commit',   "<cmd>GHPopOutCommit<cr>",   { exit = true }},
+                        cz = { 'Collapse Commit', "<cmd>GHCollapseCommit<cr>", { exit = true }},
+                    },
+
+                    ["Issues"] = {
+                        ip = { 'Preview', "<cmd>GHPreviewIssue<cr>", { exit = true }},
+                    },
+
+                    ["Litee"] = {
+                        lt = { 'Toggle Litee', "<cmd>LTPanel<cr>", { exit = true }},
+                    },
+
+                    ["Reviews"] = {
+                        rb = { 'Begin',           "<cmd>GHStartReview<cr>",    { exit = true }},
+                        rc = { 'Close',           "<cmd>GHCloseReview<cr>",    { exit = true }},
+                        rd = { 'Delete',          "<cmd>GHDeleteReview<cr>",   { exit = true }},
+                        re = { 'Expand',          "<cmd>GHExpandReview<cr>",   { exit = true }},
+                        rs = { 'Submit',          "<cmd>GHSubmitReview<cr>",   { exit = true }},
+                        rz = { 'Collapse Review', "<cmd>GHCollapseReview<cr>", { exit = true }},
+                    },
+
+                    ["PRs"] = {
+                        pc = { "Close",    "<cmd>GHClosePR<cr>", { exit = true }},
+                        pd = { "Details",  "<cmd>GHPRDetails<cr>", { exit = true }},
+                        pe = { "Expand",   "<cmd>GHExpandPR<cr>", { exit = true }},
+                        po = { "Open",     "<cmd>GHOpenPR<cr>", { exit = true }},
+                        pp = { "PopOut",   "<cmd>GHPopOutPR<cr>", { exit = true }},
+                        pr = { "Refresh",  "<cmd>GHRefreshPR<cr>", { exit = true }},
+                        pt = { "Open To",  "<cmd>GHOpenToPR<cr>", { exit = true }},
+                        pz = { "Collapse", "<cmd>GHCollapsePR<cr>", { exit = true }},
+                    },
+
+                    ["Threads"] = {
+                        tc = { "Create", "<cmd>GHCreateThread<cr>", { exit = true }},
+                        tn = { "Next",   "<cmd>GHNextThread<cr>", { exit = true }},
+                        tt = { "Toggle", "<cmd>GHToggleThread<cr>", { exit = true }},
+                    },
+
+                    ["Other"] = {
+                        q = { 'Quit', function() end, { exit = true }},
+                    }
+                }
+            })
+
             genhydra({
                 name   = 'Hydra',
                 mode   = 'n',
@@ -629,6 +697,7 @@ return function(use)
                         f = { 'Telescope', function() fzf_hydra:activate() end,  { exit = true }},
                         o = { 'Octo',      function() octo_hydra:activate() end, { exit = true }},
                         g = { 'Git',       function() git_hydra:activate() end,  { exit = true }},
+                        h = { 'Github',    function() gh_hydra:activate() end,   { exit = true }},
                     },
 
                     ["Languages"] = {

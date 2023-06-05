@@ -1,9 +1,8 @@
 set autoindent
 set expandtab
-set number
-set number
+set nonumber
 set fillchars+=diff:╱
-set fillchars+=vert:│
+set fillchars+=vert:\ 
 " set fillchars+=diff:⋅
 " set fillchars+=vert:▕
 
