@@ -132,9 +132,6 @@ return function(use)
         config = function()
             local hydra       = require 'hydra'
             local c           = require 'hydra.keymap-util'
-            local d           = function (f) return function() f() end end
-            local p           = require 'plenary.strings'
-            local rust        = require 'rust-tools'
             local gitsigns    = require 'gitsigns'
             local genhydra    = function(hints)
                 local order = hints.order or {}
@@ -144,20 +141,6 @@ return function(use)
             end
 
             -- Hydra of Hydras
-            local hydra_hint = p.dedent [[
-                ^ Hydras
-                ^ _b_: Buffers
-                ^ _f_: FZF / Search
-                ^ _g_: Git
-                ^ _l_: LSP
-                ^ _o_: Octo / Github
-                ^ _r_: Rust
-                ^ _t_: Tabs
-                ^ _v_: Vim
-                ^ _w_: Windows
-
-                ^ _q_: Quit ]]
-
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
                 position = 'top',
@@ -499,8 +482,6 @@ return function(use)
             -- Extensions
             local file_browser = require'telescope'.extensions.file_browser
             local octo         = require'telescope'.extensions.octo
-            local projects     = require'telescope'.extensions.project
-            local todo         = require'telescope'.extensions['todo-comments']
 
             local fzf_hydra = genhydra({
                 name  = 'FZF',
@@ -531,7 +512,7 @@ return function(use)
                         p = { 'Files (Entire Repo)',  function() telescope.git_files(ivy) end,    { exit = true }},
                         f = { 'Files (CWD)',          function() telescope.find_files(ivy) end,   { exit = true }},
                         r = { 'Files (Relative)',
-                            function() 
+                            function()
                                 -- Modify `ivy` to contain `cwd` that points to the current directory
                                 -- of the file open in the current buffer. We clone `ivy` first so we
                                 -- don't mutate it for other heads.
@@ -552,7 +533,6 @@ return function(use)
                     },
 
                     ["Vim"] = {
-                        o = { 'Commands',     function() telescope.commands(ivy) end,     { exit = true }},
                         o = { 'Options',      function() telescope.vim_options(ivy) end,  { exit = true }},
                         t = { 'Colorschemes', function() telescope.colorscheme(ivy) end,  { exit = true }},
                         j = { 'Buffers',      function() telescope.buffers(ivy_bufs) end, { exit = true }},
