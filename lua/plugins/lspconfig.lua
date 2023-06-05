@@ -33,6 +33,10 @@ return function(use)
                     }
                 end,
 
+                -- Disable Rust Analyzer Setup so that rust-tools.nvim can handle it.
+                rust_analyzer = function()
+                end,
+
                 -- Lua requires extra handling to configure the expected
                 -- runtime, diagnostics and library paths. So we sadly can't
                 -- just use the default handler above.

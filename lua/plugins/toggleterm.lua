@@ -9,7 +9,6 @@ return function(use)
                 float_opts   = {
                     width    = vim.o.columns,
                     height   = vim.o.lines - 1,
-                    winblend = 10,
                     border   = 'none',
                 }
             }

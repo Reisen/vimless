@@ -440,7 +440,7 @@ return function(use)
             })
 
             -- Create Telescope and Theme objects for use in the Hydra
-            local telescope = require'telescope.builtin'
+            local telescope = function() return require'telescope.builtin' end
 
             local ivy = require'telescope.themes'.get_dropdown {
                 border        = true,
@@ -500,17 +500,17 @@ return function(use)
                 },
                 heads = {
                     ["Search"] = {
-                        ['*'] = {'Word',           function() telescope.grep_string(cursor) end,            { exit = true }},
-                        ['/'] = {'Grep',           function() telescope.live_grep(ivy) end,                 { exit = true }},
-                        ['.'] = {'Current Buffer', function() telescope.current_buffer_fuzzy_find(ivy) end, { exit = true }},
+                        ['*'] = {'Word',           function() telescope().grep_string(cursor) end,            { exit = true }},
+                        ['/'] = {'Grep',           function() telescope().live_grep(ivy) end,                 { exit = true }},
+                        ['.'] = {'Current Buffer', function() telescope().current_buffer_fuzzy_find(ivy) end, { exit = true }},
                     },
 
                     ["Git"] = {
-                        b = { 'Branches',             function() telescope.git_branches(ivy) end, { exit = true }},
-                        c = { 'Commits',              function() telescope.git_commits(ivy) end,  { exit = true }},
-                        C = { 'Current File Commits', function() telescope.git_bcommits(ivy) end, { exit = true }},
-                        p = { 'Files (Entire Repo)',  function() telescope.git_files(ivy) end,    { exit = true }},
-                        f = { 'Files (CWD)',          function() telescope.find_files(ivy) end,   { exit = true }},
+                        b = { 'Branches',             function() telescope().git_branches(ivy) end, { exit = true }},
+                        c = { 'Commits',              function() telescope().git_commits(ivy) end,  { exit = true }},
+                        C = { 'Current File Commits', function() telescope().git_bcommits(ivy) end, { exit = true }},
+                        p = { 'Files (Entire Repo)',  function() telescope().git_files(ivy) end,    { exit = true }},
+                        f = { 'Files (CWD)',          function() telescope().find_files(ivy) end,   { exit = true }},
                         r = { 'Files (Relative)',
                             function()
                                 -- Modify `ivy` to contain `cwd` that points to the current directory
@@ -524,31 +524,31 @@ return function(use)
                                 --  :h  - Remove the file name, leaving only the path
                                 local ivy = vim.deepcopy(ivy)
                                 ivy.cwd = vim.fn.expand('%:p:h')
-                                telescope.find_files(ivy)
+                                telescope().find_files(ivy)
                             end,
                             { exit = true }
                         },
-                        s = { 'Status',               function() telescope.git_status(ivy) end,   { exit = true }},
-                        z = { 'Stash',                function() telescope.git_stash(ivy) end,    { exit = true }},
+                        s = { 'Status',               function() telescope().git_status(ivy) end,   { exit = true }},
+                        z = { 'Stash',                function() telescope().git_stash(ivy) end,    { exit = true }},
                     },
 
                     ["Vim"] = {
-                        o = { 'Options',      function() telescope.vim_options(ivy) end,  { exit = true }},
-                        t = { 'Colorschemes', function() telescope.colorscheme(ivy) end,  { exit = true }},
-                        j = { 'Buffers',      function() telescope.buffers(ivy_bufs) end, { exit = true }},
-                        x = { 'Commands',     function() telescope.commands(ivy) end,     { exit = true }},
+                        o = { 'Options',      function() telescope().vim_options(ivy) end,  { exit = true }},
+                        t = { 'Colorschemes', function() telescope().colorscheme(ivy) end,  { exit = true }},
+                        j = { 'Buffers',      function() telescope().buffers(ivy_bufs) end, { exit = true }},
+                        x = { 'Commands',     function() telescope().commands(ivy) end,     { exit = true }},
                     },
 
                     ["LSP"] = {
-                        lc = { 'Incoming Calls',         function() telescope.lsp_incoming_calls(ivy) end,    { exit = true }},
-                        lC = { 'Outgoing Calls',         function() telescope.lsp_outgoing_calls(ivy) end,    { exit = true }},
-                        ld = { 'Definitions',            function() telescope.lsp_definitions(ivy) end,       { exit = true }},
-                        li = { 'Implementations',        function() telescope.lsp_implementations(ivy) end,   { exit = true }},
-                        lr = { 'References',             function() telescope.lsp_references(ivy) end,        { exit = true }},
-                        ls = { 'Symbols (Current File)', function() telescope.lsp_document_symbols(ivy) end,  { exit = true }},
-                        lS = { 'Symbols (Project)',      function() telescope.lsp_workspace_symbols(ivy) end, { exit = true }},
-                        lt = { 'Type Definitions',       function() telescope.lsp_type_definitions(ivy) end,  { exit = true }},
-                        ll = { 'Diagnostics',            function() telescope.diagnostics(ivy) end,           { exit = true }},
+                        lc = { 'Incoming Calls',         function() telescope().lsp_incoming_calls(ivy) end,    { exit = true }},
+                        lC = { 'Outgoing Calls',         function() telescope().lsp_outgoing_calls(ivy) end,    { exit = true }},
+                        ld = { 'Definitions',            function() telescope().lsp_definitions(ivy) end,       { exit = true }},
+                        li = { 'Implementations',        function() telescope().lsp_implementations(ivy) end,   { exit = true }},
+                        lr = { 'References',             function() telescope().lsp_references(ivy) end,        { exit = true }},
+                        ls = { 'Symbols (Current File)', function() telescope().lsp_document_symbols(ivy) end,  { exit = true }},
+                        lS = { 'Symbols (Project)',      function() telescope().lsp_workspace_symbols(ivy) end, { exit = true }},
+                        lt = { 'Type Definitions',       function() telescope().lsp_type_definitions(ivy) end,  { exit = true }},
+                        ll = { 'Diagnostics',            function() telescope().diagnostics(ivy) end,           { exit = true }},
                     },
 
                     ["Other"] = {
