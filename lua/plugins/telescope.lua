@@ -38,11 +38,11 @@ return function(use)
                 },
 
                 defaults = {
-                    borderchars = {
+                    borderchars      = {
                         '─', '│', '─', '│', '┌', '┐', '┘', '└',
                     },
 
-                    mappings = {
+                    mappings         = {
                         i = {
                             ["<esc>"] = require 'telescope.actions'.close,
                         },
@@ -62,6 +62,15 @@ return function(use)
             require 'telescope'.load_extension('ui-select')
             require 'telescope'.load_extension('gh')
             require 'telescope'.load_extension('project')
+
+            print(vim.inspect(require 'plugins/tusk'))
+
+            -- vim.api.nvim_set_keymap(
+            --     "n",
+            --     "<leader>x",
+            --     "<cmd>lua require('onyx.telescope').telescope_commandline()<cr>",
+            --     { noremap = true, silent = true }
+            -- )
         end
     }
 end

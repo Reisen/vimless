@@ -10,6 +10,7 @@ return function(use)
                     width    = vim.o.columns,
                     height   = vim.o.lines - 1,
                     border   = 'none',
+                    winblend = 0,
                 }
             }
 
