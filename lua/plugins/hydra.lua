@@ -473,16 +473,23 @@ return function(config)
             -- quick switching based on file name can be done in a single
             -- keystroke.
             local ivy_bufs  = require'telescope.themes'.get_dropdown {
+                layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
                 border                = true,
                 ignore_current_buffer = true,
-                layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
-                path_display          = { 'tail' },
                 sort_mru              = true,
                 borderchars           = {
                     prompt  = { '─', ' ', '', ' ', '', '', '', '' },
                     results = { '',  ' ', '', ' ', '', '', '', '' },
                     preview = { '',  ' ', '', ' ', '', '', '', '' },
                 },
+
+                -- As an MRU buffer it's nice to be able to filter to a file by
+                -- a single character, but many files with the same name might
+                -- show so we show the full path as a suffix.
+                path_display          = function(opts, path)
+                    local tail = require 'telescope.utils'.path_tail(path)
+                    return string.format('%s (%s)', tail, path)
+                end,
             }
 
             -- Extensions
