@@ -1,6 +1,16 @@
-return function(use)
-    use { 'folke/tokyonight.nvim',
+return function(config)
+    if type(config.plugins.tokyonight) == 'boolean' and not config.plugins.tokyonight then
+        return {}
+    end
+
+    return {
+        'folke/tokyonight.nvim',
         config = function()
+            if config.plugins.tokyonight and type(config.plugins.tokyonight) == 'function' then
+                config.plugins.tokyonight()
+                return
+            end
+
             vim.g.tokyonight_style                    = "day"
             vim.g.tokyonight_dark_float               = false
             vim.g.tokyonight_dark_sidebar             = true
@@ -9,21 +19,7 @@ return function(use)
             vim.g.tokyonight_italic_keywords          = false
             vim.g.tokyonight_transparent              = false
             vim.g.tokyonight_hide_inactive_statusline = true
-            vim.g.tokyonight_sidebars                 = { 'packer' }
-
-            -- Import Colours for styling other views.
-            ---@diagnostic disable-next-line: unused-local
-            local _colors = require("tokyonight.colors").setup({})
-
-            -- Enable theme and customize colours for other views.
-            vim.cmd [[
-                augroup quick_scope
-                autocmd!
-                autocmd ColorScheme * hi QuickScopePrimary   guifg='#FF0000' gui=bold
-                autocmd ColorScheme * hi QuickScopeSecondary guifg='#FF7799' gui=bold
-                autocmd ColorScheme * hi VertSplit           guibg=bg guifg=bg ctermbg=bg ctermfg=bg
-                augroup END
-            ]]
+            vim.g.tokyonight_sidebars                 = {}
         end
     }
 end

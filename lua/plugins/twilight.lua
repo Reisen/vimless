@@ -1,7 +1,17 @@
-return function(use)
-    use { "folke/twilight.nvim",
+return function(config)
+    if type(config.plugins.twilight) == 'boolean' and not config.plugins.twilight then
+        return {}
+    end
+
+    return {
+        "folke/twilight.nvim",
         config = function()
-            require("twilight").setup {
+            if config.plugins.twilight and type(config.plugins.twilight) == 'function' then
+                config.plugins.twilight()
+                return
+            end
+
+            local opts = {
                 dimming    = { inactive = true, },
                 context    = 5,
                 treesitter = true,
@@ -14,6 +24,8 @@ return function(use)
                     "table",
                 },
             }
+
+            require "twilight".setup(opts)
         end
     }
 end

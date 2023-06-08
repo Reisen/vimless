@@ -1,4 +1,8 @@
-return function(use)
+return function(config)
+    if type(config.plugins.lspconfig) == 'boolean' and not config.plugins.lspconfig then
+        return {}
+    end
+
     -- Override LSP Configuration.
     vim.diagnostic.config({
         virtual_text  = true,
@@ -8,38 +12,51 @@ return function(use)
     })
 
     -- LSP Configuration.
-    use { 'neovim/nvim-lspconfig',
-        requires = {
+    return {
+        'neovim/nvim-lspconfig',
+        dependencies = {
+            'SmiteshP/nvim-navic',
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
             'nvim-lua/plenary.nvim',
         },
         config = function()
+            if config.plugins.lspconfig and type(config.plugins.lspconfig) == 'function' then
+                config.plugins.lspconfig()
+                return
+            end
+
+            vim.cmd [[
+                set winbar+=\ \ %{%v:lua.require'nvim-navic'.get_location()%}
+            ]]
+
             -- Setup Mason before LSPConfig.
             require 'mason'.setup {}
             require 'mason-lspconfig'.setup {}
             require 'mason-lspconfig'.setup_handlers {
-                -- Provide an automated handler for LSP servers that supports
-                -- navic.
+                -- Provide an default handler for LSP servers. Whenever Mason installs
+                -- a server it will automatically use this call to setup those servers
+                -- so they don't have to be listed here manually.
                 function(server_name)
                     require 'lspconfig'[server_name].setup {
-                        on_attach    = function(client)
-                            client.server_capabilities.semanticTokensProvider = nil
+                        on_attach    = function(client, buffer)
+                            -- client.server_capabilities.semanticTokensProvider = nil
+                            require 'nvim-navic'.attach(
+                                client,
+                                buffer
+                            )
                         end,
-                        flags = {
-                            allow_incremental_sync = false,
-                            debounce_text_changes  = 50,
-                        }
                     }
                 end,
 
-                -- Disable Rust Analyzer Setup so that rust-tools.nvim can handle it.
+                -- Disable Rust Analyzer Setup so that rust-tools.nvim can handle it
+                -- instead, rust-tools is much more integrated.
                 rust_analyzer = function()
                 end,
 
-                -- Lua requires extra handling to configure the expected
-                -- runtime, diagnostics and library paths. So we sadly can't
-                -- just use the default handler above.
+                -- Lua requires extra handling to configure the expected runtime and
+                --  library paths. So we sadly can't rely on a default handler to
+                --  set these up for us.
                 lua_ls = function()
                     require 'lspconfig'.lua_ls.setup {
                         on_attach    = function(client, buffer)
@@ -76,17 +93,6 @@ return function(use)
                 vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
             end
         end
-    }
-
-    -- LSP Status Text
-    use { 'j-hui/fidget.nvim',
-        config = function()
-            require 'fidget'.setup {
-                text = {
-                    spinner = 'arc',
-                }
-            }
-        end,
     }
 
     -- Prettier LSP Diagnostics

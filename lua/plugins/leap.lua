@@ -1,10 +1,20 @@
-return function(use)
-    use { 'ggandor/leap.nvim',
+return function(config)
+    if type(config.plugins.leap) == 'boolean' and not config.plugins.leap then
+        return {}
+    end
+
+    return {
+        'ggandor/leap.nvim',
         config = function()
+            if config.plugins.leap and type(config.plugins.leap) == 'function' then
+                config.plugins.leap()
+                return
+            end
+
             require('leap').set_default_keymaps()
 
             ---@diagnostic disable-next-line: unused-function, unused-local
-            function LEAP_TO_WINDOW()
+            function _G.LeapToWindow()
                 local targets = {}
                 local windows = require 'leap.util'.get_enterable_windows()
 
@@ -35,7 +45,7 @@ return function(use)
             vim.api.nvim_set_keymap(
                 'n',
                 '<leader><space>',
-                '<cmd>lua LEAP_TO_WINDOW()<CR>',
+                '<cmd>lua LeapToWindow()<CR>',
                 {
                     noremap = true,
                     silent  = true,

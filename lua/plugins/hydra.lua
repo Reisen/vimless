@@ -120,16 +120,25 @@ function M.flatten(t)
     return result
 end
 
-return function(use)
-    use {
+return function(config)
+    if type(config.plugins.hydra) == 'boolean' and not config.plugins.hydra then
+        return {}
+    end
+
+    return {
         'anuvyklack/hydra.nvim',
-        requires = {
+        dependencies = {
             'lewis6991/gitsigns.nvim',
             'nvim-lua/plenary.nvim',
             'saecki/crates.nvim',
             'simrat39/rust-tools.nvim',
         },
         config = function()
+            if config.plugins.hydra and type(config.plugins.hydra) == 'function' then
+                config.plugins.hydra()
+                return
+            end
+
             local hydra       = require 'hydra'
             local c           = require 'hydra.keymap-util'
             local gitsigns    = require 'gitsigns'
@@ -358,16 +367,13 @@ return function(use)
                     invoke_on_body = true,
                 },
                 order = {
-                    'Packer',
+                    'Plugins',
                     'Toggle',
                     'Other',
                 },
                 heads  = {
-                    ["Packer"] = {
-                        pc     = { 'Compile Config', c.cmd('PackerCompile'), { exit = true }},
-                        ps     = { 'Sync Config',    c.cmd('PackerSync'),    { exit = true }},
-                        pu     = { 'Update Config',  c.cmd('PackerStatus'),  { exit = true }},
-                        ["p?"] = { 'Status',         c.cmd('PackerStatus'),  { exit = true }},
+                    ["Plugins"] = {
+                        p = { 'Lazy Plugin Manager', c.cmd('Lazy'), { exit = true }},
                     },
 
                     ["Toggle"] = {

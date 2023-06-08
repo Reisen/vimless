@@ -1,7 +1,17 @@
-return function(use)
-    use { 'lewis6991/gitsigns.nvim',
+return function(config)
+    if type(config.plugins.gitsigns) == 'boolean' and not config.plugins.gitsigns then
+        return {}
+    end
+
+    return {
+        'lewis6991/gitsigns.nvim',
         config = function()
-            require 'gitsigns'.setup {
+            if config.plugins.gitsigns and type(config.plugins.gitsigns) == 'function' then
+                config.plugins.gitsigns()
+                return
+            end
+
+            local opts = {
                 numhl                   = true,
                 linehl                  = true,
                 signcolumn              = true,
@@ -22,19 +32,25 @@ return function(use)
                     untracked    = { text = '│', show_count = false },
                 },
 
-                -- count_chars = {
-                --     [1]   = '1',
-                --     [2]   = '2',
-                --     [3]   = '3',
-                --     [4]   = '4',
-                --     [5]   = '5',
-                --     [6]   = '6',
-                --     [7]   = '7',
-                --     [8]   = '8',
-                --     [9]   = '9',
-                --     ['+'] = '+',
-                -- }
+                count_chars = {} or {
+                    [1]   = '1',
+                    [2]   = '2',
+                    [3]   = '3',
+                    [4]   = '4',
+                    [5]   = '5',
+                    [6]   = '6',
+                    [7]   = '7',
+                    [8]   = '8',
+                    [9]   = '9',
+                    ['+'] = '+',
+                }
             }
+
+            if config.plugins.gitsigns and type(config.plugins.gitsigns) == 'table' then
+                opts = vim.tbl_extend('force', opts, config.plugins.gitsigns)
+            end
+
+            require 'gitsigns'.setup(opts)
 
             -- Automatically add wider sign columns in files that require many.
             vim.cmd [[

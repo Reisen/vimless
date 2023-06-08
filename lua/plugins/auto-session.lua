@@ -1,25 +1,27 @@
 ---@diagnostic disable-next-line: unused-local
-return function(use)
-    -- use { 'rmagatti/auto-session',
-    --     config = function()
-    --         require('auto-session').setup {
-    --             log_level                  = 'info',
-    --             auto_session_suppress_dirs = { '~/', '~/projects' }
-    --         }
-    --     end
-    -- }
-    --
-    -- use {
-    --     'rmagatti/session-lens',
-    --     requires = {
-    --         'rmagatti/auto-session',
-    --         'nvim-telescope/telescope.nvim',
-    --     },
-    --     config = function()
-    --         require('session-lens').setup {
-    --             previewer = false,
-    --             winblend  = 0,
-    --         }
-    --     end
-    -- }
+return function(config)
+    if type(config.plugins.auto_session) == 'boolean' and not config.plugins.auto_session then
+        return {}
+    end
+
+    return {
+        'rmagatti/auto-session',
+        config = function()
+            if config.plugins.auto_session and type(config.plugins.auto_session) == 'function' then
+                config.plugins.auto_session()
+                return
+            end
+
+            local opts = {
+                previewer = false,
+                winblend  = 0,
+            }
+
+            if config.plugins.auto_session and type(config.plugins.auto_session) == 'table' then
+                opts = vim.tbl_extend('force', opts, config.plugins.auto_session)
+            end
+
+            require('auto-session').setup(opts)
+        end
+    }
 end

@@ -1,13 +1,14 @@
-return function(use, theme)
+return function(config)
     vim.g.dracula_show_end_of_buffer = true
 
     -- Lush is used in other themes, so comes first.
-    use 'rktjmp/lush.nvim'
-    use 'nyoom-engineering/oxocarbon.nvim'
-    use 'Mofiqul/dracula.nvim'
-    use 'mcchrish/zenbones.nvim'
-    use 'preservim/vim-colors-pencil'
-    use { 'chriskempson/base16-vim',
+    -- use 'rktjmp/lush.nvim'
+    -- use 'nyoom-engineering/oxocarbon.nvim'
+    -- use 'Mofiqul/dracula.nvim'
+    -- use 'mcchrish/zenbones.nvim'
+    -- use 'preservim/vim-colors-pencil'
+    return {
+        'chriskempson/base16-vim',
         config = function()
             vim.cmd [[
                 let base16colorspace=256
@@ -98,21 +99,21 @@ return function(use, theme)
     --         ]]
     --     end
     -- }
-
-    use { 'catppuccin/nvim',
-        as     = 'catppuccin',
-        config = function()
-            require 'catppuccin'.setup {
-                flavor       = 'macchiato',
-                dim_inactive = {
-                    enable     = true,
-                    shade      = 'dark',
-                    percentage = 0.5,
-                },
-            }
-
-            vim.g.catppuccin_flavor = "macchiato"
-        end
-    }
+    --
+    -- use { 'catppuccin/nvim',
+    --     as     = 'catppuccin',
+    --     config = function()
+    --         require 'catppuccin'.setup {
+    --             flavor       = 'macchiato',
+    --             dim_inactive = {
+    --                 enable     = true,
+    --                 shade      = 'dark',
+    --                 percentage = 0.5,
+    --             },
+    --         }
+    --
+    --         vim.g.catppuccin_flavor = "macchiato"
+    --     end
+    -- }
 end
 

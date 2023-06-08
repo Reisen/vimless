@@ -1,21 +1,26 @@
-return function(use)
-    -- FZF Sorted for fast filtering.
-    use { 'nvim-telescope/telescope-fzf-native.nvim',
-        run = 'make'
-    }
+return function(config)
+    if type(config.plugins.telescope) == 'boolean' and not config.plugins.telescope then
+        return {}
+    end
 
     -- Configure Telescope itself,
-    use { 'nvim-telescope/telescope.nvim',
-        requires = {
+    return {
+        'nvim-telescope/telescope.nvim',
+        dependencies = {
             'nvim-lua/plenary.nvim',
             'nvim-telescope/telescope-ui-select.nvim',
             'nvim-telescope/telescope-file-browser.nvim',
             'nvim-telescope/telescope-github.nvim',
             'nvim-telescope/telescope-project.nvim',
-            { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+            { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
         },
         config = function()
-            require 'telescope'.setup {
+            if config.plugins.telescope and type(config.plugins.telescope) == 'function' then
+                config.plugins.telescope()
+                return
+            end
+
+            local opts = {
                 extensions = {
                     fzf = {
                         fuzzy                   = true,
@@ -57,13 +62,17 @@ return function(use)
                 }
             }
 
+            if config.plugins.telescope and type(config.plugins.telescope) == 'table' then
+                opts = vim.tbl_extend('force', opts, config.plugins.telescope)
+            end
+
+            require 'telescope'.setup(opts)
             require 'telescope'.load_extension('fzf')
             require 'telescope'.load_extension('file_browser')
             require 'telescope'.load_extension('ui-select')
             require 'telescope'.load_extension('gh')
             require 'telescope'.load_extension('project')
-
-            print(vim.inspect(require 'plugins/tusk'))
+            require 'plugins/tusk'
 
             -- vim.api.nvim_set_keymap(
             --     "n",

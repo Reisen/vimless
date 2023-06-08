@@ -1,20 +1,30 @@
-return function(use)
-    use 'hrsh7th/cmp-nvim-lsp'
-    use 'hrsh7th/cmp-nvim-lsp-signature-help'
-    use 'hrsh7th/cmp-buffer'
-    use 'hrsh7th/cmp-path'
-    use 'hrsh7th/cmp-cmdline'
-    use 'hrsh7th/cmp-calc'
-    use 'hrsh7th/cmp-vsnip'
-    use 'hrsh7th/vim-vsnip'
-    use 'onsails/lspkind.nvim'
+return function(config)
+    if type(config.plugins.cmp) == 'boolean' and not config.plugins.cmp then
+        return {}
+    end
 
-    use { 'hrsh7th/nvim-cmp',
+    return {
+        'hrsh7th/nvim-cmp',
+        dependencies = {
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-nvim-lsp-signature-help',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-path',
+            'hrsh7th/cmp-cmdline',
+            'hrsh7th/cmp-calc',
+            'hrsh7th/cmp-vsnip',
+            'hrsh7th/vim-vsnip',
+            'onsails/lspkind.nvim',
+        },
         config = function()
-            -- Bring cmp into scope to avoid having to constantly re-require it.
-            local cmp = require 'cmp'
+            if config.plugins.cmp and type(config.plugins.cmp) == 'function' then
+                config.plugins.cmp()
+                return
+            end
 
-            cmp.setup {
+            -- Bring cmp into scope to avoid having to constantly re-require it.
+            local cmp  = require 'cmp'
+            local opts = {
                 snippet = {
                     expand = function(args)
                         vim.fn["vsnip#anonymous"](args.body)
@@ -68,6 +78,12 @@ return function(use)
                     end
                 },
             }
+
+            if config.plugins.cmp and type(config.plugins.cmp) == 'table' then
+                opts = vim.tbl_extend('force', opts, config.plugins.cmp)
+            end
+
+            cmp.setup(opts)
         end
     }
 end

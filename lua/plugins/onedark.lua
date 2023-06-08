@@ -1,7 +1,17 @@
-return function(use)
-    use { 'navarasu/onedark.nvim',
+return function(config)
+    if type(config.plugins.onedark) == 'boolean' and not config.plugins.onedark then
+        return {}
+    end
+
+    return {
+        'navarasu/onedark.nvim',
         config = function()
-            require 'onedark'.setup {
+            if config.plugins.onedark and type(config.plugins.onedark) == 'function' then
+                config.plugins.onedark()
+                return
+            end
+
+            local opts = {
                 style         = 'deep',
                 term_colors   = true,
                 ending_tildes = false,
@@ -12,15 +22,11 @@ return function(use)
                 },
             }
 
-            -- Enable theme and customize colours for other views.
-            vim.cmd [[
-                augroup quick_scope
-                autocmd!
-                autocmd ColorScheme * hi QuickScopePrimary   guifg='#FF0000' gui=bold
-                autocmd ColorScheme * hi QuickScopeSecondary guifg='#FF7799' gui=bold
-                augroup END
-            ]]
+            if config.plugins.onedark and type(config.plugins.onedark) == 'table' then
+                opts = vim.tbl_extend('force', opts, config.plugins.onedark)
+            end
 
+            require 'onedark'.setup(opts)
             require 'onedark'.load()
         end
 
