@@ -24,7 +24,10 @@ return function(config)
 
             -- Bring cmp into scope to avoid having to constantly re-require it.
             local cmp  = require 'cmp'
+
             local opts = {
+                preselect = cmp.PreselectMode.None,
+
                 snippet = {
                     expand = function(args)
                         vim.fn["vsnip#anonymous"](args.body)
@@ -45,7 +48,7 @@ return function(config)
                     ['<C-b>'] = cmp.mapping.select_prev_item(),
                     ['<C-f>'] = cmp.mapping.select_next_item(),
                     ['<C-e>'] = cmp.mapping.abort(),
-                    ['<CR>']  = cmp.mapping.confirm({ select = true }),
+                    ['<CR>']  = cmp.mapping.confirm({ select = false }),
                 }),
 
                 experimental = {
