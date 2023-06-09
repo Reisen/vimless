@@ -17,7 +17,7 @@ return function(config)
                 opts = vim.tbl_extend('force', opts, config.plugins.fzf_lua)
             end
 
-            require 'fzf_lua'.setup(opts)
+            require 'fzf-lua'.setup(opts)
         end
     }
 end
