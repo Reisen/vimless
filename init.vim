@@ -1,10 +1,13 @@
 " Set some reasonable defaults for a clean UI.
 " ------------------------------------------------------------------------------
+set shell=/bin/bash         " use bash as the shell
 set autoindent              " copy indent from current line when starting a new line
 set expandtab               " use spaces instead of tabs
 set nonumber                " don't show line numbers
 set fillchars+=diff:╱       " use a different character for diff mode
 set fillchars+=vert:\       " use a different character for vertical splits
+set fillchars+=stl:\        " don't fill status lines with ^ chars
+set fillchars+=stlnc:\      " don't fill status lines with ^ chars
 set nowrap                  " don't wrap lines
 set shiftwidth=4            " number of spaces to use for autoindent by default
 set signcolumn=yes:1        " always show the sign column to avoid visual moving around
@@ -12,11 +15,13 @@ set smartindent             " smarter indentation for C-like languages
 set softtabstop=4           " number of spaces to use for tab
 set tabstop=4               " number of spaces that a <Tab> in the file counts for
 set timeoutlen=1000         " time in milliseconds to wait for a mapped sequence to complete
-set laststatus=0            " don't show status line in inactive windows
+set laststatus=2            " don't show status line in inactive windows
 let mapleader=" "           " set the leader key to <Space>
 set winbar=\ \ %3n\ %f      " set the winbar format (note navic appends to this)
-set statusline=\            " set the statusline format to empty.
 set splitkeep=screen        " prevent vertical shifting when horizontal splitting
+
+" Keep the status line but make it unobtrusive, show only the right aligned cursor position.
+set statusline=%=%{line('.')}\:%{col('.')}
 
 " Smarter Macros
 "

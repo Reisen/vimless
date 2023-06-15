@@ -36,7 +36,6 @@ local lazy_installed = ensure_lazy()
 -- Configure Plugins
 -- ------------------------------------------------------------------------------------
 require('lazy').setup({
-    require('themes')(config),
     require('plugins/auto-session')(config),
     require('plugins/bufferline')(config),
     require('plugins/centerbuf')(config),
@@ -46,6 +45,7 @@ require('lazy').setup({
     require('plugins/dirbuf')(config),
     require('plugins/gitsigns')(config),
     require('plugins/hydra')(config),
+    require('plugins/indent-blankline')(config),
     require('plugins/leap')(config),
     require('plugins/marks')(config),
     require('plugins/mind')(config),
@@ -54,6 +54,7 @@ require('lazy').setup({
     require('plugins/neotree')(config),
     require('plugins/nvim-web-devicons')(config),
     require('plugins/octo')(config),
+    require('plugins/targets')(config),
     require('plugins/telescope')(config),
     require('plugins/todo-comments')(config),
     require('plugins/toggleterm')(config),
@@ -75,6 +76,10 @@ require('lazy').setup({
     require('plugins/lspconfig')(config),
     require('plugins/fidget')(config),
     require('plugins/treesitter')(config),
+
+    -- Neovim comes with rust.vim, but a very outdated version (2017). Force
+    -- updating this plugin regardless of config.
+    'rust-lang/rust.vim',
 
     -- Unpack config.custom to finish off the list with any additional plugins.
     -- --------------------------------------------------------------------------------

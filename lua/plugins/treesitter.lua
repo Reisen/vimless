@@ -8,8 +8,6 @@ return function(config)
         build        = ':TSUpdate',
         dependencies = {
             'nvim-treesitter/nvim-treesitter-textobjects',
-            'RRethy/nvim-treesitter-textsubjects',
-            'mfussenegger/nvim-treehopper'
         },
         config = function()
             if config.plugins.treesitter and type(config.plugins.treesitter) == 'function' then
@@ -18,6 +16,10 @@ return function(config)
             end
 
             local opts = {
+                highlight = {
+                    enable = true,
+                },
+
                 incremental_selection = {
                     enable = true,
                     keymaps = {
@@ -27,21 +29,6 @@ return function(config)
                         node_decremental  = ",",
                     },
                 },
-
-                textsubjects = {
-                    enable         = true,
-                    prev_selection = ',',
-                    keymaps        = {
-                        ['.']  = 'textsubjects-smart',
-                        [';']  = 'textsubjects-container-outer',
-                        ['i;'] = 'textsubjects-container-inner',
-                    },
-                },
-
-                vim.cmd [[
-                    omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
-                    xnoremap <silent> m :lua require('tsht').nodes()<CR>
-                ]]
             }
 
             if config.plugins.treesitter and type(config.plugins.treesitter) == 'table' then

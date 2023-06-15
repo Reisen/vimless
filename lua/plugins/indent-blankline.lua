@@ -12,22 +12,18 @@ return function(config)
             end
 
             vim.opt.list = true
-            vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333435 gui=nocombine]]
-            vim.cmd [[highlight IndentBlanklineIndent2 guifg=#333435 gui=nocombine]]
+            vim.cmd [[
+                " Setup indent-blankline colors for the current colorscheme. Use ctermfg=8, NONE for gui.
+                highlight IndentBlanklineIndent1 ctermfg=8 ctermbg=NONE guifg=NONE guibg=NONE
+                highlight IndentBlanklineIndent2 ctermfg=8 ctermbg=NONE guifg=NONE guibg=NONE
+                highlight IndentBlanklineChar    ctermfg=8 ctermbg=NONE guifg=NONE guibg=NONE
+            ]]
 
             local opts = {
                 space_char_blankline           = ' ',
-                show_current_context           = true,
+                show_current_context           = false,
                 show_current_context_start     = false,
-                show_trailing_blankline_indent = false,
-                char_highlight_list            = {
-                    "IndentBlanklineIndent1",
-                    "IndentBlanklineIndent2",
-                },
-                space_char_highlight_list      = {
-                    "IndentBlanklineIndent1",
-                    "IndentBlanklineIndent2",
-                },
+                show_trailing_blankline_indent = true,
             }
 
             require 'indent_blankline'.setup(opts)

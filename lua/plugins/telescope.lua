@@ -12,6 +12,7 @@ return function(config)
             'nvim-telescope/telescope-file-browser.nvim',
             'nvim-telescope/telescope-github.nvim',
             'nvim-telescope/telescope-project.nvim',
+            'camgraff/telescope-tmux.nvim',
             { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
         },
         config = function()

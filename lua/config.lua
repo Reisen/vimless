@@ -45,7 +45,7 @@ return {
         fugitive          = true,
         gitsigns          = true,
         hydra             = true,
-        indent_blankline  = true,
+        indent_blankline  = false,
         leap              = true,
         lspconfig         = true,
         marks             = true,
@@ -66,7 +66,7 @@ return {
         tusk              = true,
         twilight          = true,
         vim_repeat        = true,
-        which_key         = true,
+        which_key         = { triggers = {} },
         zen               = true,
 
         -- Included but Disabled Plugins
@@ -80,6 +80,7 @@ return {
         mind              = false,
         neogit            = false,
         onedark           = false,
+        targets           = false,
         tokyonight        = false,
         vinegar           = false,
 

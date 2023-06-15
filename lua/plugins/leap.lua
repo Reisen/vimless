@@ -5,6 +5,11 @@ return function(config)
 
     return {
         'ggandor/leap.nvim',
+        dependencies = {
+            'ggandor/leap-spooky.nvim',
+            'ggandor/leap-ast.nvim',
+            'ggandor/flit.nvim',
+        },
         config = function()
             if config.plugins.leap and type(config.plugins.leap) == 'function' then
                 config.plugins.leap()
@@ -40,17 +45,17 @@ return function(config)
                 }
             end
 
-            -- Bind `leap_to_window` to <leader><space> for quick window
-            -- switching.
-            vim.api.nvim_set_keymap(
-                'n',
-                '<leader><space>',
-                '<cmd>lua LeapToWindow()<CR>',
-                {
-                    noremap = true,
-                    silent  = true,
-                }
-            )
+            -- Initialize Leap Spooky.
+            require 'leap-spooky'.setup {
+                op = false
+            }
+
+            require 'flit' .setup {
+                labeled_modes = 'v',
+            }
+
+            -- Leap AST hooks pre-exist, we just need to bind them.
+            vim.keymap.set({'n', 'x', 'o'}, '\'', function() require'leap-ast'.leap() end, {})
         end
     }
 end

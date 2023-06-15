@@ -5,6 +5,7 @@ return function(config)
 
     -- Enable Rust.vim's automatic Rustfmt on save.
     vim.g.rustfmt_autosave = 1
+    vim.g.rustfmt_command  = 'rustup run nightly rustfmt'
 
     -- Autocommand that overrides doc-comment colours with comment colours.
     vim.cmd [[
@@ -17,7 +18,6 @@ return function(config)
         'simrat39/rust-tools.nvim',
         requires = {
             'SmiteshP/nvim-navic',
-            'rust-lang/rust.vim',
             'nvim-lua/plenary.nvim' ,
             'saecki/crates.nvim',
         },

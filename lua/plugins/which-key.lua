@@ -13,13 +13,13 @@ return function(config)
 
             local opts = {
                 window = {
-                    position = 'top',
+                    position = 'bottom',
                 },
 
                 layout = {
-                    align   = "center",
-                    height  = { min = 40, max = 40 },
+                    align   = "left",
                     spacing = 8,
+                    height  = { min = 10, max = 15 },
                     width   = { min = 30, max = 40 },
                 },
             }

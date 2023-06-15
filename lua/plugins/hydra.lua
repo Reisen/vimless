@@ -85,7 +85,7 @@ function M.generate(headers, hints)
     -- Now we concat the result, and we'll use regex to wrap all matches with
     -- `_` characters.
     local result = table.concat(lines)
-    return result:gsub('([%w%^%$%(%)%%%.%[%]%*%+%-%?=/]+):', '_%1_ ')
+    return result:gsub('([%w%^%$%(%)%%%.%[%]%*%+%-%?=/<>]+):', '_%1_ ')
 end
 
 -- Given a Sectioned Table of Tables indexed by keycodes:
@@ -141,6 +141,7 @@ return function(config)
 
             local hydra       = require 'hydra'
             local c           = require 'hydra.keymap-util'
+            local p           = require 'plenary.strings'
             local gitsigns    = require 'gitsigns'
             local genhydra    = function(hints)
                 local order = hints.order or {}
@@ -152,9 +153,9 @@ return function(config)
             -- Hydra of Hydras
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
-                position = 'top',
+                position = 'bottom',
                 border   = 'none',
-                offset   = 1,
+                offset   = 0,
             }
 
             -- Initialize Hydras
@@ -170,16 +171,17 @@ return function(config)
                 order = {
                     "Window Navigation",
                     "Window Swapping",
+                    "Window Resizing",
                     "Window Splitting",
                     "Other",
                 },
                 heads  = {
                     ["Window Navigation"] = {
-                        h = {'Left',                c.cmd('wincmd h'), {}},
-                        j = {'Down',                c.cmd('wincmd j'), {}},
-                        k = {'Up',                  c.cmd('wincmd k'), {}},
-                        l = {'Right',               c.cmd('wincmd l'), {}},
-                        o = {'Previous Window',     c.cmd('wincmd p'), {}},
+                        h = {'Left',           c.cmd('wincmd h'),                {}},
+                        j = {'Down',           c.cmd('wincmd j'),                {}},
+                        k = {'Up',             c.cmd('wincmd k'),                {}},
+                        l = {'Right',          c.cmd('wincmd l'),                {}},
+                        o = {'Jump to Window', function() _G.LeapToWindow() end, { exit = true }},
                     },
                     ["Window Swapping"] = {
                         H = {'Swap Left',        c.cmd('wincmd H'), {}},
@@ -188,15 +190,21 @@ return function(config)
                         L = {'Swap Right',       c.cmd('wincmd L'), {}},
                         x = {'Swap Previous',    c.cmd('wincmd x'), {}},
                     },
+                    ["Window Resizing"] = {
+                        ["-"] = {'Decrease Height', c.cmd('resize -1'), {}},
+                        ["+"] = {'Increase Height', c.cmd('resize +1'), {}},
+                        ["<"] = {'Decrease Width',  c.cmd('vertical resize -1'), {}},
+                        [">"] = {'Increase Width',  c.cmd('vertical resize +1'), {}},
+                        ["="] = {'Balance Windows', c.cmd('wincmd ='), {}},
+                    },
                     ["Window Splitting"] = {
                         s = {'Split Horizontal', c.cmd('wincmd s'), {}},
                         v = {'Split Vertical',   c.cmd('wincmd v'), {}},
                     },
                     ["Other"] = {
-                        c     = {'Close Window',       c.cmd('wincmd c'), {}},
-                        T     = {'Move Window to Tab', c.cmd('wincmd T'), { exit = true }},
-                        ["="] = {'Balance Windows',    c.cmd('wincmd ='), {}},
-                        q     = {'Quit',               function() end,    { exit = true }},
+                        c = {'Close Window',       c.cmd('wincmd c'), {}},
+                        T = {'Move Window to Tab', c.cmd('wincmd T'), { exit = true }},
+                        q = {'Quit',               function() end,    { exit = true }},
                     }
                 },
             })
@@ -312,6 +320,38 @@ return function(config)
                     ["Git"] = {
                         e = { 'Git Status', function() vim.cmd 'Gedit:' end,          { exit = true }},
                         l = { 'Git Log',    function() vim.cmd 'G log --oneline' end, { exit = true }},
+                    },
+
+                    ["Other"] = {
+                        q = { 'Quit', function() end, { exit = true }},
+                    },
+                },
+            })
+
+            local neotest_hydra = genhydra({
+                name   = 'Neotest',
+                mode   = {'n'},
+                body   = '<leader>n',
+                config = {
+                    hint           = hint_options,
+                    invoke_on_body = true,
+                },
+                order = {
+                    "Run",
+                    "Output",
+                    "Other",
+                },
+                heads  = {
+                    ["Run"] = {
+                        ["."] = { 'Run Test',          require 'neotest'.run.run,                                    { exit = true }},
+                        f     = { 'Run File Tests',    function() require 'neotest'.run.run(vim.fn.expand('%')) end, { exit = true }},
+                        s     = { 'Stop Running Test', require 'neotest'.run.stop,                                   { exit = true }},
+                        a     = { 'Attach to Test ',   require 'neotest'.run.attach,                                 { exit = true }},
+                    },
+
+                    ["Output"] = {
+                        o = { 'Toggle Overview', require 'neotest'.summary.toggle,   { exit = true }},
+                        p = { 'Toggle Panel', require 'neotest'.output_panel.toggle, { exit = true }},
                     },
 
                     ["Other"] = {
@@ -452,7 +492,7 @@ return function(config)
                 border        = true,
                 layout_config = { height = 15, width = 0.9999, anchor = 'N' },
                 borderchars   = {
-                    prompt  = { '─', ' ', '', ' ', '', '', '', '' },
+                    prompt  = { ' ', ' ', '', ' ', '', '', '', '' },
                     results = { '',  ' ', '', ' ', '', '', '', '' },
                     preview = { '',  ' ', '', ' ', '', '', '', '' },
                 },
@@ -546,10 +586,12 @@ return function(config)
                     },
 
                     ["Vim"] = {
-                        o = { 'Options',      function() telescope().vim_options(ivy) end,  { exit = true }},
-                        t = { 'Colorschemes', function() telescope().colorscheme(ivy) end,  { exit = true }},
-                        j = { 'Buffers',      function() telescope().buffers(ivy_bufs) end, { exit = true }},
-                        x = { 'Commands',     function() telescope().commands(ivy) end,     { exit = true }},
+                        h = { 'Highlight Groups', function() telescope().highlights(ivy) end,   { exit = true }},
+                        j = { 'Buffers',          function() telescope().buffers(ivy_bufs) end, { exit = true }},
+                        k = { 'Keymaps',          function() telescope().keymaps(ivy) end,      { exit = true }},
+                        o = { 'Options',          function() telescope().vim_options(ivy) end,  { exit = true }},
+                        t = { 'Colorschemes',     function() telescope().colorscheme(ivy) end,  { exit = true }},
+                        x = { 'Commands',         function() telescope().commands(ivy) end,     { exit = true }},
                     },
 
                     ["LSP"] = {
@@ -598,69 +640,26 @@ return function(config)
                 }
             })
 
-            local gh_hydra = genhydra({
-                name   = 'Github',
+            local anykey_hint = hydra({
+                name   = 'Press Any Key',
                 mode   = 'n',
+                heads  = {},
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
+                    color          = 'blue',
+                    on_key         = function()
+                        local next_key = vim.fn.nr2char(vim.fn.getchar())
+                        local command  = string.format(':WhichKey %s<cr>', next_key)
+                        local execute  = vim.api.nvim_replace_termcodes(command, true, false, true)
+                        vim.api.nvim_feedkeys(execute, 'n', true)
+                    end,
                 },
-                order = {
-                    'Commits',
-                    'PRs',
-                    'Reviews',
-                    'Threads',
-                    'Issues',
-                    'Litee',
-                    'Other',
-                },
-                heads = {
-                    ["Commits"] = {
-                        cc = { 'Close Commit',    "<cmd>GHCloseCommit<cr>",    { exit = true }},
-                        ce = { 'Expand Commit',   "<cmd>GHExpandCommit<cr>",   { exit = true }},
-                        co = { 'Open Commit',     "<cmd>GHOpenToCommit<cr>",   { exit = true }},
-                        cp = { 'Popout Commit',   "<cmd>GHPopOutCommit<cr>",   { exit = true }},
-                        cz = { 'Collapse Commit', "<cmd>GHCollapseCommit<cr>", { exit = true }},
-                    },
-
-                    ["Issues"] = {
-                        ip = { 'Preview', "<cmd>GHPreviewIssue<cr>", { exit = true }},
-                    },
-
-                    ["Litee"] = {
-                        lt = { 'Toggle Litee', "<cmd>LTPanel<cr>", { exit = true }},
-                    },
-
-                    ["Reviews"] = {
-                        rb = { 'Begin',           "<cmd>GHStartReview<cr>",    { exit = true }},
-                        rc = { 'Close',           "<cmd>GHCloseReview<cr>",    { exit = true }},
-                        rd = { 'Delete',          "<cmd>GHDeleteReview<cr>",   { exit = true }},
-                        re = { 'Expand',          "<cmd>GHExpandReview<cr>",   { exit = true }},
-                        rs = { 'Submit',          "<cmd>GHSubmitReview<cr>",   { exit = true }},
-                        rz = { 'Collapse Review', "<cmd>GHCollapseReview<cr>", { exit = true }},
-                    },
-
-                    ["PRs"] = {
-                        pc = { "Close",    "<cmd>GHClosePR<cr>", { exit = true }},
-                        pd = { "Details",  "<cmd>GHPRDetails<cr>", { exit = true }},
-                        pe = { "Expand",   "<cmd>GHExpandPR<cr>", { exit = true }},
-                        po = { "Open",     "<cmd>GHOpenPR<cr>", { exit = true }},
-                        pp = { "PopOut",   "<cmd>GHPopOutPR<cr>", { exit = true }},
-                        pr = { "Refresh",  "<cmd>GHRefreshPR<cr>", { exit = true }},
-                        pt = { "Open To",  "<cmd>GHOpenToPR<cr>", { exit = true }},
-                        pz = { "Collapse", "<cmd>GHCollapsePR<cr>", { exit = true }},
-                    },
-
-                    ["Threads"] = {
-                        tc = { "Create", "<cmd>GHCreateThread<cr>", { exit = true }},
-                        tn = { "Next",   "<cmd>GHNextThread<cr>", { exit = true }},
-                        tt = { "Toggle", "<cmd>GHToggleThread<cr>", { exit = true }},
-                    },
-
-                    ["Other"] = {
-                        q = { 'Quit', function() end, { exit = true }},
-                    }
-                }
+                hint = p.dedent [[
+                  ^                   ^
+                  ^  Press Any Key    ^
+                  ^                   ^
+                ]]
             })
 
             genhydra({
@@ -680,17 +679,17 @@ return function(config)
                 heads = {
                     ["Vim"] = {
                         b = { 'Buffers', function() buffer_hydra:activate() end, { exit = true }},
+                        l = { 'LSP',     function() lsp_hydra:activate() end,    { exit = true }},
                         t = { 'Tabs',    function() tab_hydra:activate() end,    { exit = true }},
                         v = { 'Vim',     function() vim_hydra:activate() end,    { exit = true }},
                         w = { 'Windows', function() window_hydra:activate() end, { exit = true }},
-                        l = { 'LSP',     function() lsp_hydra:activate() end,    { exit = true }},
                     },
 
                     ["Plugins"] = {
-                        f = { 'Telescope', function() fzf_hydra:activate() end,  { exit = true }},
-                        o = { 'Octo',      function() octo_hydra:activate() end, { exit = true }},
-                        g = { 'Git',       function() git_hydra:activate() end,  { exit = true }},
-                        h = { 'Github',    function() gh_hydra:activate() end,   { exit = true }},
+                        f = { 'Telescope', function() fzf_hydra:activate() end,     { exit = true }},
+                        g = { 'Git',       function() git_hydra:activate() end,     { exit = true }},
+                        n = { 'Neotest',   function() neotest_hydra:activate() end, { exit = true }},
+                        o = { 'Octo',      function() octo_hydra:activate() end,    { exit = true }},
                     },
 
                     ["Languages"] = {
@@ -698,7 +697,14 @@ return function(config)
                     },
 
                     ["Other"] = {
-                        q = { 'Quit', function() end, { exit = true }},
+                        q = { 'Quit',           function() end, { exit = true }},
+                        p = { 'Plugin Manager', c.cmd('Lazy'),  { exit = true }},
+                        k = { 'WhichKey',       function()
+                            local next_key = vim.fn.nr2char(vim.fn.getchar())
+                            local command  = string.format(':WhichKey %s<cr>', next_key)
+                            local execute  = vim.api.nvim_replace_termcodes(command, true, false, true)
+                            vim.api.nvim_feedkeys(execute, 'n', true)
+                        end, { exit = true }},
                     }
                 }
             })
