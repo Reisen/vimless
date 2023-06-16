@@ -2,6 +2,7 @@
 --
 -- TODO: Make global circles configurable.
 -- TODO: Make LSP signs globally configurable.
+-- TODO: Feed a LazyGit config in from a temporary file.
 
 local config = require('config')
 

@@ -340,7 +340,8 @@ return function(config)
                         },
 
                         ["Other"] = {
-                            q = { 'Quit', function() end, { exit = true }},
+                            g = { 'LazyGit', function() vim.cmd 'LazyGit' end, { exit = true }},
+                            q = { 'Quit',    function() end, { exit = true }},
                         },
                     },
                 })
@@ -681,6 +682,11 @@ return function(config)
                     autocmd!
                     autocmd BufEnter * lua VimlessBindHydras()
                 augroup
+
+                " Some Hydra's (in particular those in the h window) that do
+                " not invoke other hydras need to be bound manually.
+                nnoremap <leader>k :WhichKey<cr>
+                nnoremap <leader>p :Lazy<cr>
             ]]
         end
     }
