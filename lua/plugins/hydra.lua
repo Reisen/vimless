@@ -139,18 +139,28 @@ return function(config)
                 return
             end
 
-            local hydra       = require 'hydra'
-            local c           = require 'hydra.keymap-util'
-            local p           = require 'plenary.strings'
-            local gitsigns    = require 'gitsigns'
-            local genhydra    = function(hints)
+            local hydra        = require 'hydra'
+            local c            = require 'hydra.keymap-util'
+            local p            = require 'plenary.strings'
+            local gitsigns     = require 'gitsigns'
+            local neotest      = require 'neotest'
+            local file_browser = require 'telescope'.extensions.file_browser
+            local octo         = require 'telescope'.extensions.octo
+            local crates       = require 'crates'
+            local rust_tools   = require 'rust-tools'
+            local telescope    = require 'telescope.builtin'
+
+            -- Wrap the Hydra call with a generator that consumes and formats
+            -- hints before the creating the full hydra.
+            local genhydra = function(hints)
                 local order = hints.order or {}
                 hints.hint  = M.generate(order, hints.heads)
                 hints.heads = M.flatten(hints.heads)
+                local neck = hydra(hints)
+                neck.win_width = vim.o.columns
                 return hydra(hints)
             end
 
-            -- Hydra of Hydras
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
                 position = 'bottom',
@@ -158,7 +168,6 @@ return function(config)
                 offset   = 0,
             }
 
-            -- Initialize Hydras
             local window_hydra = genhydra({
                 name   = 'Window Management',
                 mode   = 'n',
@@ -166,7 +175,6 @@ return function(config)
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
-                    on_key         = function() vim.wait(50) end,
                 },
                 order = {
                     "Window Navigation",
@@ -177,18 +185,18 @@ return function(config)
                 },
                 heads  = {
                     ["Window Navigation"] = {
-                        h = {'Left',           c.cmd('wincmd h'),                {}},
-                        j = {'Down',           c.cmd('wincmd j'),                {}},
-                        k = {'Up',             c.cmd('wincmd k'),                {}},
-                        l = {'Right',          c.cmd('wincmd l'),                {}},
+                        h = {'Left',  c.cmd('wincmd h'), {}},
+                        j = {'Down',  c.cmd('wincmd j'), {}},
+                        k = {'Up',    c.cmd('wincmd k'), {}},
+                        l = {'Right', c.cmd('wincmd l'), {}},
                         o = {'Jump to Window', function() _G.LeapToWindow() end, { exit = true }},
                     },
                     ["Window Swapping"] = {
-                        H = {'Swap Left',        c.cmd('wincmd H'), {}},
-                        J = {'Swap Down',        c.cmd('wincmd J'), {}},
-                        K = {'Swap Up',          c.cmd('wincmd K'), {}},
-                        L = {'Swap Right',       c.cmd('wincmd L'), {}},
-                        x = {'Swap Previous',    c.cmd('wincmd x'), {}},
+                        H = {'Swap Left',     c.cmd('wincmd H'), {}},
+                        J = {'Swap Down',     c.cmd('wincmd J'), {}},
+                        K = {'Swap Up',       c.cmd('wincmd K'), {}},
+                        L = {'Swap Right',    c.cmd('wincmd L'), {}},
+                        x = {'Swap Previous', c.cmd('wincmd x'), {}},
                     },
                     ["Window Resizing"] = {
                         ["-"] = {'Decrease Height', c.cmd('resize -1'), {}},
@@ -209,6 +217,7 @@ return function(config)
                 },
             })
 
+            -- Initialize Hydras
             local tab_hydra = genhydra({
                 name   = 'Tab Management',
                 mode   = 'n',
@@ -270,444 +279,409 @@ return function(config)
                 },
             })
 
-            local git_hydra = genhydra({
-                name   = 'Git',
-                mode   = {'n', 'x'},
-                body   = '<leader>g',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                    on_key         = function() vim.wait(50) end,
-                },
-                order = {
-                    "Diff",
-                    "Visual",
-                    "Git",
-                    "Other",
-                },
-                heads  = {
-                    ["Diff"] = {
-                        n = { 'Next Hunk',  function() vim.cmd 'Gitsigns next_hunk' end,  {}},
-                        p = { 'Prev Hunk',  function() vim.cmd 'Gitsigns prev_hunk' end,  {}},
-                        r = { 'Reset Hunk', function() vim.cmd 'Gitsigns reset_hunk' end, {}},
-                        s = { 'Stage Hunk',
-                            function()
-                                local mode = vim.api.nvim_get_mode().mode:sub(1,1)
-                                if mode == 'V' then -- visual-line mode
-                                   local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
-                                   vim.api.nvim_feedkeys(esc, 'x', false) -- exit visual mode
-                                   vim.cmd("'<,'>Gitsigns stage_hunk")
-                                else
-                                   vim.cmd("Gitsigns stage_hunk")
-                                end
-                            end,
-                            {}
+            -- We wrap the Hydra generation in a function because by default Hydra's
+            -- are created once at module load, which means they do not have buffer
+            -- local context. Instead we bind this function to an autocommand that
+            -- generates the hydras per-buffer.
+            --
+            -- TODO: Only split out hydras that can't be global.
+            function _G.VimlessBindHydras()
+                local git_hydra = genhydra({
+                    name   = 'Git',
+                    mode   = {'n', 'x'},
+                    body   = '<leader>g',
+                    config = {
+                        hint           = hint_options,
+                        invoke_on_body = true,
+                        buffer         = true,
+                        on_key         = function() vim.wait(50) end,
+                    },
+                    order = {
+                        "Diff",
+                        "Visual",
+                        "Git",
+                        "Other",
+                    },
+                    heads  = {
+                        ["Diff"] = {
+                            n = { 'Next Hunk',  function() vim.cmd 'Gitsigns next_hunk' end,  {}},
+                            p = { 'Prev Hunk',  function() vim.cmd 'Gitsigns prev_hunk' end,  {}},
+                            r = { 'Reset Hunk', function() vim.cmd 'Gitsigns reset_hunk' end, {}},
+                            s = { 'Stage Hunk',
+                                function()
+                                    local mode = vim.api.nvim_get_mode().mode:sub(1,1)
+                                    if mode == 'V' then -- visual-line mode
+                                       local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
+                                       vim.api.nvim_feedkeys(esc, 'x', false) -- exit visual mode
+                                       vim.cmd("'<,'>Gitsigns stage_hunk")
+                                    else
+                                       vim.cmd("Gitsigns stage_hunk")
+                                    end
+                                end,
+                                {}
+                            },
+                            R = { 'Reset Buffer',        gitsigns.reset_buffer,    {}},
+                            S = { 'Stage Buffer',        gitsigns.stage_buffer,    {}},
+                            u = { 'Undo Stage Hunk',     gitsigns.undo_stage_hunk, {}},
+                            d = { 'Diff (Project)',      function() vim.cmd 'DiffviewFileHistory %' end, { exit = true }},
+                            D = { 'Diff (Current File)', function() vim.cmd 'DiffviewOpen' end,          { exit = true }},
                         },
-                        R = { 'Reset Buffer',        gitsigns.reset_buffer,    {}},
-                        S = { 'Stage Buffer',        gitsigns.stage_buffer,    {}},
-                        u = { 'Undo Stage Hunk',     gitsigns.undo_stage_hunk, {}},
-                        d = { 'Diff (Project)',      function() vim.cmd 'DiffviewFileHistory %' end, { exit = true }},
-                        D = { 'Diff (Current File)', function() vim.cmd 'DiffviewOpen' end,          { exit = true }},
-                    },
 
-                    ["Visual"] = {
-                        b = { 'Blame Current Line', function() gitsigns.blame_line { full = true } end, { exit = true }},
-                        B = { 'Blame Buffer',       function() vim.cmd 'G blame' end,                   { exit = true }},
-                        v = { 'Highlight Numbers',  function() vim.cmd 'Gitsigns toggle_linehl' end,    { exit = true }},
-                        V = { 'Highlight Lines',    function() vim.cmd 'Gitsigns toggle_numhl' end,     { exit = true }},
-                    },
-
-                    ["Git"] = {
-                        e = { 'Git Status', function() vim.cmd 'Gedit:' end,          { exit = true }},
-                        l = { 'Git Log',    function() vim.cmd 'G log --oneline' end, { exit = true }},
-                    },
-
-                    ["Other"] = {
-                        q = { 'Quit', function() end, { exit = true }},
-                    },
-                },
-            })
-
-            local neotest_hydra = genhydra({
-                name   = 'Neotest',
-                mode   = {'n'},
-                body   = '<leader>n',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                },
-                order = {
-                    "Run",
-                    "Output",
-                    "Other",
-                },
-                heads  = {
-                    ["Run"] = {
-                        ["."] = { 'Run Test',          require 'neotest'.run.run,                                    { exit = true }},
-                        f     = { 'Run File Tests',    function() require 'neotest'.run.run(vim.fn.expand('%')) end, { exit = true }},
-                        s     = { 'Stop Running Test', require 'neotest'.run.stop,                                   { exit = true }},
-                        a     = { 'Attach to Test ',   require 'neotest'.run.attach,                                 { exit = true }},
-                    },
-
-                    ["Output"] = {
-                        o = { 'Toggle Overview', require 'neotest'.summary.toggle,   { exit = true }},
-                        p = { 'Toggle Panel', require 'neotest'.output_panel.toggle, { exit = true }},
-                    },
-
-                    ["Other"] = {
-                        q = { 'Quit', function() end, { exit = true }},
-                    },
-                },
-            })
-
-            local rust_hydra = genhydra({
-                name   = 'Rust',
-                mode   = 'n',
-                body   = '<leader>r',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                    on_key         = function() vim.wait(50) end,
-                },
-                order = {
-                    "Crates",
-                    "Source",
-                    "Other",
-                },
-                heads = {
-                    ["Crates"] = {
-                        u = { 'Update Crate',  require('crates').update_crate,            { exit = true }},
-                        U = { 'Upgrade Crate', require('crates').upgrade_crate,           { exit = true }},
-                        i = { 'Update Crate',  require('crates').show_popup,              { exit = true }},
-                        d = { 'Update Crate',  require('crates').show_dependencies_popup, { exit = true }},
-                        o = { 'Update Crate',  require('crates').show_features_popup,     { exit = true }},
-                        v = { 'Update Crate',  require('crates').show_versions_popup,     { exit = true }},
-                    },
-
-                    ["Source"] = {
-                        k = { 'Move Item Up',    function() require('rust-tools').move_item.move_up() end,               { exit = true }},
-                        j = { 'Move Item Down',  function() require('rust-tools').move_item.move_down() end,             { exit = true }},
-                        e = { 'Expand Macro',    function() require('rust-tools').expand_macro.expand_macro() end,       { exit = true }},
-                        s = { 'Parent Module',   function() require('rust-tools').parent_module.parent_module() end,     { exit = true }},
-                        c = { 'Open Cargo.toml', function() require('rust-tools').open_cargo_toml.open_cargo_toml() end, { exit = true }},
-                    },
-
-                    ["Other"] = {
-                        q = { 'Quit', function() end, { exit = true }},
-                    }
-                },
-            })
-
-            local vim_hydra = genhydra({
-                name   = 'VIM',
-                mode   = 'n',
-                body   = '<leader>v',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                },
-                order = {
-                    'Plugins',
-                    'Toggle',
-                    'Other',
-                },
-                heads  = {
-                    ["Plugins"] = {
-                        p = { 'Lazy Plugin Manager', c.cmd('Lazy'), { exit = true }},
-                    },
-
-                    ["Toggle"] = {
-                        m = { 'Toggle Minimap', require'mini.map'.toggle,           { exit = true }},
-                        t = { 'Toggle Trouble', c.cmd('TroubleToggle'),             { exit = true }},
-                        n = { 'Toggle Neotree', c.cmd('NeoTreeShowToggle buffers'), { exit = true }},
-                    },
-
-                    ["Other"] = {
-                        q = { 'Quit',  function() end, { exit = true }},
-                    }
-                }
-            })
-
-            local lsp_hydra = genhydra({
-                name   = 'LSP',
-                mode   = 'n',
-                body   = '<leader>l',
-                color  = 'pink',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                    on_key         = function() vim.wait(50) end,
-                },
-                order = {
-                    'Diagnostics',
-                    'Goto',
-                    'Refactoring',
-                    'Other',
-                },
-                heads = {
-                    ["Diagnostics"] = {
-                        n = { 'Next Error',  vim.diagnostic.goto_next,  { exit = true }},
-                        p = { 'Prev Error',  vim.diagnostic.goto_prev,  { exit = true }},
-                        l = { 'List Errors', vim.diagnostic.setloclist, { exit = true }},
-                    },
-
-                    ["Goto"] = {
-                        D = { 'Declaration',          vim.lsp.buf.declaration,     { exit = true }},
-                        K = { 'Documentation',        vim.lsp.buf.hover,           { exit = true }},
-                        d = { 'Definition',           vim.lsp.buf.definition,      { exit = true }},
-                        i = { 'Implementations',      vim.lsp.buf.implementation,  { exit = true }},
-                        r = { 'References',           vim.lsp.buf.references,      { exit = true }},
-                        t = { 'Type Definitions',     vim.lsp.buf.type_definition, { exit = true }},
-                        s = { 'Definition in Split', function()
-                            -- This opens a split to the right with the cursor
-                            -- in the same space. It then focuses that window,
-                            -- and invokes vim.lsp.definition to go to the
-                            -- file. It will then call `zt` to move it to the
-                            -- top of the file.
-                            vim.cmd 'wincmd v'
-                            vim.cmd 'wincmd l'
-                            vim.lsp.buf.definition()
-                            vim.wait(50)
-                            vim.cmd 'norm zt'
-                        end, { exit = true }},
-                    },
-
-                    ["Refactoring"] = {
-                        a = { 'Actions',     vim.lsp.buf.code_action, { exit = true }},
-                        f = { 'Format File', vim.lsp.buf.formatting,  { exit = true }},
-                        R = { 'Rename',      vim.lsp.buf.rename,      { exit = true }},
-                    },
-
-                    ["Other"] = {
-                        m = { 'Mason', c.cmd('Mason'), { exit = true }},
-                        q = { 'Quit', function() end, { exit = true }},
-                    }
-                }
-            })
-
-            -- Create Telescope and Theme objects for use in the Hydra
-            local telescope = function() return require'telescope.builtin' end
-
-            local ivy = require'telescope.themes'.get_dropdown {
-                border        = true,
-                layout_config = { height = 15, width = 0.9999, anchor = 'N' },
-                borderchars   = {
-                    prompt  = { ' ', ' ', '', ' ', '', '', '', '' },
-                    results = { '',  ' ', '', ' ', '', '', '', '' },
-                    preview = { '',  ' ', '', ' ', '', '', '', '' },
-                },
-            }
-
-            local cursor = require'telescope.themes'.get_cursor {
-                border        = true,
-                layout_config = { height = 15 },
-                borderchars   = {
-                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                    results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                },
-            }
-
-            -- Settings for Ivy for an MRU list. This list is intended to only
-            -- show the file name and set fuzzy completion to exact such that
-            -- quick switching based on file name can be done in a single
-            -- keystroke.
-            local ivy_bufs  = require'telescope.themes'.get_dropdown {
-                layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
-                border                = true,
-                ignore_current_buffer = true,
-                sort_mru              = true,
-                borderchars           = {
-                    prompt  = { '─', ' ', '', ' ', '', '', '', '' },
-                    results = { '',  ' ', '', ' ', '', '', '', '' },
-                    preview = { '',  ' ', '', ' ', '', '', '', '' },
-                },
-
-                -- As an MRU buffer it's nice to be able to filter to a file by
-                -- a single character, but many files with the same name might
-                -- show so we show the full path as a suffix.
-                path_display          = function(opts, path)
-                    local tail = require 'telescope.utils'.path_tail(path)
-                    return string.format('%s (%s)', tail, path)
-                end,
-            }
-
-            -- Extensions
-            local file_browser = require'telescope'.extensions.file_browser
-            local octo         = require'telescope'.extensions.octo
-
-            local fzf_hydra = genhydra({
-                name  = 'FZF',
-                mode  = 'n',
-                body  = '<leader>f',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                },
-                order = {
-                    'Search',
-                    'LSP',
-                    'Git',
-                    'Vim',
-                    'Other',
-                },
-                heads = {
-                    ["Search"] = {
-                        ['*'] = {'Word',           function() telescope().grep_string(cursor) end,            { exit = true }},
-                        ['/'] = {'Grep',           function() telescope().live_grep(ivy) end,                 { exit = true }},
-                        ['.'] = {'Current Buffer', function() telescope().current_buffer_fuzzy_find(ivy) end, { exit = true }},
-                    },
-
-                    ["Git"] = {
-                        b = { 'Branches',             function() telescope().git_branches(ivy) end, { exit = true }},
-                        c = { 'Commits',              function() telescope().git_commits(ivy) end,  { exit = true }},
-                        C = { 'Current File Commits', function() telescope().git_bcommits(ivy) end, { exit = true }},
-                        p = { 'Files (Entire Repo)',  function() telescope().git_files(ivy) end,    { exit = true }},
-                        f = { 'Files (CWD)',          function() telescope().find_files(ivy) end,   { exit = true }},
-                        r = { 'Files (Relative)',
-                            function()
-                                -- Modify `ivy` to contain `cwd` that points to the current directory
-                                -- of the file open in the current buffer. We clone `ivy` first so we
-                                -- don't mutate it for other heads.
-                                --
-                                -- The vim.fn.expand call uses `:%:p:h` which means:
-                                --
-                                --  %   - The current file name
-                                --  :p  - Make it an absolute path
-                                --  :h  - Remove the file name, leaving only the path
-                                local ivy = vim.deepcopy(ivy)
-                                ivy.cwd = vim.fn.expand('%:p:h')
-                                telescope().find_files(ivy)
-                            end,
-                            { exit = true }
+                        ["Visual"] = {
+                            b = { 'Blame Current Line', function() gitsigns.blame_line { full = true } end, { exit = true }},
+                            B = { 'Blame Buffer',       function() vim.cmd 'G blame' end,                   { exit = true }},
+                            v = { 'Highlight Numbers',  function() vim.cmd 'Gitsigns toggle_linehl' end,    { exit = true }},
+                            V = { 'Highlight Lines',    function() vim.cmd 'Gitsigns toggle_numhl' end,     { exit = true }},
                         },
-                        s = { 'Status',               function() telescope().git_status(ivy) end,   { exit = true }},
-                        z = { 'Stash',                function() telescope().git_stash(ivy) end,    { exit = true }},
-                    },
 
-                    ["Vim"] = {
-                        h = { 'Highlight Groups', function() telescope().highlights(ivy) end,   { exit = true }},
-                        j = { 'Buffers',          function() telescope().buffers(ivy_bufs) end, { exit = true }},
-                        k = { 'Keymaps',          function() telescope().keymaps(ivy) end,      { exit = true }},
-                        o = { 'Options',          function() telescope().vim_options(ivy) end,  { exit = true }},
-                        t = { 'Colorschemes',     function() telescope().colorscheme(ivy) end,  { exit = true }},
-                        x = { 'Commands',         function() telescope().commands(ivy) end,     { exit = true }},
-                    },
+                        ["Git"] = {
+                            e = { 'Git Status', function() vim.cmd 'Gedit:' end,          { exit = true }},
+                            l = { 'Git Log',    function() vim.cmd 'G log --oneline' end, { exit = true }},
+                        },
 
-                    ["LSP"] = {
-                        lc = { 'Incoming Calls',         function() telescope().lsp_incoming_calls(ivy) end,    { exit = true }},
-                        lC = { 'Outgoing Calls',         function() telescope().lsp_outgoing_calls(ivy) end,    { exit = true }},
-                        ld = { 'Definitions',            function() telescope().lsp_definitions(ivy) end,       { exit = true }},
-                        li = { 'Implementations',        function() telescope().lsp_implementations(ivy) end,   { exit = true }},
-                        lr = { 'References',             function() telescope().lsp_references(ivy) end,        { exit = true }},
-                        ls = { 'Symbols (Current File)', function() telescope().lsp_document_symbols(ivy) end,  { exit = true }},
-                        lS = { 'Symbols (Project)',      function() telescope().lsp_workspace_symbols(ivy) end, { exit = true }},
-                        lt = { 'Type Definitions',       function() telescope().lsp_type_definitions(ivy) end,  { exit = true }},
-                        ll = { 'Diagnostics',            function() telescope().diagnostics(ivy) end,           { exit = true }},
+                        ["Other"] = {
+                            q = { 'Quit', function() end, { exit = true }},
+                        },
                     },
+                })
 
-                    ["Other"] = {
-                        e = { 'File Browser', function() file_browser.file_browser(ivy) end, { exit = true }},
-                        q = { 'Quit',         function() end,                                { exit = true }},
+                local neotest_hydra = genhydra({
+                    name   = 'Neotest',
+                    mode   = {'n'},
+                    body   = '<leader>n',
+                    config = {
+                        hint           = hint_options,
+                        buffer         = true,
+                        invoke_on_body = true,
                     },
-                }
-            })
-
-            local octo_hydra = genhydra({
-                name  = 'Octo',
-                mode  = 'n',
-                body  = '<leader>o',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                },
-                order = {
-                    'Github',
-                    'Other',
-                },
-                heads = {
-                    ["Github"] = {
-                        g = { 'Gists',  function() octo.gists(ivy) end,  { exit = true }},
-                        i = { 'Issues', function() octo.issues(ivy) end, { exit = true }},
-                        p = { 'PRs',    function() octo.prs(ivy) end,    { exit = true }},
-                        r = { 'Repos',  function() octo.repos(ivy) end,  { exit = true }},
+                    order = {
+                        "Run",
+                        "Output",
+                        "Other",
                     },
+                    heads  = {
+                        ["Run"] = {
+                            ["."] = { 'Run Test',          neotest.run.run,                                    { exit = true }},
+                            f     = { 'Run File Tests',    function() neotest.run.run(vim.fn.expand('%')) end, { exit = true }},
+                            s     = { 'Stop Running Test', neotest.run.stop,                                   { exit = true }},
+                            a     = { 'Attach to Test ',   neotest.run.attach,                                 { exit = true }},
+                        },
 
-                    ["Other"] = {
-                        s = { 'Search', function() octo.search(ivy) end, { exit = true }},
-                        q = { 'Quit',   function() end,                  { exit = true }},
+                        ["Output"] = {
+                            o = { 'Toggle Overview', neotest.summary.toggle,      { exit = true }},
+                            p = { 'Toggle Panel',    neotest.output_panel.toggle, { exit = true }},
+                        },
+
+                        ["Other"] = {
+                            q = { 'Quit', function() end, { exit = true }},
+                        },
+                    },
+                })
+
+                local rust_hydra = genhydra({
+                    name   = 'Rust',
+                    mode   = 'n',
+                    body   = '<leader>r',
+                    config = {
+                        hint           = hint_options,
+                        invoke_on_body = true,
+                        buffer         = true,
+                        on_key         = function() vim.wait(50) end,
+                    },
+                    order = {
+                        "Crates",
+                        "Source",
+                        "Other",
+                    },
+                    heads = {
+                        ["Crates"] = {
+                            u = { 'Update Crate',  crates.update_crate,            { exit = true }},
+                            U = { 'Upgrade Crate', crates.upgrade_crate,           { exit = true }},
+                            i = { 'Update Crate',  crates.show_popup,              { exit = true }},
+                            d = { 'Update Crate',  crates.show_dependencies_popup, { exit = true }},
+                            o = { 'Update Crate',  crates.show_features_popup,     { exit = true }},
+                            v = { 'Update Crate',  crates.show_versions_popup,     { exit = true }},
+                        },
+
+                        ["Source"] = {
+                            k = { 'Move Item Up',    rust_tools.move_item.move_up,               { exit = true }},
+                            j = { 'Move Item Down',  rust_tools.move_item.move_down,             { exit = true }},
+                            e = { 'Expand Macro',    rust_tools.expand_macro.expand_macro,       { exit = true }},
+                            s = { 'Parent Module',   rust_tools.parent_module.parent_module,     { exit = true }},
+                            c = { 'Open Cargo.toml', rust_tools.open_cargo_toml.open_cargo_toml, { exit = true }},
+                        },
+
+                        ["Other"] = {
+                            q = { 'Quit', function() end, { exit = true }},
+                        }
+                    },
+                })
+
+                local lsp_hydra = genhydra({
+                    name   = 'LSP',
+                    mode   = 'n',
+                    body   = '<leader>l',
+                    color  = 'pink',
+                    config = {
+                        hint           = hint_options,
+                        invoke_on_body = true,
+                        buffer         = true,
+                        on_key         = function() vim.wait(50) end,
+                    },
+                    order = {
+                        'Diagnostics',
+                        'Goto',
+                        'Refactoring',
+                        'Other',
+                    },
+                    heads = {
+                        ["Diagnostics"] = {
+                            n = { 'Next Error',  vim.diagnostic.goto_next,  { exit = true }},
+                            p = { 'Prev Error',  vim.diagnostic.goto_prev,  { exit = true }},
+                            l = { 'List Errors', vim.diagnostic.setloclist, { exit = true }},
+                        },
+
+                        ["Goto"] = {
+                            D = { 'Declaration',          vim.lsp.buf.declaration,     { exit = true }},
+                            K = { 'Documentation',        vim.lsp.buf.hover,           { exit = true }},
+                            d = { 'Definition',           vim.lsp.buf.definition,      { exit = true }},
+                            i = { 'Implementations',      vim.lsp.buf.implementation,  { exit = true }},
+                            r = { 'References',           vim.lsp.buf.references,      { exit = true }},
+                            t = { 'Type Definitions',     vim.lsp.buf.type_definition, { exit = true }},
+                            s = { 'Definition in Split', function()
+                                -- This opens a split to the right with the cursor
+                                -- in the same space. It then focuses that window,
+                                -- and invokes vim.lsp.definition to go to the
+                                -- file. It will then call `zt` to move it to the
+                                -- top of the file.
+                                vim.cmd 'wincmd v'
+                                vim.cmd 'wincmd l'
+                                vim.lsp.buf.definition()
+                                vim.wait(50)
+                                vim.cmd 'norm zt'
+                            end, { exit = true }},
+                        },
+
+                        ["Refactoring"] = {
+                            a = { 'Actions',     vim.lsp.buf.code_action, { exit = true }},
+                            f = { 'Format File', vim.lsp.buf.formatting,  { exit = true }},
+                            R = { 'Rename',      vim.lsp.buf.rename,      { exit = true }},
+                        },
+
+                        ["Other"] = {
+                            m = { 'Mason', c.cmd('Mason'), { exit = true }},
+                            q = { 'Quit', function() end, { exit = true }},
+                        }
                     }
-                }
-            })
+                })
 
-            local anykey_hint = hydra({
-                name   = 'Press Any Key',
-                mode   = 'n',
-                heads  = {},
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                    color          = 'blue',
-                    on_key         = function()
-                        local next_key = vim.fn.nr2char(vim.fn.getchar())
-                        local command  = string.format(':WhichKey %s<cr>', next_key)
-                        local execute  = vim.api.nvim_replace_termcodes(command, true, false, true)
-                        vim.api.nvim_feedkeys(execute, 'n', true)
+                local ivy = require 'telescope.themes'.get_dropdown {
+                    border        = true,
+                    layout_config = { height = 15, width = 0.9999, anchor = 'N' },
+                    borderchars   = {
+                        prompt  = { ' ', ' ', '', ' ', '', '', '', '' },
+                        results = { '',  ' ', '', ' ', '', '', '', '' },
+                        preview = { '',  ' ', '', ' ', '', '', '', '' },
+                    },
+                }
+
+                local cursor = require 'telescope.themes'.get_cursor {
+                    border        = true,
+                    layout_config = { height = 15 },
+                    borderchars   = {
+                        prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                        results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                        preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    },
+                }
+
+                -- Settings for Ivy for an MRU list. This list is intended to only
+                -- show the file name and set fuzzy completion to exact such that
+                -- quick switching based on file name can be done in a single
+                -- keystroke.
+                local ivy_bufs  = require 'telescope.themes'.get_dropdown {
+                    layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
+                    border                = true,
+                    ignore_current_buffer = true,
+                    sort_mru              = true,
+                    borderchars           = {
+                        prompt  = { '─', ' ', '', ' ', '', '', '', '' },
+                        results = { '',  ' ', '', ' ', '', '', '', '' },
+                        preview = { '',  ' ', '', ' ', '', '', '', '' },
+                    },
+
+                    -- As an MRU buffer it's nice to be able to filter to a file by
+                    -- a single character, but many files with the same name might
+                    -- show so we show the full path as a suffix.
+                    path_display = function(opts, path)
+                        local tail = require 'telescope.utils'.path_tail(path)
+                        return string.format('%s (%s)', tail, path)
                     end,
-                },
-                hint = p.dedent [[
-                  ^                   ^
-                  ^  Press Any Key    ^
-                  ^                   ^
-                ]]
-            })
-
-            genhydra({
-                name   = 'Hydra',
-                mode   = 'n',
-                body   = '<leader>h',
-                config = {
-                    hint           = hint_options,
-                    invoke_on_body = true,
-                },
-                order = {
-                    'Vim',
-                    'Plugins',
-                    'Languages',
-                    'Other',
-                },
-                heads = {
-                    ["Vim"] = {
-                        b = { 'Buffers', function() buffer_hydra:activate() end, { exit = true }},
-                        l = { 'LSP',     function() lsp_hydra:activate() end,    { exit = true }},
-                        t = { 'Tabs',    function() tab_hydra:activate() end,    { exit = true }},
-                        v = { 'Vim',     function() vim_hydra:activate() end,    { exit = true }},
-                        w = { 'Windows', function() window_hydra:activate() end, { exit = true }},
-                    },
-
-                    ["Plugins"] = {
-                        f = { 'Telescope', function() fzf_hydra:activate() end,     { exit = true }},
-                        g = { 'Git',       function() git_hydra:activate() end,     { exit = true }},
-                        n = { 'Neotest',   function() neotest_hydra:activate() end, { exit = true }},
-                        o = { 'Octo',      function() octo_hydra:activate() end,    { exit = true }},
-                    },
-
-                    ["Languages"] = {
-                        r = { 'Rust', function() rust_hydra:activate() end, { exit = true }},
-                    },
-
-                    ["Other"] = {
-                        q = { 'Quit',           function() end, { exit = true }},
-                        p = { 'Plugin Manager', c.cmd('Lazy'),  { exit = true }},
-                        k = { 'WhichKey',       function()
-                            local next_key = vim.fn.nr2char(vim.fn.getchar())
-                            local command  = string.format(':WhichKey %s<cr>', next_key)
-                            local execute  = vim.api.nvim_replace_termcodes(command, true, false, true)
-                            vim.api.nvim_feedkeys(execute, 'n', true)
-                        end, { exit = true }},
-                    }
                 }
-            })
+
+                local fzf_hydra = genhydra({
+                    name  = 'FZF',
+                    mode  = 'n',
+                    body  = '<leader>f',
+                    config = {
+                        hint           = hint_options,
+                        buffer         = true,
+                        invoke_on_body = true,
+                    },
+                    order = {
+                        'Search',
+                        'LSP',
+                        'Git',
+                        'Vim',
+                        'Other',
+                    },
+                    heads = {
+                        ["Search"] = {
+                            ['*'] = {'Word',           function() telescope.grep_string(cursor) end,            { exit = true }},
+                            ['/'] = {'Grep',           function() telescope.live_grep(ivy) end,                 { exit = true }},
+                            ['.'] = {'Current Buffer', function() telescope.current_buffer_fuzzy_find(ivy) end, { exit = true }},
+                        },
+
+                        ["Git"] = {
+                            b = { 'Branches',             function() telescope.git_branches(ivy) end, { exit = true }},
+                            c = { 'Commits',              function() telescope.git_commits(ivy) end,  { exit = true }},
+                            C = { 'Current File Commits', function() telescope.git_bcommits(ivy) end, { exit = true }},
+                            p = { 'Files (Entire Repo)',  function() telescope.git_files(ivy) end,    { exit = true }},
+                            f = { 'Files (CWD)',          function() telescope.find_files(ivy) end,   { exit = true }},
+                            r = { 'Files (Relative)',
+                                function()
+                                    -- Modify `ivy` to contain `cwd` that points to the current directory
+                                    -- of the file open in the current buffer. We clone `ivy` first so we
+                                    -- don't mutate it for other heads.
+                                    --
+                                    -- The vim.fn.expand call uses `:%:p:h` which means:
+                                    --
+                                    --  %   - The current file name
+                                    --  :p  - Make it an absolute path
+                                    --  :h  - Remove the file name, leaving only the path
+                                    local ivy = vim.deepcopy(ivy)
+                                    ivy.cwd = vim.fn.expand('%:p:h')
+                                    telescope.find_files(ivy)
+                                end,
+                                { exit = true }
+                            },
+                            s = { 'Status', function() telescope.git_status(ivy) end, { exit = true }},
+                            z = { 'Stash',  function() telescope.git_stash(ivy) end,  { exit = true }},
+                        },
+
+                        ["Vim"] = {
+                            h = { 'Highlight Groups', function() telescope.highlights(ivy) end,   { exit = true }},
+                            j = { 'Buffers',          function() telescope.buffers(ivy_bufs) end, { exit = true }},
+                            k = { 'Keymaps',          function() telescope.keymaps(ivy) end,      { exit = true }},
+                            o = { 'Options',          function() telescope.vim_options(ivy) end,  { exit = true }},
+                            t = { 'Colorschemes',     function() telescope.colorscheme(ivy) end,  { exit = true }},
+                            x = { 'Commands',         function() telescope.commands(ivy) end,     { exit = true }},
+                        },
+
+                        ["LSP"] = {
+                            lc = { 'Incoming Calls',         function() telescope.lsp_incoming_calls(ivy) end,    { exit = true }},
+                            lC = { 'Outgoing Calls',         function() telescope.lsp_outgoing_calls(ivy) end,    { exit = true }},
+                            ld = { 'Definitions',            function() telescope.lsp_definitions(ivy) end,       { exit = true }},
+                            li = { 'Implementations',        function() telescope.lsp_implementations(ivy) end,   { exit = true }},
+                            lr = { 'References',             function() telescope.lsp_references(ivy) end,        { exit = true }},
+                            ls = { 'Symbols (Current File)', function() telescope.lsp_document_symbols(ivy) end,  { exit = true }},
+                            lS = { 'Symbols (Project)',      function() telescope.lsp_workspace_symbols(ivy) end, { exit = true }},
+                            lt = { 'Type Definitions',       function() telescope.lsp_type_definitions(ivy) end,  { exit = true }},
+                            ll = { 'Diagnostics',            function() telescope.diagnostics(ivy) end,           { exit = true }},
+                        },
+
+                        ["Other"] = {
+                            e = { 'File Browser', function() file_browser.file_browser(ivy) end, { exit = true }},
+                            q = { 'Quit',         function() end,                                { exit = true }},
+                        },
+                    }
+                })
+
+                local octo_hydra = genhydra({
+                    name  = 'Octo',
+                    mode  = 'n',
+                    body  = '<leader>o',
+                    config = {
+                        hint           = hint_options,
+                        invoke_on_body = true,
+                        buffer         = true,
+                    },
+                    order = {
+                        'Github',
+                        'Other',
+                    },
+                    heads = {
+                        ["Github"] = {
+                            g = { 'Gists',  function() octo.gists(ivy) end,  { exit = true }},
+                            i = { 'Issues', function() octo.issues(ivy) end, { exit = true }},
+                            p = { 'PRs',    function() octo.prs(ivy) end,    { exit = true }},
+                            r = { 'Repos',  function() octo.repos(ivy) end,  { exit = true }},
+                        },
+
+                        ["Other"] = {
+                            s = { 'Search', function() octo.search(ivy) end, { exit = true }},
+                            q = { 'Quit',   function() end,                  { exit = true }},
+                        }
+                    }
+                })
+
+                genhydra({
+                    name   = 'Hydra',
+                    mode   = 'n',
+                    body   = '<leader>h',
+                    config = {
+                        hint           = hint_options,
+                        invoke_on_body = true,
+                        buffer         = true,
+                    },
+                    order = {
+                        'Vim',
+                        'Plugins',
+                        'Languages',
+                        'UI',
+                        'Other',
+                    },
+                    heads = {
+                        ["Vim"] = {
+                            b = { 'Buffers', function() buffer_hydra:activate() end, { exit = true }},
+                            l = { 'LSP',     function() lsp_hydra:activate() end,    { exit = true }},
+                            t = { 'Tabs',    function() tab_hydra:activate() end,    { exit = true }},
+                            w = { 'Windows', function() window_hydra:activate() end, { exit = true }},
+                        },
+
+                        ["Plugins"] = {
+                            f = { 'Telescope', function() fzf_hydra:activate() end,     { exit = true }},
+                            g = { 'Git',       function() git_hydra:activate() end,     { exit = true }},
+                            n = { 'Neotest',   function() neotest_hydra:activate() end, { exit = true }},
+                            o = { 'Octo',      function() octo_hydra:activate() end,    { exit = true }},
+                        },
+
+                        ["Languages"] = {
+                            r = { 'Rust', function() rust_hydra:activate() end, { exit = true }},
+                        },
+
+                        ["UI"] = {
+                            sp = { 'Toggle Plugin Manager', c.cmd('Lazy'), { exit = true }},
+                            st = { 'Toggle Trouble',        c.cmd('TroubleToggle'),             { exit = true }},
+                            sn = { 'Toggle Neotree',        c.cmd('NeoTreeShowToggle buffers'), { exit = true }},
+                        },
+
+                        ["Other"] = {
+                            q = { 'Quit',     function() end,  { exit = true }},
+                            k = { 'WhichKey', ':WhichKey<cr>', { exit = true }},
+                        }
+                    }
+                })
+            end
+
+            -- Now we create an autocommand that binds these every time a new buffer
+            -- is created.
+            vim.cmd [[
+                augroup hydra
+                    autocmd!
+                    autocmd BufEnter * lua VimlessBindHydras()
+                augroup
+            ]]
         end
     }
 end

@@ -46,6 +46,7 @@ return {
         gitsigns          = true,
         hydra             = true,
         indent_blankline  = false,
+        lazygit           = true,
         leap              = true,
         lspconfig         = true,
         marks             = true,

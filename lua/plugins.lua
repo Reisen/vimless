@@ -46,6 +46,7 @@ require('lazy').setup({
     require('plugins/gitsigns')(config),
     require('plugins/hydra')(config),
     require('plugins/indent-blankline')(config),
+    require('plugins/lazygit')(config),
     require('plugins/leap')(config),
     require('plugins/marks')(config),
     require('plugins/mind')(config),

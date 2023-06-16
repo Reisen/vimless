@@ -12,7 +12,6 @@ return function(config)
             end
 
             local treespec = require 'mini.ai'.gen_spec.treesitter
-
             local opts = {
                 ai = {
                     custom_textobjects = {
@@ -128,6 +127,7 @@ return function(config)
                     \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE  |
                     \  highlight  GitSignsAddLn        ctermbg=18    guibg=NONE  |
                     \  highlight  GitSignsChangeLn     ctermbg=18    guibg=NONE  |
+                    \  highlight  GitSignsDeleteLn     ctermbg=18    guibg=NONE  |
                     \  highlight  EndOfBuffer          ctermbg=NONE  guibg=NONE
                 augroup END
             ]]
