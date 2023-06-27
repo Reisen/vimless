@@ -17,15 +17,23 @@ return function(config)
                 },
 
                 layout = {
-                    align   = "left",
+                    align   = "center",
                     spacing = 8,
                     height  = { min = 10, max = 15 },
                     width   = { min = 30, max = 40 },
                 },
+
+                triggers = {
+                    '`', "'", '"', 'z=', '<space>'
+                },
+
+                triggers_nowait = {
+                    '<space>',
+                },
             }
 
             if config.plugins.which_key and type(config.plugins.which_key) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.which_key)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.which_key)
             end
 
             -- Register Custom Keymapping.

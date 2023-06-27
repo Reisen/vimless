@@ -40,15 +40,18 @@ return function(config)
                 vim.api.nvim_buf_set_keymap(
                     0,
                     't',
-                    '<esc>',
+                    '<esc><esc>',
                     [[<C-\><C-n>]],
                     { noremap = true }
                 )
             end
 
-            -- vim.cmd [[
-            --     autocmd! TermOpen term://* lua set_terminal_keymaps()
-            -- ]]
+            vim.cmd [[
+                augroup ToggleTermSettings
+                    autocmd!
+                    autocmd! TermOpen term://* lua set_terminal_keymaps()
+                augroup END
+            ]]
         end
     }
 end

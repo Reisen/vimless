@@ -93,7 +93,10 @@ return function(config)
                         default = true
                     }
                 },
-                comment = {},
+                comment   = {},
+                files     = {},
+                pairs     = {},
+                bufremove = {},
             }
 
             if config.plugins.mini and type(config.plugins.mini) == 'table' then
@@ -103,6 +106,9 @@ return function(config)
             require 'mini.ai'.setup(opts.ai)
             require 'mini.base16'.setup(opts.base16)
             require 'mini.comment'.setup(opts.comment)
+            require 'mini.files'.setup(opts.files)
+            require 'mini.pairs'.setup(opts.surround)
+            require 'mini.bufremove'.setup(opts.bufremove)
 
             -- mini.base16 configures most colours perfectly, but gets a few that look a little gnarly.
             -- Here we override some of those colours by defining an autocommand that override some of
@@ -111,25 +117,30 @@ return function(config)
                 augroup base16override
                 autocmd!
                 autocmd BufEnter *
-                    \  highlight  SignColumn           ctermbg=NONE  guibg=NONE  |
-                    \  highlight  WinSeparator         ctermbg=NONE  guibg=NONE  |
-                    \  highlight  StatusLine           ctermbg=NONE  guibg=NONE  ctermfg=4  |
-                    \  highlight  StatusLineNC         ctermbg=NONE  guibg=NONE  ctermfg=8  |
-                    \  highlight  WinBar               ctermbg=18    guibg=NONE  ctermfg=4  |
-                    \  highlight  WinBarNC             ctermbg=18    guibg=NONE  ctermfg=4  |
-                    \  highlight  GitSignsAdd          ctermbg=NONE  guibg=NONE  |
-                    \  highlight  GitSignsChange       ctermbg=NONE  guibg=NONE  |
-                    \  highlight  GitSignsDelete       ctermbg=NONE  guibg=NONE  |
-                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE  |
-                    \  highlight  DiagnosticSignWarn   ctermbg=NONE  guibg=NONE  |
-                    \  highlight  DiagnosticSignInfo   ctermbg=NONE  guibg=NONE  |
-                    \  highlight  DiagnosticSignHint   ctermbg=NONE  guibg=NONE  |
-                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE  |
-                    \  highlight  GitSignsAddLn        ctermbg=18    guibg=NONE  |
-                    \  highlight  GitSignsChangeLn     ctermbg=18    guibg=NONE  |
-                    \  highlight  GitSignsDeleteLn     ctermbg=18    guibg=NONE  |
-                    \  highlight  EndOfBuffer          ctermbg=NONE  guibg=NONE
+                    \  highlight  SignColumn           ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  WinSeparator         ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  StatusLine           ctermbg=NONE  guibg=NONE    ctermfg=4   |           
+                    \  highlight  StatusLineNC         ctermbg=NONE  guibg=NONE    ctermfg=8   |           
+                    \  highlight  WinBar               ctermbg=19    guibg=NONE    ctermfg=4   |           
+                    \  highlight  WinBarNC             ctermbg=19    guibg=NONE    ctermfg=4   |           
+                    \  highlight  GitSignsAdd          ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  GitSignsChange       ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  GitSignsDelete       ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  DiagnosticSignWarn   ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  DiagnosticSignInfo   ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  DiagnosticSignHint   ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  GitSignsAddLn        ctermfg=NONE  ctermbg=19    guibg=NONE  |           
+                    \  highlight  GitSignsChangeLn     ctermfg=NONE  ctermbg=19    guibg=NONE  |           
+                    \  highlight  GitSignsDeleteLn     ctermfg=NONE  ctermbg=19    guibg=NONE  |           
+                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=19    guibg=NONE  |           
+                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=19    guibg=NONE  |           
+                    \  highlight  EndOfBuffer          ctermbg=NONE  guibg=NONE    |                       
+                    \  highlight  WhichKeyFloat        ctermbg=NONE  guibg=NONE    |
+                    \  highlight  WhichKeySeparator    ctermbg=NONE  guibg=NONE
                 augroup END
+
             ]]
         end
     }

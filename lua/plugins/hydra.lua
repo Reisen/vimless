@@ -149,6 +149,7 @@ return function(config)
             local crates       = require 'crates'
             local rust_tools   = require 'rust-tools'
             local telescope    = require 'telescope.builtin'
+            local bufremove    = require 'mini.bufremove'
 
             -- Wrap the Hydra call with a generator that consumes and formats
             -- hints before the creating the full hydra.
@@ -271,9 +272,9 @@ return function(config)
                     },
 
                     ["Other"] = {
-                        d = { 'Delete Buffer',        c.cmd('bdel'),       { exit = true }},
+                        d = { 'Delete Buffer',        bufremove.delete,    { exit = true }},
                         o = { 'Delete Other Buffers', c.cmd('%bd|e#|bd#'), { exit = true }},
-                        q = { 'Quite',                function() end,      { exit = true }},
+                        q = { 'Quit',                 function() end,      { exit = true }},
                     }
 
                 },

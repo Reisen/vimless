@@ -5,10 +5,12 @@ return function(config)
 
     -- Override LSP Configuration.
     vim.diagnostic.config({
-        virtual_text  = true,
-        underline     = false,
-        virtual_lines = { only_current_line = false },
-        right_align   = true,
+        underline        = false,                         -- underline LSP diagnostics
+        update_in_insert = false,                         -- do not update diagnostics in insert mode
+        virtual_lines    = { only_current_line = false }, -- show virtual lines
+        right_align      = true,                          -- right-align the diagnostics
+        severity_sort    = true,                          -- sort the diagnostics by severity
+        virtual_text     = true,                          -- show virtual text
     })
 
     -- LSP Configuration.
@@ -19,6 +21,7 @@ return function(config)
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
             'nvim-lua/plenary.nvim',
+            { 'folke/neoconf.nvim', cmd = 'Neoconf', config = true },
         },
         config = function()
             if config.plugins.lspconfig and type(config.plugins.lspconfig) == 'function' then
@@ -26,13 +29,30 @@ return function(config)
                 return
             end
 
+            local opts = {
+                mason = {
+                    ui = {
+                        border = 'single',
+                        width  = 0.999,
+                        height = 0.999,
+                    }
+                },
+
+                mason_lspconfig = {
+                }
+            }
+
+            if config.plugins.lspconfig and type(config.plugins.lspconfig) == 'table' then
+                opts = vim.tbl_deep_auto_sessionextend('force', opts, config.plugins.lspconfig)
+            end
+
             vim.cmd [[
                 set winbar+=\ \ %{%v:lua.require'nvim-navic'.get_location()%}
             ]]
 
             -- Setup Mason before LSPConfig.
-            require 'mason'.setup {}
-            require 'mason-lspconfig'.setup {}
+            require 'mason'.setup(opts.mason)
+            require 'mason-lspconfig'.setup(opts.mason_lspconfig)
             require 'mason-lspconfig'.setup_handlers {
                 -- Provide an default handler for LSP servers. Whenever Mason installs
                 -- a server it will automatically use this call to setup those servers
@@ -45,6 +65,11 @@ return function(config)
                                 client,
                                 buffer
                             )
+
+                            -- If the server supports inlay hints, then enable them.
+                            if client.server_capabilities and client.server_capabilities.inlayHintsProvider then
+                                vim.lsp.buf.inlay_hint(buffer, true)
+                            end
                         end,
                     }
                 end,

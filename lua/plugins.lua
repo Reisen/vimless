@@ -44,6 +44,7 @@ require('lazy').setup({
     require('plugins/circles')(config),
     require('plugins/diffview')(config),
     require('plugins/dirbuf')(config),
+    require('plugins/flash')(config),
     require('plugins/gitsigns')(config),
     require('plugins/hydra')(config),
     require('plugins/indent-blankline')(config),
@@ -56,6 +57,7 @@ require('lazy').setup({
     require('plugins/neotree')(config),
     require('plugins/nvim-web-devicons')(config),
     require('plugins/octo')(config),
+    require('plugins/oil')(config),
     require('plugins/targets')(config),
     require('plugins/telescope')(config),
     require('plugins/todo-comments')(config),
@@ -87,3 +89,5 @@ require('lazy').setup({
     -- --------------------------------------------------------------------------------
     unpack(config.custom)
 })
+
+require('plugins/tusk')

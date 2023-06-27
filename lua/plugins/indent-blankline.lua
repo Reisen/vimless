@@ -24,6 +24,18 @@ return function(config)
                 show_current_context           = false,
                 show_current_context_start     = false,
                 show_trailing_blankline_indent = true,
+                filetype_exclude               = {
+                    "alpha",
+                    "dashboard",
+                    "help",
+                    "lazy",
+                    "lazyterm",
+                    "mason",
+                    "neo-tree",
+                    "notify",
+                    "toggleterm",
+                    "Trouble",
+                },
             }
 
             require 'indent_blankline'.setup(opts)
