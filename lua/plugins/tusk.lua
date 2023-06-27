@@ -4,42 +4,7 @@ local M = {
 }
 
 -- A Telescope extension that provides a cmdline mode.
-function _G.__telescope_extension_cmdline()
-    local opts = require("telescope.themes").get_dropdown({
-        borderchars = {
-            prompt = {
-                "─",
-                "│",
-                "─",
-                "│",
-                "┌",
-                "┐",
-                "┘",
-                "└"
-            },
-            results = {
-                " ",
-                "│",
-                "─",
-                "│",
-                "│",
-                "│",
-                "┘",
-                "└"
-            },
-            preview = {
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " "
-            }
-        }
-    })
-
+local function __telescope_extension_cmdline(opts)
     require("telescope.pickers").new(opts, {
         -- Onyx is the name of the prompt.
         prompt_title = "Onyx",
@@ -234,3 +199,10 @@ function _G.__telescope_extension_cmdline_completion()
     })
     :find()
 end
+
+require 'telescope'.register_extension {
+    cmdline = __telescope_extension_cmdline,
+    exports = {
+        cmdline = __telescope_extension_cmdline,
+    },
+}

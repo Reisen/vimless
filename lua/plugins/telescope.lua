@@ -30,6 +30,30 @@ return function(config)
                         case_mode               = 'smart_case',
                     },
 
+                    cmdline = {
+                        require 'telescope.themes'.get_dropdown {
+                            border        = true,
+                            layout_config = { height = 10 },
+                            borderchars   = {
+                                prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                                results = { ' ', '│', '─', '│', '│', '│', '┘', '└' },
+                                preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                            },
+                        }
+                    },
+
+                    tmux = {
+                        require 'telescope.themes'.get_dropdown {
+                            border        = true,
+                            layout_config = { height = 10 },
+                            borderchars   = {
+                                prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                                results = { ' ', '│', '─', '│', '│', '│', '┘', '└' },
+                                preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                            },
+                        },
+                    },
+
                     ['ui-select'] = {
                         require 'telescope.themes'.get_dropdown {
                             border        = true,
