@@ -117,28 +117,31 @@ return function(config)
                 augroup base16override
                 autocmd!
                 autocmd BufEnter *
-                    \  highlight  SignColumn           ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  WinSeparator         ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  StatusLine           ctermbg=NONE  guibg=NONE    ctermfg=4   |           
-                    \  highlight  StatusLineNC         ctermbg=NONE  guibg=NONE    ctermfg=8   |           
-                    \  highlight  WinBar               ctermbg=19    guibg=NONE    ctermfg=4   |           
-                    \  highlight  WinBarNC             ctermbg=19    guibg=NONE    ctermfg=4   |           
-                    \  highlight  GitSignsAdd          ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  GitSignsChange       ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  GitSignsDelete       ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  DiagnosticSignWarn   ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  DiagnosticSignInfo   ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  DiagnosticSignHint   ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  GitSignsAddLn        ctermfg=NONE  ctermbg=19    guibg=NONE  |           
-                    \  highlight  GitSignsChangeLn     ctermfg=NONE  ctermbg=19    guibg=NONE  |           
-                    \  highlight  GitSignsDeleteLn     ctermfg=NONE  ctermbg=19    guibg=NONE  |           
-                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=19    guibg=NONE  |           
-                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=19    guibg=NONE  |           
-                    \  highlight  EndOfBuffer          ctermbg=NONE  guibg=NONE    |                       
-                    \  highlight  WhichKeyFloat        ctermbg=NONE  guibg=NONE    |
-                    \  highlight  WhichKeySeparator    ctermbg=NONE  guibg=NONE
+                    \  highlight  SignColumn           ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  WinSeparator         ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  StatusLine           ctermbg=NONE  guibg=NONE            ctermfg=4     |
+                    \  highlight  StatusLineNC         ctermbg=NONE  guibg=NONE            ctermfg=8     |
+                    \  highlight  WinBar               ctermbg=19    guibg=NONE            ctermfg=4     |
+                    \  highlight  WinBarNC             ctermbg=19    guibg=NONE            ctermfg=4     |
+                    \  highlight  GitSignsAdd          ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  GitSignsChange       ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  GitSignsDelete       ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  DiagnosticSignWarn   ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  DiagnosticSignInfo   ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  DiagnosticSignHint   ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  GitSignsAddLn        ctermfg=NONE  ctermbg=18            guibg=NONE    |
+                    \  highlight  GitSignsChangeLn     ctermfg=NONE  ctermbg=18            guibg=NONE    |
+                    \  highlight  GitSignsDeleteLn     ctermfg=NONE  ctermbg=18            guibg=NONE    |
+                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=18            guibg=NONE    |
+                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=18            guibg=NONE    |
+                    \  highlight  EndOfBuffer          ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  WhichKeyFloat        ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  WhichKeySeparator    ctermbg=NONE  guibg=NONE            |             
+                    \  highlight  FlashMatch           ctermfg=1     ctermbg=NONE          guibg=NONE    |
+                    \  highlight  FlashCurrent         ctermfg=3     ctermbg=NONE          guibg=NONE    |
+                    \  highlight  FlashLabel           ctermfg=2     cterm=underline,bold  ctermbg=NONE  guibg=NONE
                 augroup END
 
             ]]

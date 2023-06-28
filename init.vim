@@ -1,7 +1,10 @@
 " Set some reasonable defaults for a clean UI.
 " ------------------------------------------------------------------------------
+set background=dark         " use light background
 set shell=/bin/bash         " use bash as the shell
 set autoindent              " copy indent from current line when starting a new line
+set ignorecase              " ignore case when searching
+set smartcase               " ignore case when lowercase, match case when uppercase
 set expandtab               " use spaces instead of tabs
 set nonumber                " don't show line numbers
 set fillchars+=diff:╱       " use a different character for diff mode

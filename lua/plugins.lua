@@ -89,5 +89,3 @@ require('lazy').setup({
     -- --------------------------------------------------------------------------------
     unpack(config.custom)
 })
-
-require('plugins/tusk')

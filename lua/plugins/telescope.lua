@@ -30,16 +30,7 @@ return function(config)
                         case_mode               = 'smart_case',
                     },
 
-                    cmdline = {
-                        require 'telescope.themes'.get_dropdown {
-                            border        = true,
-                            layout_config = { height = 10 },
-                            borderchars   = {
-                                prompt  = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-                                results = { ' ', '│', '─', '│', '│', '│', '┘', '└' },
-                                preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                            },
-                        }
+                    tusk = require 'telescope.themes'.get_dropdown {
                     },
 
                     tmux = {
@@ -81,9 +72,7 @@ return function(config)
                     color_devicons   = true,
                     path_display     = { 'absolute' },
                     sorting_strategy = 'ascending',
-                    preview          = {
-                        hide_on_startup = true
-                    },
+                    preview          = { hide_on_startup = true },
                 }
             }
 
@@ -97,7 +86,8 @@ return function(config)
             require 'telescope'.load_extension('ui-select')
             require 'telescope'.load_extension('gh')
             require 'telescope'.load_extension('project')
-            require 'plugins/tusk'
+            require 'telescope'.load_extension('tusk')
+            require 'telescope'.load_extension('tmux')
 
             -- vim.api.nvim_set_keymap(
             --     "n",

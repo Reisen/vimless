@@ -280,6 +280,50 @@ return function(config)
                 },
             })
 
+            local ivy = require 'telescope.themes'.get_dropdown {
+                border        = true,
+                layout_config = { height = 15, width = 0.9999, anchor = 'N' },
+                borderchars   = {
+                    prompt  = { ' ', ' ', '', ' ', '', '', '', '' },
+                    results = { '',  ' ', '', ' ', '', '', '', '' },
+                    preview = { '',  ' ', '', ' ', '', '', '', '' },
+                },
+            }
+
+            local cursor = require 'telescope.themes'.get_cursor {
+                border        = true,
+                layout_config = { height = 15 },
+                borderchars   = {
+                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                },
+            }
+
+            -- Settings for Ivy for an MRU list. This list is intended to only
+            -- show the file name and set fuzzy completion to exact such that
+            -- quick switching based on file name can be done in a single
+            -- keystroke.
+            local ivy_bufs  = require 'telescope.themes'.get_dropdown {
+                layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
+                border                = true,
+                ignore_current_buffer = true,
+                sort_mru              = true,
+                borderchars           = {
+                    prompt  = { '─', ' ', '', ' ', '', '', '', '' },
+                    results = { '',  ' ', '', ' ', '', '', '', '' },
+                    preview = { '',  ' ', '', ' ', '', '', '', '' },
+                },
+
+                -- As an MRU buffer it's nice to be able to filter to a file by
+                -- a single character, but many files with the same name might
+                -- show so we show the full path as a suffix.
+                path_display = function(opts, path)
+                    local tail = require 'telescope.utils'.path_tail(path)
+                    return string.format('%s (%s)', tail, path)
+                end,
+            }
+
             -- We wrap the Hydra generation in a function because by default Hydra's
             -- are created once at module load, which means they do not have buffer
             -- local context. Instead we bind this function to an autocommand that
@@ -477,50 +521,6 @@ return function(config)
                     }
                 })
 
-                local ivy = require 'telescope.themes'.get_dropdown {
-                    border        = true,
-                    layout_config = { height = 15, width = 0.9999, anchor = 'N' },
-                    borderchars   = {
-                        prompt  = { ' ', ' ', '', ' ', '', '', '', '' },
-                        results = { '',  ' ', '', ' ', '', '', '', '' },
-                        preview = { '',  ' ', '', ' ', '', '', '', '' },
-                    },
-                }
-
-                local cursor = require 'telescope.themes'.get_cursor {
-                    border        = true,
-                    layout_config = { height = 15 },
-                    borderchars   = {
-                        prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                        results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                        preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                    },
-                }
-
-                -- Settings for Ivy for an MRU list. This list is intended to only
-                -- show the file name and set fuzzy completion to exact such that
-                -- quick switching based on file name can be done in a single
-                -- keystroke.
-                local ivy_bufs  = require 'telescope.themes'.get_dropdown {
-                    layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
-                    border                = true,
-                    ignore_current_buffer = true,
-                    sort_mru              = true,
-                    borderchars           = {
-                        prompt  = { '─', ' ', '', ' ', '', '', '', '' },
-                        results = { '',  ' ', '', ' ', '', '', '', '' },
-                        preview = { '',  ' ', '', ' ', '', '', '', '' },
-                    },
-
-                    -- As an MRU buffer it's nice to be able to filter to a file by
-                    -- a single character, but many files with the same name might
-                    -- show so we show the full path as a suffix.
-                    path_display = function(opts, path)
-                        local tail = require 'telescope.utils'.path_tail(path)
-                        return string.format('%s (%s)', tail, path)
-                    end,
-                }
-
                 local fzf_hydra = genhydra({
                     name  = 'FZF',
                     mode  = 'n',
@@ -676,6 +676,11 @@ return function(config)
                 })
             end
 
+            vim.keymap.set('n', '<leader>x', function()
+                local tusk = require('telescope').extensions.tusk
+                tusk.tusk(ivy)
+            end, { desc = 'Tusk Command Pallette' })
+
             -- Now we create an autocommand that binds these every time a new buffer
             -- is created.
             vim.cmd [[
@@ -684,8 +689,8 @@ return function(config)
                     autocmd BufEnter * lua VimlessBindHydras()
                 augroup
 
-                " Some Hydra's (in particular those in the h window) that do
-                " not invoke other hydras need to be bound manually.
+                " Commands in the `h` window aren't themselves hydras so these are
+                " bound manually.
                 nnoremap <leader>k :WhichKey<cr>
                 nnoremap <leader>p :Lazy<cr>
             ]]

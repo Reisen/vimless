@@ -6,16 +6,10 @@ return function(config)
     return {
         'folke/flash.nvim',
         keys = {
-            {
-                'z',
-                mode = { 'n', 'x', 'o' },
-                function() require 'flash'.jump() end,
-            },
-            {
-                'Z',
-                mode = { 'n', 'x', 'o' },
-                function() require 'flash'.treesitter() end,
-            }
+            { 's', mode = { 'n', 'x', 'o' }, function() require 'flash'.jump() end, desc = 'Flash' },
+            { 'S', mode = { 'n', 'x', 'o' }, function() require 'flash'.treesitter() end, desc = 'Flash Treesitter' },
+            { 'r', mode = { 'o'           }, function() require 'flash'.remote() end, 'Flash Remote' },
+            { 'R', mode = { 'x', 'o'      }, function() require 'flash'.treesitter_search() end, 'Flash Treesitter Search' }
         },
         config = function()
             if config.plugins.flash and type(config.plugins.flash) == 'function' then
@@ -24,7 +18,13 @@ return function(config)
             end
 
             local opts = {
-                sort_order = 'directories_first',
+                mode      = 'exact',
+                jump      = { nohlsearch = true },
+                search    = { max_length = 2 },
+                label     = {
+                    after  = false,
+                    before = {0, 2},
+                }
             }
 
             if config.plugins.flash and type(config.plugins.flash) == 'table' then
