@@ -23,17 +23,15 @@ return function(config)
 
             local opts = {
                 extensions = {
-                    fzf = {
+                    tusk = require 'telescope.themes'.get_dropdown {},
+                    fzf  = {
                         fuzzy                   = true,
                         override_generic_sorter = true,
                         override_file_sorter    = true,
                         case_mode               = 'smart_case',
                     },
 
-                    tusk = require 'telescope.themes'.get_dropdown {
-                    },
-
-                    tmux = {
+                    ['ui-select'] = {
                         require 'telescope.themes'.get_dropdown {
                             border        = true,
                             layout_config = { height = 10 },
@@ -45,8 +43,8 @@ return function(config)
                         },
                     },
 
-                    ['ui-select'] = {
-                        require 'telescope.themes'.get_dropdown {
+                    tmux = {
+                        layout_config = require 'telescope.themes'.get_dropdown {
                             border        = true,
                             layout_config = { height = 10 },
                             borderchars   = {

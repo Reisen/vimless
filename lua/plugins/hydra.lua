@@ -154,12 +154,24 @@ return function(config)
             -- Wrap the Hydra call with a generator that consumes and formats
             -- hints before the creating the full hydra.
             local genhydra = function(hints)
+                -- Before passing our `hints` options, we want to generate a
+                -- pretty hint string and convert to the Hydra expected heads
+                -- format from our Sectioned Table of Tables.
                 local order = hints.order or {}
                 hints.hint  = M.generate(order, hints.heads)
                 hints.heads = M.flatten(hints.heads)
+
+                -- We can now create our hydra, and while we're at out we'll
+                -- hijack the the `_make_win_config` method on the hydra hint
+                -- object to ensure the window is always the full width of the
+                -- screen.
                 local neck = hydra(hints)
-                neck.win_width = vim.o.columns
-                return hydra(hints)
+                function neck.hint:_make_win_config()
+                    local _make_win_config_orig = getmetatable(self)._make_win_config
+                    _make_win_config_orig(self)
+                    self.win_config.width = vim.o.columns
+                end
+                return neck
             end
 
             -- Hint Options that are shared by all Hydras.
@@ -282,11 +294,11 @@ return function(config)
 
             local ivy = require 'telescope.themes'.get_dropdown {
                 border        = true,
-                layout_config = { height = 15, width = 0.9999, anchor = 'N' },
+                layout_config = { height = 15, width = 0.9999, anchor = 'S' },
                 borderchars   = {
-                    prompt  = { ' ', ' ', '', ' ', '', '', '', '' },
-                    results = { '',  ' ', '', ' ', '', '', '', '' },
-                    preview = { '',  ' ', '', ' ', '', '', '', '' },
+                    prompt  = { '─', ' ', ' ', ' ', '', '', '', '' },
+                    results = { '',  ' ', ' ', ' ', '', '', '', '' },
+                    preview = { '',  ' ', ' ', ' ', '', '', '', '' },
                 },
             }
 
@@ -294,7 +306,7 @@ return function(config)
                 border        = true,
                 layout_config = { height = 15 },
                 borderchars   = {
-                    prompt  = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    prompt  = { '─', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                     preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
                 },
@@ -305,14 +317,14 @@ return function(config)
             -- quick switching based on file name can be done in a single
             -- keystroke.
             local ivy_bufs  = require 'telescope.themes'.get_dropdown {
-                layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
+                layout_config         = { height = 15, width = 0.9999, anchor = 'S' },
                 border                = true,
                 ignore_current_buffer = true,
                 sort_mru              = true,
                 borderchars           = {
-                    prompt  = { '─', ' ', '', ' ', '', '', '', '' },
-                    results = { '',  ' ', '', ' ', '', '', '', '' },
-                    preview = { '',  ' ', '', ' ', '', '', '', '' },
+                    prompt  = { ' ', ' ', ' ', ' ', '', '', '', '' },
+                    results = { '',  ' ', '‗', ' ', '', '', '', '' },
+                    preview = { '',  ' ', ' ', ' ', '', '', '', '' },
                 },
 
                 -- As an MRU buffer it's nice to be able to filter to a file by
@@ -677,8 +689,15 @@ return function(config)
             end
 
             vim.keymap.set('n', '<leader>x', function()
-                local tusk = require('telescope').extensions.tusk
+                local tusk = require 'telescope'.extensions.tusk
                 tusk.tusk(ivy)
+            end, { desc = 'Tusk Command Pallette' })
+
+            vim.keymap.set('v', '<leader>x', function()
+                local tusk = require 'telescope'.extensions.tusk
+                local opts = vim.deepcopy(ivy)
+                opts.visual = true
+                tusk.tusk(opts)
             end, { desc = 'Tusk Command Pallette' })
 
             -- Now we create an autocommand that binds these every time a new buffer

@@ -32,8 +32,7 @@ set statusline=%=%{line('.')}\:%{col('.')}
 " - Press q to stop recording.
 " - Select lines with visual mode.
 " - Press Q to apply the macro line-wise to the selected lines.
-nnoremap Q @q
-vnoremap Q :normal @q<CR>
+vnoremap Q :normal Q<CR>
 
 " When in a terminal, we likely want the 256 color palette. The default theme
 " used in this configuration is base16 which also tries to overwrite colours
