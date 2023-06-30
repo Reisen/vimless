@@ -19,6 +19,9 @@ return function(config)
             vim.g.lazygit_floating_window_border_chars   = {'','', '', '', '','', '', ''}
             vim.g.lazygit_floating_window_use_plenary    = 0
             vim.g.lazygit_use_neovim_remote              = 1
+            vim.g.lazygit_use_custom_config_file_path    = 1
+            -- Use the config file at the top of the neovim configuration dir.
+            vim.g.lazygit_config_file_path               = vim.fn.stdpath('config') .. '/lazygit.yaml'
         end
     }
 end

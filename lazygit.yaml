@@ -1,0 +1,26 @@
+gui:
+  border:                      'hidden'
+  experimentalShowBranchHeads: true
+  nerdFontsVersion:            "2"
+  scrollHeight:                10
+  showBranchCommitHash:        true
+  showCommandLog:              false
+  windowSize:                  'half'
+
+  theme:
+    selectedLineBgColor:
+      - default
+      - bold
+    selectedRangeBgColor:
+      - default
+      - bold
+
+keybinding:
+  universal:
+    quit:   'Q'
+    return: 'q'
+
+git:
+  autoFetch:         false
+  branchLogCmd:      'git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=oneline {{branchName}} --'
+  allBranchesLogCmd: 'git log --graph --all --color=always --abbrev-commit --decorate --date=relative  --pretty=oneline'
