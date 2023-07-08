@@ -37,13 +37,13 @@ return function(config)
             end
 
             -- Register Custom Keymapping.
-            require 'which-key'.register({
-                e = {
-                    e = { ':1TermExec   direction=horizontal size=25 go_back=0 cmd="alot"<CR>', 'Email' },
-                    h = { ':1TermExec   direction=horizontal size=25 go_back=0 cmd="dijo"<CR>', 'Dijo' },
-                    j = { ':1ToggleTerm direction=horizontal size=25<CR>',                      'Open Bottom Terminal' },
-                },
-            }, { prefix = '<Leader>' })
+            -- require 'which-key'.register({
+            --     e = {
+            --         e = { ':1TermExec   direction=horizontal size=25 go_back=0 cmd="alot"<CR>', 'Email' },
+            --         h = { ':1TermExec   direction=horizontal size=25 go_back=0 cmd="dijo"<CR>', 'Dijo' },
+            --         j = { ':1ToggleTerm direction=horizontal size=25<CR>',                      'Open Bottom Terminal' },
+            --     },
+            -- }, { prefix = '<Leader>' })
 
             -- Configure Whichkey Design.
             require 'which-key'.setup(opts)

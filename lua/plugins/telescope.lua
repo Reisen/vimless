@@ -8,11 +8,11 @@ return function(config)
         'nvim-telescope/telescope.nvim',
         dependencies = {
             'nvim-lua/plenary.nvim',
-            'nvim-telescope/telescope-ui-select.nvim',
+            'camgraff/telescope-tmux.nvim',
             'nvim-telescope/telescope-file-browser.nvim',
             'nvim-telescope/telescope-github.nvim',
             'nvim-telescope/telescope-project.nvim',
-            'camgraff/telescope-tmux.nvim',
+            'nvim-telescope/telescope-ui-select.nvim',
             { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
         },
         config = function()
@@ -81,11 +81,11 @@ return function(config)
             require 'telescope'.setup(opts)
             require 'telescope'.load_extension('fzf')
             require 'telescope'.load_extension('file_browser')
-            require 'telescope'.load_extension('ui-select')
             require 'telescope'.load_extension('gh')
             require 'telescope'.load_extension('project')
-            require 'telescope'.load_extension('tusk')
             require 'telescope'.load_extension('tmux')
+            require 'telescope'.load_extension('tusk')
+            require 'telescope'.load_extension('ui-select')
 
             -- vim.api.nvim_set_keymap(
             --     "n",

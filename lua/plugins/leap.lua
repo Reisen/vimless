@@ -16,8 +16,6 @@ return function(config)
                 return
             end
 
-            require('leap').set_default_keymaps()
-
             ---@diagnostic disable-next-line: unused-function, unused-local
             function _G.LeapToWindow()
                 local targets = {}
@@ -56,6 +54,14 @@ return function(config)
 
             -- Leap AST hooks pre-exist, we just need to bind them.
             vim.keymap.set({'n', 'x', 'o'}, '\'', function() require'leap-ast'.leap() end, {})
+            vim.keymap.set({'n'}, 's', function ()
+                require('leap').leap {
+                    target_windows = vim.tbl_filter(
+                        function (win) return vim.api.nvim_win_get_config(win).focusable end,
+                        vim.api.nvim_tabpage_list_wins(0)
+                    )
+                }
+            end)
         end
     }
 end

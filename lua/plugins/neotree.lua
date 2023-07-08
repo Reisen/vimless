@@ -29,6 +29,8 @@ return function(config)
                 opts = vim.tbl_extend('force', opts, config.plugins.neotree)
             end
 
+            vim.g.neo_tree_remove_legacy_commands = 1
+
             require 'neo-tree'.setup(opts)
         end
     }

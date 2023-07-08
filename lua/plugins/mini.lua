@@ -93,9 +93,12 @@ return function(config)
                         default = true
                     }
                 },
+                files     = {
+                    options = {
+                        use_as_default_explorer = false,
+                    },
+                },
                 comment   = {},
-                files     = {},
-                pairs     = {},
                 bufremove = {},
             }
 
@@ -107,7 +110,6 @@ return function(config)
             require 'mini.base16'.setup(opts.base16)
             require 'mini.comment'.setup(opts.comment)
             require 'mini.files'.setup(opts.files)
-            require 'mini.pairs'.setup(opts.surround)
             require 'mini.bufremove'.setup(opts.bufremove)
 
             -- mini.base16 configures most colours perfectly, but gets a few that look a little gnarly.
@@ -117,34 +119,41 @@ return function(config)
                 augroup base16override
                 autocmd!
                 autocmd BufEnter *
-                    \  highlight  SignColumn           ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  WinSeparator         ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  StatusLine           ctermbg=NONE  guibg=NONE            ctermfg=4     |           
-                    \  highlight  StatusLineNC         ctermbg=NONE  guibg=NONE            ctermfg=8     |           
-                    \  highlight  WinBar               ctermbg=19    guibg=NONE            ctermfg=4     |           
-                    \  highlight  WinBarNC             ctermbg=19    guibg=NONE            ctermfg=4     |           
-                    \  highlight  GitSignsAdd          ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  GitSignsChange       ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  GitSignsDelete       ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  DiagnosticSignWarn   ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  DiagnosticSignInfo   ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  DiagnosticSignHint   ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  DiagnosticSignError  ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  GitSignsAddLn        ctermfg=NONE  ctermbg=18            guibg=NONE    |           
-                    \  highlight  GitSignsChangeLn     ctermfg=NONE  ctermbg=18            guibg=NONE    |           
-                    \  highlight  GitSignsDeleteLn     ctermfg=NONE  ctermbg=18            guibg=NONE    |           
-                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=18            guibg=NONE    |           
-                    \  highlight  GitSignsUntrackedLn  ctermfg=NONE  ctermbg=18            guibg=NONE    |           
-                    \  highlight  EndOfBuffer          ctermfg=bg    ctermbg=NONE          guibg=NONE    |           
-                    \  highlight  WhichKeyFloat        ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  WhichKeySeparator    ctermbg=NONE  guibg=NONE            |                         
-                    \  highlight  FlashMatch           ctermfg=1     ctermbg=NONE          guibg=NONE    |           
-                    \  highlight  FlashCurrent         ctermfg=3     ctermbg=NONE          guibg=NONE    |           
-                    \  highlight  FlashLabel           ctermfg=2     cterm=underline,bold  ctermbg=NONE  guibg=NONE  |
-                    \  highlight  HydraHint            ctermbg=NONE  guibg=NONE            |
-                    \  highlight  TelescopeBorder      ctermfg=8     ctermbg=NONE          guibg=NONE    |           
-                    \  highlight  TelescopeTitle       ctermfg=1     ctermbg=NONE          guibg=NONE                
+\   highlight  SignColumn             ctermbg=NONE                
+\|  highlight  WinSeparator           ctermbg=bg    ctermfg=bg    
+\|  highlight  StatusLine             ctermbg=NONE  ctermfg=4     
+\|  highlight  StatusLineNC           ctermbg=NONE  ctermfg=8     
+\|  highlight  WinBar                 ctermbg=19    ctermfg=4     
+\|  highlight  WinBarNC               ctermbg=19    ctermfg=4     
+\|  highlight  GitSignsAdd            ctermbg=NONE                
+\|  highlight  GitSignsChange         ctermbg=NONE                
+\|  highlight  GitSignsDelete         ctermbg=NONE                
+\|  highlight  DiagnosticSignError    ctermbg=NONE                
+\|  highlight  DiagnosticSignWarn     ctermbg=NONE                
+\|  highlight  DiagnosticSignInfo     ctermbg=NONE                
+\|  highlight  DiagnosticSignHint     ctermbg=NONE                
+\|  highlight  DiagnosticSignError    ctermbg=NONE                
+\|  highlight  GitSignsAddLn          ctermbg=18    ctermfg=NONE  
+\|  highlight  GitSignsChangeLn       ctermbg=18    ctermfg=NONE  
+\|  highlight  GitSignsDeleteLn       ctermbg=18    ctermfg=NONE  
+\|  highlight  GitSignsUntrackedLn    ctermbg=18    ctermfg=NONE  
+\|  highlight  GitSignsUntrackedLn    ctermbg=18    ctermfg=NONE  
+\|  highlight  EndOfBuffer            ctermbg=NONE  ctermfg=bg    
+\|  highlight  WhichKeyFloat          ctermbg=NONE                
+\|  highlight  WhichKeySeparator      ctermbg=NONE                
+\|  highlight  FlashMatch             ctermbg=NONE  ctermfg=1     
+\|  highlight  FlashCurrent           ctermbg=NONE  ctermfg=3     
+\|  highlight  FlashLabel             ctermbg=NONE  ctermfg=2     cterm=underline,bold
+\|  highlight  HydraHint              ctermbg=NONE                
+\|  highlight  HydraBorder            ctermbg=NONE  ctermfg=19    
+\|  highlight  HydraSelected          ctermbg=NONE                
+\|  highlight  TelescopeBorder        ctermbg=NONE  ctermfg=8     
+\|  highlight  TelescopeTitle         ctermbg=18    ctermfg=1     
+\|  highlight  NeoTreeWinSeparator    ctermbg=NONE  ctermfg=19    
+\|  highlight  MiniFilesBorder        ctermbg=bg    ctermfg=bg    
+\|  highlight  MiniFilesNormal        ctermbg=bg                  
+\|  highlight  MiniFilesTitle         ctermbg=bg                  
+\|  highlight  MiniFilesTitleFocused  ctermbg=bg                  
                 augroup END
 
             ]]

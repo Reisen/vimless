@@ -8,7 +8,7 @@ set smartcase               " ignore case when lowercase, match case when upperc
 set expandtab               " use spaces instead of tabs
 set nonumber                " don't show line numbers
 set fillchars+=diff:╱       " use a different character for diff mode
-set fillchars+=vert:\       " use a different character for vertical splits
+set fillchars+=vert:│       " use a unicode pipe character for vertical splits
 set fillchars+=stl:\        " don't fill status lines with ^ chars
 set fillchars+=stlnc:\      " don't fill status lines with ^ chars
 set nowrap                  " don't wrap lines
@@ -47,17 +47,6 @@ endif
 
 " Finally, run our Lua based configuration for Neovim.
 lua require('plugins')
-
-" Helper function to discover the syntax groups for the element under the
-" cursor. This is useful for debugging syntax highlighting.
-function! SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-
-nnoremap <leader>. :call SynStack()<CR>
 
 " Save current view settings on a per-window, per-buffer basis. This helps vim
 " restore windows in the right position when jumping back and forth.

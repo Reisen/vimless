@@ -5,6 +5,7 @@ return function(config)
 
     return {
         'j-hui/fidget.nvim',
+        branch = 'legacy',
         config = function()
             if config.plugins.fidget and type(config.plugins.fidget) == 'function' then
                 config.plugins.fidget()

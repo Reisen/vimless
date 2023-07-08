@@ -7,7 +7,7 @@ local M = {
 -- The gsub function in Lua performs global substitution of patterns in a
 -- string. Here, various patterns are matched and substituted to convert the
 -- string into kebab case.
-function case_convert(s)
+local function case_convert(s)
     -- Match any uppercase letter after a non-letter character and replace with
     -- a hyphen.
     s = s:gsub('%f[^%l]%u', '-%1')
@@ -27,13 +27,13 @@ function case_convert(s)
 end
 
 -- A Telescope extension that provides a cmdline mode.
-local function __telescope_extension_cmdline(opts, completions)
+local function __telescope_extension_cmdline(defaults, completions)
     local entry_display = require 'telescope.pickers.entry_display'
     local pickers       = require 'telescope.pickers'
     local finders       = require 'telescope.finders'
     local config        = require 'telescope.config'
 
-    local opts = vim.tbl_deep_extend('force', M.opts, opts or {})
+    local opts = vim.tbl_deep_extend('force', M.opts, defaults or {})
 
     pickers.new(opts, {
         prompt_title = "Tusk",
@@ -42,19 +42,48 @@ local function __telescope_extension_cmdline(opts, completions)
             results = (function()
                 if not completions then
                     M.command = {}
+
+                    -- Get the list of existing Vim commands.
+                    local results = vim.fn.getcompletion(':'..table.concat(M.command, ' ')..' ', "cmdline")
+
+                    -- Also get the list of defined user-commands, the reason we
+                    -- don't just use this as the result is because neovim does not
+                    -- provide builtin commands in this list. Instead, we'll match
+                    -- up our completion results to this list to get as
+                    -- comprehensive a list as possible, unfortunately this won't
+                    -- cover everything but it's the best we can do.
+                    local user_commands   = vim.api.nvim_get_commands({ builtin = false })
+                    local buffer_commands = vim.api.nvim_buf_get_commands(0, { builtin = true })
+                    buffer_commands[true] = nil
+
+                    -- Generate Table of all commands zipped with information if present.
+                    local commands = {}
+                    for _, command in ipairs(results) do
+                        if user_commands[command] then
+                            table.insert(commands, user_commands[command])
+                        elseif buffer_commands[command] then
+                            table.insert(commands, buffer_commands[command])
+                        else
+                            table.insert(commands, {
+                                nargs      = "?",
+                                name       = command,
+                                definition = 'No description.',
+                            })
+                        end
+                    end
+
+                    return commands
                 end
 
-                -- Get the list of existing Vim commands.
                 return vim.fn.getcompletion(':'..table.concat(M.command, ' ')..' ', "cmdline")
             end)(),
 
             entry_maker = opts.entry_maker or function(entry)
-                -- If we're showing completions, we don't need to do any entry
-                -- formatting, we can just produce an entry for each completion
-                -- as it currently is.
+                -- If we're showing completions, we don't have a rich entry
+                -- table and should format a preview of the command instead.
                 if completions then
                     local current_command = case_convert(table.concat(M.command, ' '))
-                    local display = function(entry)
+                    local display = function(row)
                         local displayer = entry_display.create {
                             separator = " ",
                             items = {
@@ -65,9 +94,9 @@ local function __telescope_extension_cmdline(opts, completions)
                         }
 
                         return displayer {
-                            { M.nargs,                        "TelescopeResultsNumber" },
-                            { current_command,                "TelescopeResultsFunction" },
-                            { case_convert(entry.value.name), "TelescopeResultsIdentifier" },
+                            { M.nargs,                      "TelescopeResultsNumber" },
+                            { current_command,              "TelescopeResultsFunction" },
+                            { case_convert(row.value.name), "TelescopeResultsIdentifier" },
                         }
                     end
 
@@ -75,17 +104,16 @@ local function __telescope_extension_cmdline(opts, completions)
                         ordinal = entry,
                         display = display,
                         value   = {
-                            nargs      = 0,
-                            name       = entry,
-                            definition = '',
+                            nargs = M.nargs,
+                            name  = entry,
                         },
                     }
                 end
 
-                local display = function(entry)
+                local display = function(row)
                     local template = {
                         { width     = 2 },
-                        { width     = 40 },
+                        { width     = 50 },
                         { remaining = true },
                     }
 
@@ -98,27 +126,23 @@ local function __telescope_extension_cmdline(opts, completions)
                         items     = template,
                     }
 
-                    local row = {
-                        { entry.value.nargs,              "TelescopeResultsNumber" },
-                        { case_convert(entry.value.name), "TelescopeResultsIdentifier" },
-                        { entry.value.definition,         "TelescopeResultsComment" },
+                    local items = {
+                        { row.value.nargs,              "TelescopeResultsNumber" },
+                        { case_convert(row.value.name), "TelescopeResultsIdentifier" },
+                        { row.value.definition,         "TelescopeResultsComment" },
                     }
 
                     if opts.visual then
-                        table.insert(row, 2, { "'<'>", "TelescopeResultsLabel" })
+                        table.insert(items, 2, { "'<'>", "TelescopeResultsLabel" })
                     end
 
-                    return displayer(row)
+                    return displayer(items)
                 end
 
                 return require 'telescope.make_entry'.set_default_entry_mt {
-                    ordinal    = entry,
-                    display    = display,
-                    value      = {
-                        nargs      = 0,
-                        name       = entry,
-                        definition = '',
-                    },
+                    display = display,
+                    ordinal = case_convert(entry.name),
+                    value   = entry,
                 }
             end
         }),
@@ -130,10 +154,9 @@ local function __telescope_extension_cmdline(opts, completions)
 
             -- Bind Shift=Enter to immediately exit and execute the current
             -- buffered command string.
-            map('i', '<C-e>', function(_prompt_bufnr)
-                local selection = action_state.get_selected_entry()
-                if selection ~= nil then
-                    table.insert(M.command, selection.value.name)
+            map('i', '<S-cr>', function(_prompt_bufnr)
+                if action_state.get_selected_entry() ~= nil then
+                    table.insert(M.command, action_state.get_selected_entry().value.name)
                 end
 
                 actions.close(_prompt_bufnr)
@@ -159,29 +182,17 @@ local function __telescope_extension_cmdline(opts, completions)
                 -- Append the selected command to the command buffer.
                 table.insert(M.command, selection.value.name)
 
-                -- Attempt to get completions, because if there are none we are
-                -- able to execute now.
-                local completions = vim.fn.getcompletion(':'..table.concat(M.command, ' ')..' ', "cmdline")
-                if not completions or #completions == 0 then
+                -- Attempt to get completions ahead of time, because if there
+                -- are none we are able to execute the command immediately and
+                -- finish instead of recursing to another picker.
+                local pre_completions = vim.fn.getcompletion(':'..table.concat(M.command, ' ')..' ', "cmdline")
+                if not pre_completions or #pre_completions == 0 then
                     vim.cmd(table.concat(M.command, " "))
                     vim.fn.histadd("cmd", table.concat(M.command, " "))
                     return
                 end
 
-                -- If there are no expected argments at all, we can just run
-                -- the command and we're done.
-               -- if M.nargs == "0" then
-               --      vim.cmd(table.concat(M.command, " "))
-               --      vim.fn.histadd("cmd", table.concat(M.command, " "))
-               --      return
-               --  end
-
-                -- If the nargs is numeric, we can decrement.
-                -- if tonumber(M.nargs) then
-                --     M.nargs = tostring(tonumber(M.nargs) - 1)
-                -- end
-
-                -- Now we re-run with completions.
+                -- Command is incomplete, so we recurse to another picker.
                __telescope_extension_cmdline(opts, true)
             end)
 

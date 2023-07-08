@@ -28,12 +28,6 @@ return function(config)
             end
 
             require 'zen-mode'.setup(opts)
-
-            -- Bind :ZenMode to <leader>z
-            vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>ZenMode<CR>', {
-                noremap = true,
-                silent  = true,
-            })
         end
     }
 end

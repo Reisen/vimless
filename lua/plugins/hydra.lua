@@ -88,6 +88,39 @@ function M.generate(headers, hints)
     return result:gsub('([%w%^%$%(%)%%%.%[%]%*%+%-%?=/<>]+):', '_%1_ ')
 end
 
+function M.generateSingleColumn(headers, hints)
+    local result = {}
+    for _, header in ipairs(headers) do
+        local lines = {}
+        local column = hints[header]
+
+        -- Make sure column is a table.
+        if type(column) == 'table' then
+            -- Now iterate over the column and render each line.
+            for key, hint in pairs(column) do
+                local line = string.format('  _%s_ %s', key, hint[1])
+                table.insert(lines, line)
+            end
+
+            -- Sort the lines and insert them to the result.
+            table.sort(lines)
+            table.insert(lines, 1, '')
+            table.insert(lines, 1, '   ' .. header)
+            table.insert(lines, '')
+            for _, line in ipairs(lines) do
+                table.insert(result, line)
+            end
+        end
+    end
+
+    -- Append an empty line.
+    table.insert(result, '')
+
+    -- Now we concat the result.
+    local result = table.concat(result, '\n')
+    return result
+end
+
 -- Given a Sectioned Table of Tables indexed by keycodes:
 --
 -- ```
@@ -132,6 +165,7 @@ return function(config)
             'nvim-lua/plenary.nvim',
             'saecki/crates.nvim',
             'simrat39/rust-tools.nvim',
+            'nvim-telescope/telescope.nvim',
         },
         config = function()
             if config.plugins.hydra and type(config.plugins.hydra) == 'function' then
@@ -150,6 +184,7 @@ return function(config)
             local rust_tools   = require 'rust-tools'
             local telescope    = require 'telescope.builtin'
             local bufremove    = require 'mini.bufremove'
+            local files        = require 'mini.files'
 
             -- Wrap the Hydra call with a generator that consumes and formats
             -- hints before the creating the full hydra.
@@ -158,7 +193,7 @@ return function(config)
                 -- pretty hint string and convert to the Hydra expected heads
                 -- format from our Sectioned Table of Tables.
                 local order = hints.order or {}
-                hints.hint  = M.generate(order, hints.heads)
+                hints.hint  = M.generateSingleColumn(order, hints.heads)
                 hints.heads = M.flatten(hints.heads)
 
                 -- We can now create our hydra, and while we're at out we'll
@@ -167,24 +202,25 @@ return function(config)
                 -- screen.
                 local neck = hydra(hints)
                 function neck.hint:_make_win_config()
-                    local _make_win_config_orig = getmetatable(self)._make_win_config
-                    _make_win_config_orig(self)
-                    self.win_config.width = vim.o.columns
+                    getmetatable(self)._make_win_config(self)
+                    self.win_config.height = vim.o.lines
+                    self.win_config.width  = 32
                 end
                 return neck
             end
 
             -- Hint Options that are shared by all Hydras.
             local hint_options = {
-                position = 'bottom',
-                border   = 'none',
+                position = 'top-right',
                 offset   = 0,
+                border   = {
+                    '│', '', '', '', '', '', '', '│',
+                },
             }
 
             local window_hydra = genhydra({
                 name   = 'Window Management',
                 mode   = 'n',
-                body   = '<leader>w',
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
@@ -234,7 +270,6 @@ return function(config)
             local tab_hydra = genhydra({
                 name   = 'Tab Management',
                 mode   = 'n',
-                body   = '<leader>t',
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
@@ -266,7 +301,6 @@ return function(config)
             local buffer_hydra = genhydra({
                 name   = 'Buffer Management',
                 mode   = 'n',
-                body   = '<leader>b',
                 config = {
                     hint           = hint_options,
                     invoke_on_body = true,
@@ -294,11 +328,11 @@ return function(config)
 
             local ivy = require 'telescope.themes'.get_dropdown {
                 border        = true,
-                layout_config = { height = 15, width = 0.9999, anchor = 'S' },
+                layout_config = { height = 15, width = 0.9999, anchor = 'N' },
                 borderchars   = {
-                    prompt  = { '─', ' ', ' ', ' ', '', '', '', '' },
-                    results = { '',  ' ', ' ', ' ', '', '', '', '' },
-                    preview = { '',  ' ', ' ', ' ', '', '', '', '' },
+                    prompt  = { ' ', '', ' ', '', '', '', '', '' },
+                    results = { ' ', '', '─', '', '', '', '', '' },
+                    preview = { ' ', '', ' ', '', '', '', '', '' },
                 },
             }
 
@@ -306,9 +340,9 @@ return function(config)
                 border        = true,
                 layout_config = { height = 15 },
                 borderchars   = {
-                    prompt  = { '─', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                    results = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-                    preview = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+                    prompt  = { ' ', '', ' ', '', '', '', '', '' },
+                    results = { ' ', '', '─', '', '', '', '', '' },
+                    preview = { ' ', '', ' ', '', '', '', '', '' },
                 },
             }
 
@@ -330,6 +364,7 @@ return function(config)
                 -- As an MRU buffer it's nice to be able to filter to a file by
                 -- a single character, but many files with the same name might
                 -- show so we show the full path as a suffix.
+                ---@diagnostic disable-next-line: unused-local
                 path_display = function(opts, path)
                     local tail = require 'telescope.utils'.path_tail(path)
                     return string.format('%s (%s)', tail, path)
@@ -343,10 +378,9 @@ return function(config)
             --
             -- TODO: Only split out hydras that can't be global.
             function _G.VimlessBindHydras()
-                local git_hydra = genhydra({
+                local git_stage_hydra = genhydra({
                     name   = 'Git',
                     mode   = {'n', 'x'},
-                    body   = '<leader>g',
                     config = {
                         hint           = hint_options,
                         invoke_on_body = true,
@@ -354,16 +388,13 @@ return function(config)
                         on_key         = function() vim.wait(50) end,
                     },
                     order = {
-                        "Diff",
-                        "Visual",
-                        "Git",
+                        "Stage",
+                        "Unstage",
                         "Other",
                     },
                     heads  = {
-                        ["Diff"] = {
-                            n = { 'Next Hunk',  function() vim.cmd 'Gitsigns next_hunk' end,  {}},
-                            p = { 'Prev Hunk',  function() vim.cmd 'Gitsigns prev_hunk' end,  {}},
-                            r = { 'Reset Hunk', function() vim.cmd 'Gitsigns reset_hunk' end, {}},
+                        ["Stage"] = {
+                            S = { 'Stage Buffer', gitsigns.stage_buffer,    {}},
                             s = { 'Stage Hunk',
                                 function()
                                     local mode = vim.api.nvim_get_mode().mode:sub(1,1)
@@ -377,27 +408,58 @@ return function(config)
                                 end,
                                 {}
                             },
-                            R = { 'Reset Buffer',        gitsigns.reset_buffer,    {}},
-                            S = { 'Stage Buffer',        gitsigns.stage_buffer,    {}},
-                            u = { 'Undo Stage Hunk',     gitsigns.undo_stage_hunk, {}},
-                            d = { 'Diff (Project)',      function() vim.cmd 'DiffviewFileHistory %' end, { exit = true }},
-                            D = { 'Diff (Current File)', function() vim.cmd 'DiffviewOpen' end,          { exit = true }},
                         },
 
-                        ["Visual"] = {
+                        ["Unstage"] = {
+                            u = { 'Undo Stage Hunk', gitsigns.undo_stage_hunk, {}},
+                            r = { 'Reset Hunk',      function() vim.cmd 'Gitsigns reset_hunk' end, {}},
+                            R = { 'Reset Buffer',    gitsigns.reset_buffer,    {}},
+                        },
+
+                        ["Other"] = {
+                            q = { 'Quit', function() end, { exit = true }},
+                        }
+                    }
+                })
+
+                local git_hydra = genhydra({
+                    name   = 'Git',
+                    mode   = {'n', 'x'},
+                    config = {
+                        hint           = hint_options,
+                        invoke_on_body = true,
+                        buffer         = true,
+                        on_key         = function() vim.wait(50) end,
+                    },
+                    order = {
+                        "Git",
+                        "Navigation",
+                        "Other",
+                        "UI",
+                    },
+                    heads  = {
+                        ["Git"] = {
+                            D = { 'Diff (Current File)', function() vim.cmd 'DiffviewOpen' end,          { exit = true }},
+                            d = { 'Diff (Project)',      function() vim.cmd 'DiffviewFileHistory %' end, { exit = true }},
+                            g = { 'LazyGit',             function() vim.cmd 'LazyGit' end,               { exit = true }},
+                            h = { 'Hunk/Staging',        function() git_stage_hydra:activate() end,      { exit = true }},
+                            l = { 'Log',                 function() vim.cmd 'G log --oneline' end,       { exit = true }},
+                            s = { 'Status',              function() vim.cmd 'Gedit:' end,                { exit = true }},
+                        },
+
+                        ["Navigation"] = {
+                            n = { 'Next Hunk', function() vim.cmd 'Gitsigns next_hunk' end,  {}},
+                            p = { 'Prev Hunk', function() vim.cmd 'Gitsigns prev_hunk' end,  {}},
+                        },
+
+                        ["UI"] = {
                             b = { 'Blame Current Line', function() gitsigns.blame_line { full = true } end, { exit = true }},
                             B = { 'Blame Buffer',       function() vim.cmd 'G blame' end,                   { exit = true }},
                             v = { 'Highlight Numbers',  function() vim.cmd 'Gitsigns toggle_linehl' end,    { exit = true }},
                             V = { 'Highlight Lines',    function() vim.cmd 'Gitsigns toggle_numhl' end,     { exit = true }},
                         },
 
-                        ["Git"] = {
-                            e = { 'Git Status', function() vim.cmd 'Gedit:' end,          { exit = true }},
-                            l = { 'Git Log',    function() vim.cmd 'G log --oneline' end, { exit = true }},
-                        },
-
                         ["Other"] = {
-                            g = { 'LazyGit', function() vim.cmd 'LazyGit' end, { exit = true }},
                             q = { 'Quit',    function() end, { exit = true }},
                         },
                     },
@@ -406,7 +468,6 @@ return function(config)
                 local neotest_hydra = genhydra({
                     name   = 'Neotest',
                     mode   = {'n'},
-                    body   = '<leader>n',
                     config = {
                         hint           = hint_options,
                         buffer         = true,
@@ -439,7 +500,6 @@ return function(config)
                 local rust_hydra = genhydra({
                     name   = 'Rust',
                     mode   = 'n',
-                    body   = '<leader>r',
                     config = {
                         hint           = hint_options,
                         invoke_on_body = true,
@@ -478,7 +538,6 @@ return function(config)
                 local lsp_hydra = genhydra({
                     name   = 'LSP',
                     mode   = 'n',
-                    body   = '<leader>l',
                     color  = 'pink',
                     config = {
                         hint           = hint_options,
@@ -494,8 +553,8 @@ return function(config)
                     },
                     heads = {
                         ["Diagnostics"] = {
-                            n = { 'Next Error',  vim.diagnostic.goto_next,  { exit = true }},
-                            p = { 'Prev Error',  vim.diagnostic.goto_prev,  { exit = true }},
+                            n = { 'Next Error',  vim.diagnostic.goto_next,  {}},
+                            p = { 'Prev Error',  vim.diagnostic.goto_prev,  {}},
                             l = { 'List Errors', vim.diagnostic.setloclist, { exit = true }},
                         },
 
@@ -536,7 +595,6 @@ return function(config)
                 local fzf_hydra = genhydra({
                     name  = 'FZF',
                     mode  = 'n',
-                    body  = '<leader>f',
                     config = {
                         hint           = hint_options,
                         buffer         = true,
@@ -614,7 +672,6 @@ return function(config)
                 local octo_hydra = genhydra({
                     name  = 'Octo',
                     mode  = 'n',
-                    body  = '<leader>o',
                     config = {
                         hint           = hint_options,
                         invoke_on_body = true,
@@ -642,7 +699,7 @@ return function(config)
                 genhydra({
                     name   = 'Hydra',
                     mode   = 'n',
-                    body   = '<leader>h',
+                    body   = '<leader>',
                     config = {
                         hint           = hint_options,
                         invoke_on_body = true,
@@ -675,43 +732,51 @@ return function(config)
                         },
 
                         ["UI"] = {
-                            sp = { 'Toggle Plugin Manager', c.cmd('Lazy'), { exit = true }},
-                            st = { 'Toggle Trouble',        c.cmd('TroubleToggle'),             { exit = true }},
-                            sn = { 'Toggle Neotree',        c.cmd('NeoTreeShowToggle buffers'), { exit = true }},
+                            st = { 'Toggle Trouble',        c.cmd('TroubleToggle'), { exit = true }},
+                            sn = { 'Toggle Neotree',        c.cmd('Neotree show'),  { exit = true }},
                         },
 
                         ["Other"] = {
-                            q = { 'Quit',     function() end,  { exit = true }},
-                            k = { 'WhichKey', ':WhichKey<cr>', { exit = true }},
+                            k     = { 'WhichKey',         ':WhichKey<cr>', { exit = true }},
+                            p     = { 'Plugin Manager',   c.cmd('Lazy'),   { exit = true }},
+                            [' '] = { 'Minifiles',        files.open,      { exit = true }},
+                            q     = { 'Quit',             function() end,  { exit = true }},
+                            x     = { 'Command Pallette', function()
+                                local tusk = require 'telescope'.extensions.tusk
+                                local opts = vim.deepcopy(ivy)
+                                opts.visual = true
+                                tusk.tusk(opts)
+                            end, { exit = true }},
                         }
                     }
                 })
             end
 
-            vim.keymap.set('n', '<leader>x', function()
-                local tusk = require 'telescope'.extensions.tusk
-                tusk.tusk(ivy)
-            end, { desc = 'Tusk Command Pallette' })
-
-            vim.keymap.set('v', '<leader>x', function()
-                local tusk = require 'telescope'.extensions.tusk
-                local opts = vim.deepcopy(ivy)
-                opts.visual = true
-                tusk.tusk(opts)
-            end, { desc = 'Tusk Command Pallette' })
+            -- vim.keymap.set('n', '<leader>x', function()
+            --     local tusk = require 'telescope'.extensions.tusk
+            --     tusk.tusk(ivy)
+            -- end, { desc = 'Tusk Command Pallette' })
+            --
+            -- vim.keymap.set('v', '<leader>x', function()
+            --     local tusk = require 'telescope'.extensions.tusk
+            --     local opts = vim.deepcopy(ivy)
+            --     opts.visual = true
+            --     tusk.tusk(opts)
+            -- end, { desc = 'Tusk Command Pallette' })
 
             -- Now we create an autocommand that binds these every time a new buffer
             -- is created.
             vim.cmd [[
-                augroup hydra
+                augroup hydrabinds
                     autocmd!
                     autocmd BufEnter * lua VimlessBindHydras()
-                augroup
+                    autocmd BufNew   * lua VimlessBindHydras()
+                augroup END
 
                 " Commands in the `h` window aren't themselves hydras so these are
                 " bound manually.
-                nnoremap <leader>k :WhichKey<cr>
-                nnoremap <leader>p :Lazy<cr>
+                " nnoremap <leader>k :WhichKey<cr>
+                " nnoremap <leader>p :Lazy<cr>
             ]]
         end
     }

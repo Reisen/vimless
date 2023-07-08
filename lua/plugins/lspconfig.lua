@@ -22,6 +22,7 @@ return function(config)
             'williamboman/mason-lspconfig.nvim',
             'nvim-lua/plenary.nvim',
             { 'folke/neoconf.nvim', cmd = 'Neoconf', config = true },
+            { 'folke/neodev.nvim', opts = {} },
         },
         config = function()
             if config.plugins.lspconfig and type(config.plugins.lspconfig) == 'function' then
@@ -30,7 +31,9 @@ return function(config)
             end
 
             local opts = {
-                mason = {
+                neodev          = {},
+                mason_lspconfig = {},
+                mason           = {
                     ui = {
                         border = 'single',
                         width  = 0.999,
@@ -38,8 +41,6 @@ return function(config)
                     }
                 },
 
-                mason_lspconfig = {
-                }
             }
 
             if config.plugins.lspconfig and type(config.plugins.lspconfig) == 'table' then
@@ -51,6 +52,7 @@ return function(config)
             ]]
 
             -- Setup Mason before LSPConfig.
+            require 'neodev'.setup(opts.neodev)
             require 'mason'.setup(opts.mason)
             require 'mason-lspconfig'.setup(opts.mason_lspconfig)
             require 'mason-lspconfig'.setup_handlers {
@@ -61,13 +63,15 @@ return function(config)
                     require 'lspconfig'[server_name].setup {
                         on_attach    = function(client, buffer)
                             -- client.server_capabilities.semanticTokensProvider = nil
-                            require 'nvim-navic'.attach(
-                                client,
-                                buffer
-                            )
+                            if client.server_capabilities.documentSymbolProvider then
+                                require 'nvim-navic'.attach(
+                                    client,
+                                    buffer
+                                )
+                            end
 
                             -- If the server supports inlay hints, then enable them.
-                            if client.server_capabilities and client.server_capabilities.inlayHintsProvider then
+                            if client.server_capabilities.inlayHintsProvider then
                                 vim.lsp.buf.inlay_hint(buffer, true)
                             end
                         end,
@@ -82,27 +86,27 @@ return function(config)
                 -- Lua requires extra handling to configure the expected runtime and
                 --  library paths. So we sadly can't rely on a default handler to
                 --  set these up for us.
-                lua_ls = function()
-                    require 'lspconfig'.lua_ls.setup {
-                        on_attach    = function(client, buffer)
-                            require 'nvim-navic'.attach(
-                                client,
-                                buffer
-                            )
-                        end,
-
-                        settings = {
-                            Lua = {
-                                runtime     = { version = 'LuaJIT', },
-                                workspace   = { library = vim.api.nvim_get_runtime_file('', true), },
-                                telemetry   = { enable = false, },
-                                diagnostics = {
-                                    globals = { 'use', 'vim' },
-                                },
-                            },
-                        },
-                    }
-                end,
+                -- lua_ls = function()
+                --     require 'lspconfig'.lua_ls.setup {
+                --         on_attach    = function(client, buffer)
+                --             require 'nvim-navic'.attach(
+                --                 client,
+                --                 buffer
+                --             )
+                --         end,
+                --
+                --         settings = {
+                --             Lua = {
+                --                 runtime     = { version = 'LuaJIT', },
+                --                 workspace   = { library = vim.api.nvim_get_runtime_file('', true), },
+                --                 telemetry   = { enable = false, },
+                --                 diagnostics = {
+                --                     globals = { 'use', 'vim' },
+                --                 },
+                --             },
+                --         },
+                --     }
+                -- end,
             }
 
             -- Sign Overrides

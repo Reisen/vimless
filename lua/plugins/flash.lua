@@ -5,7 +5,7 @@ return function(config)
 
     return {
         'folke/flash.nvim',
-        keys = {
+        keys = nil and {
             { 's', mode = { 'n', 'x', 'o' }, function() require 'flash'.jump() end, desc = 'Flash' },
             { 'S', mode = { 'n', 'x', 'o' }, function() require 'flash'.treesitter() end, desc = 'Flash Treesitter' },
             { 'r', mode = { 'o'           }, function() require 'flash'.remote() end, 'Flash Remote' },
@@ -18,7 +18,10 @@ return function(config)
             end
 
             local opts = {
-                jump  = { nohlsearch = true },
+                jump   = { nohlsearch = true },
+                search = {
+                    max_length = 2
+                },
                 label = {
                     after  = false,
                     before = {0, 2},
