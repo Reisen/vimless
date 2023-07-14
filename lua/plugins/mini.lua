@@ -123,8 +123,8 @@ return function(config)
 \|  highlight  WinSeparator           ctermbg=bg    ctermfg=bg    
 \|  highlight  StatusLine             ctermbg=NONE  ctermfg=4     
 \|  highlight  StatusLineNC           ctermbg=NONE  ctermfg=8     
-\|  highlight  WinBar                 ctermbg=19    ctermfg=4     
-\|  highlight  WinBarNC               ctermbg=19    ctermfg=4     
+\|  highlight  WinBar                 ctermbg=18    ctermfg=4     
+\|  highlight  WinBarNC               ctermbg=18    ctermfg=4     
 \|  highlight  GitSignsAdd            ctermbg=NONE                
 \|  highlight  GitSignsChange         ctermbg=NONE                
 \|  highlight  GitSignsDelete         ctermbg=NONE                

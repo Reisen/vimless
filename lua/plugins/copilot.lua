@@ -4,12 +4,92 @@ return function(config)
     end
 
     return {
-        'github/copilot.vim',
+        'zbirenbaum/copilot.lua',
+        cmd    = 'Copilot',
         config = function()
             if config.plugins.copilot and type(config.plugins.copilot) == 'function' then
                 config.plugins.copilot()
                 return
             end
+
+            local opts = {
+                suggestion = {
+                    keymap = {
+                        accept = "<Tab>",
+                    },
+                },
+                filetypes = {
+                    ["*"]           = false,
+
+                    -- Copilot can be considered a privacy leak, by default it runs in filetypes that we really
+                    -- don't want it to, like in mail in neomutt, in env files with secrets, etc. So instead we
+                    -- add a whitelist of languages that we want it to run in. This is more likely to give us
+                    -- copilot in places you actually want copilot, I.E: code files.
+                    clojurec        = true,
+                    clojurescript   = true,
+                    clojure         = true,
+                    clojurex        = true,
+                    cpp             = true,
+                    crystal         = true,
+                    css             = true,
+                    c               = true,
+                    dart            = true,
+                    elixir          = true,
+                    erlang          = true,
+                    fennel          = true,
+                    fennel          = true,
+                    fish            = true,
+                    go              = true,
+                    groovy          = true,
+                    haskell         = true,
+                    html            = true,
+                    javascriptreact = true,
+                    javascript      = true,
+                    java            = true,
+                    json            = true,
+                    julia           = true,
+                    kotlin          = true,
+                    lisp            = true,
+                    lua             = true,
+                    lua             = true,
+                    markdown        = true,
+                    moon            = true,
+                    nim             = true,
+                    nix             = true,
+                    objc            = true,
+                    ocaml           = true,
+                    php             = true,
+                    powershell      = true,
+                    python          = true,
+                    racket          = true,
+                    reason          = true,
+                    r               = true,
+                    ruby            = true,
+                    rust            = true,
+                    scala           = true,
+                    scheme          = true,
+                    scss            = true,
+                    sh              = true,
+                    sql             = true,
+                    svelte          = true,
+                    swift           = true,
+                    toml            = true,
+                    typescriptreact = true,
+                    typescript      = true,
+                    verilog         = true,
+                    vhdl            = true,
+                    vue             = true,
+                    yaml            = true,
+                    zig             = true,
+                    zsh             = true,
+                }
+            }
+
+            if config.plugins.copilot and type(config.plugins.copilot) == 'table' then
+                opts = vim.tbl_extend('force', opts, config.plugins.copilot)
+            end
+
+            require 'copilot' .setup(opts)
         end
     }
 end

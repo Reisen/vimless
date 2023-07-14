@@ -4,7 +4,7 @@ return function(config)
     end
 
     return {
-        'CKolkey/neogit',
+        'NeogitOrg/neogit',
         config = function()
             if config.plugins.neogit and type(config.plugins.neogit) == 'function' then
                 config.plugins.neogit()
