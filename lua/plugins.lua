@@ -37,6 +37,10 @@ local lazy_installed = ensure_lazy()
 -- Configure Plugins
 -- ------------------------------------------------------------------------------------
 require('lazy').setup({
+    -- If Hydra is enabled, it is loaded by priority. This is important because
+    -- it is how we allow other plugins to hook into the navigation.
+    require('plugins/hydra')(config),
+
     require('plugins/auto-session')(config),
     require('plugins/bufferline')(config),
     require('plugins/centerbuf')(config),
@@ -46,7 +50,6 @@ require('lazy').setup({
     require('plugins/dirbuf')(config),
     require('plugins/flash')(config),
     require('plugins/gitsigns')(config),
-    require('plugins/hydra')(config),
     require('plugins/indent-blankline')(config),
     require('plugins/lazygit')(config),
     require('plugins/leap')(config),
@@ -89,3 +92,6 @@ require('lazy').setup({
     -- --------------------------------------------------------------------------------
     unpack(config.custom)
 })
+
+-- Hook up the Keymapper
+require('keymap'):bind()

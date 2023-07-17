@@ -16,7 +16,7 @@ return {
 
     -- Custom Plugins
     --
-    -- Additional plugins can be added using the package syntax provided by lazy.nvim
+    -- Additional plugins can be added using the iackage syntax provided by lazy.nvim
     -- ------------------------------------------------------------------------------------
     custom = {
         'LnL7/vim-nix',
@@ -46,9 +46,7 @@ return {
         flash             = true,
         gitsigns          = true,
         hydra             = true,
-        indent_blankline  = false,
         lazygit           = true,
-        leap              = false,
         lspconfig         = true,
         marks             = true,
         mini              = true,
@@ -57,7 +55,6 @@ return {
         nvim_tree         = true,
         nvim_web_devicons = true,
         octo              = true,
-        oil               = false,
         quickscope        = true,
         rust              = true,
         surround          = true,
@@ -79,21 +76,26 @@ return {
         dropbar           = false,
         fzf_lua           = false,
         harpoon           = false,
+        indent_blankline  = false,
+        leap              = false,
         lualine           = false,
         mind              = false,
-        neogit            = false,
+        neogit            = true,
+        oil               = false,
         onedark           = false,
         targets           = false,
         tokyonight        = false,
         vinegar           = false,
 
-        -- Example for overriding options for plugins/foo.lua
+        -- Example for overriding options for a hypothetical plugin located in
+        -- plugins/foo.lua
         foo = {
-            setting_a = 'foo',
+            setting_a = {},
             setting_b = false,
         },
 
-        -- Example for overriding the entire setup for plugins/bar.lua
+        -- Example for overriding the entire setup for a hypothetical plugin
+        -- located in plugins/bar.lua
         bar = function()
             require 'example/bar'.setup {}
         end,

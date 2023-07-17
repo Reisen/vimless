@@ -78,6 +78,7 @@ return function(config)
                     typescript      = true,
                     verilog         = true,
                     vhdl            = true,
+                    vim             = true,
                     vue             = true,
                     yaml            = true,
                     zig             = true,

@@ -47,6 +47,11 @@ return function(config)
 
             -- Configure Whichkey Design.
             require 'which-key'.setup(opts)
+
+            local keymap = require 'keymap'
+            local c      = require 'hydra.keymap-util'
+
+            _G.HydraMappings['Root']['Plugins'].k = { 'WhichKey', c.cmd('WhichKey'), { exit = true } }
         end
     }
 end

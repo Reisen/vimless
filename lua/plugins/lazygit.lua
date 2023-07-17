@@ -22,6 +22,10 @@ return function(config)
             vim.g.lazygit_use_custom_config_file_path    = 1
             -- Use the config file at the top of the neovim configuration dir.
             vim.g.lazygit_config_file_path               = vim.fn.stdpath('config') .. '/lazygit.yaml'
+
+            local keymap = require('keymap')
+            _G.HydraMappings["Root"]["Plugins"].g = { 'Git', function() keymap:runHydra('Git') end, { exit = true } }
+            _G.HydraMappings["Git"]["Lazygit"].g  = { 'LazyGit', function() vim.cmd 'LazyGit' end,  { exit = true } }
         end
     }
 end

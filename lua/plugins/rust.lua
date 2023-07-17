@@ -16,9 +16,9 @@ return function(config)
 
     return {
         'simrat39/rust-tools.nvim',
-        requires = {
-            'SmiteshP/nvim-navic',
+        dependencies = {
             'nvim-lua/plenary.nvim' ,
+            'SmiteshP/nvim-navic',
             'saecki/crates.nvim',
         },
         config   = function()
@@ -73,8 +73,34 @@ return function(config)
                 },
             }
 
-            require 'rust-tools'.setup(opts.rust_tools)
-            require 'crates'.setup(opts.crates)
+            local tools  = require 'rust-tools'
+            local crates = require 'crates'
+            tools.setup(opts.rust_tools)
+            crates.setup(opts.crates)
+
+            local keymap = require 'keymap'
+            _G.HydraMappings["Root"]["Language"].c = function()
+                local languages = {
+                    rust = { 'Rust',       function() keymap:runHydra('Rust') end,   { exit = true } },
+                    toml = { 'Cargo.toml', function() keymap:runHydra('Crates') end, { exit = true } },
+                }
+
+                local language = languages[vim.bo.filetype]
+                if language then return language end
+            end
+
+            _G.HydraMappings['Crates']['Crates'].u = { 'Update Crate',       crates.update_crate,            { exit = true }}
+            _G.HydraMappings['Crates']['Crates'].U = { 'Upgrade Crate',      crates.upgrade_crate,           { exit = true }}
+            _G.HydraMappings['Crates']['Crates'].i = { 'Crate Info',         crates.show_popup,              { exit = true }}
+            _G.HydraMappings['Crates']['Crates'].d = { 'Crate Dependencies', crates.show_dependencies_popup, { exit = true }}
+            _G.HydraMappings['Crates']['Crates'].f = { 'Crate Features',     crates.show_features_popup,     { exit = true }}
+            _G.HydraMappings['Crates']['Crates'].v = { 'Crate Versions',     crates.show_versions_popup,     { exit = true }}
+
+            _G.HydraMappings['Rust']['Rust'].k = { 'Move Item Up',    tools.move_item.move_up,               { exit = true }}
+            _G.HydraMappings['Rust']['Rust'].j = { 'Move Item Down',  tools.move_item.move_down,             { exit = true }}
+            _G.HydraMappings['Rust']['Rust'].e = { 'Expand Macro',    tools.expand_macro.expand_macro,       { exit = true }}
+            _G.HydraMappings['Rust']['Rust'].s = { 'Parent Module',   tools.parent_module.parent_module,     { exit = true }}
+            _G.HydraMappings['Rust']['Rust'].c = { 'Open Cargo.toml', tools.open_cargo_toml.open_cargo_toml, { exit = true }}
         end
     }
 end

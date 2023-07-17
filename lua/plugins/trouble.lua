@@ -31,6 +31,13 @@ return function(config)
             end
 
             require 'trouble'.setup(opts)
+
+            local keymap = require 'keymap'
+            local c      = require 'hydra.keymap-util'
+
+            _G.HydraMappings['Root']['Other'].u = { 'Toggle UI', function() keymap:runHydra('UI') end, { exit = true } }
+            _G.HydraMappings['UI']['UI'].t      = { 'Toggle Trouble', c.cmd('TroubleToggle'), { exit = true } }
+            _G.HydraMappings['UI']['UI'].n      = { 'Toggle Neotree', c.cmd('Neotree show'), { exit = true } }
         end
     }
 end

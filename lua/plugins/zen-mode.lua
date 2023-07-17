@@ -27,7 +27,10 @@ return function(config)
                 opts = vim.tbl_extend('force', opts, config.plugins.zen)
             end
 
-            require 'zen-mode'.setup(opts)
+            local zen = require 'zen-mode'
+            zen.setup(opts)
+
+            _G.HydraMappings['Root']['Other'].z = { 'Zen', zen.toggle, { exit = true } }
         end
     }
 end

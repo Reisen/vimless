@@ -10,6 +10,12 @@ return function(config)
                 config.plugins.fugitive()
                 return
             end
+
+            local keymap = require('keymap')
+            _G.HydraMappings["Root"]["Plugins"].g    = { 'Git',        function() keymap:runHydra('Git') end, { exit = true } }
+            _G.HydraMappings["Git"]["Fugitive"].l    = { 'Log',        function() vim.cmd 'G log --oneline' end, { exit = true }}
+            _G.HydraMappings["Git"]["Fugitive"]["."] = { 'Log (File)', function() vim.cmd 'G log --oneline %' end, { exit = true }}
+            _G.HydraMappings["Git"]["Fugitive"]["?"] = { 'Status',     function() vim.cmd 'Gedit:' end, { exit = true }}
         end
     }
 end
