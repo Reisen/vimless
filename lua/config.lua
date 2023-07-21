@@ -43,7 +43,7 @@ return {
         dirbuf            = true,
         fidget            = true,
         fugitive          = true,
-        flash             = true,
+        flash             = true, -- Conflicts with `leap`, enable one or the other.
         gitsigns          = true,
         hydra             = true,
         lazygit           = true,
@@ -56,7 +56,6 @@ return {
         nvim_web_devicons = true,
         octo              = true,
         quickscope        = true,
-        rust              = true,
         surround          = true,
         telescope         = true,
         todo_comments     = true,
@@ -69,6 +68,14 @@ return {
         which_key         = true,
         zen               = true,
 
+        -- Language Specific Plugin Sets
+        --
+        -- These plugins enable any extensions, LSP configurations, and syntax
+        -- configurations needed to efficiently work in a language. You can
+        -- leave these all enabled as they are only loaded when you open a file
+        -- that triggers the respective language.
+        rust              = true,
+
         -- Included but Disabled Plugins
         auto_session      = false,
         bufferline        = false,
@@ -77,7 +84,7 @@ return {
         fzf_lua           = false,
         harpoon           = false,
         indent_blankline  = false,
-        leap              = false,
+        leap              = false, -- Conflicts with `flash`, enable one or the other.
         lualine           = false,
         mind              = false,
         neogit            = true,
