@@ -162,6 +162,8 @@ return function(config)
                     \|  highlight  TabLine                ctermbg=NONE  ctermfg=8
                     \|  highlight  TabLineFill            ctermbg=NONE  ctermfg=8
                     \|  highlight  TabLineSel             ctermbg=NONE  ctermfg=1
+                    \|  highlight  QuickScopePrimary      ctermbg=NONE  ctermfg=1 cterm=underline
+                    \|  highlight  QuickScopeSecondary    ctermbg=NONE  ctermfg=8
                 augroup END
             ]]
         end
