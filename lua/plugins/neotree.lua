@@ -16,6 +16,13 @@ return function(config)
             end
 
             local opts = {
+                sources = {
+                  "filesystem",
+                  "buffers",
+                  "git_status",
+                  "document_symbols",
+                },
+
                 filesystem = {
                     hijack_netrw_behavior = 'disabled',
                 },
