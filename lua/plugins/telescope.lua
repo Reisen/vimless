@@ -70,7 +70,6 @@ return function(config)
                     color_devicons   = true,
                     layout_config    = { height = 15, width = 0.9999, anchor = 'N' },
                     path_display     = { 'absolute' },
-                    preview          = false,
                     sorting_strategy = 'ascending',
                     borderchars      = {
                         prompt  = { ' ', '', ' ', '', '', '', '', '' },
