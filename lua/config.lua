@@ -19,8 +19,7 @@ return {
     -- Additional plugins can be added using the iackage syntax provided by lazy.nvim
     -- ------------------------------------------------------------------------------------
     custom = {
-        'LnL7/vim-nix',
-        { 'eraserhd/parinfer-rust', build = 'cargo build --release' },
+        { 'ojroques/vim-oscyank', branch = 'main'},
     },
 
     -- Plugin Control
@@ -43,13 +42,14 @@ return {
         dirbuf            = true,
         fidget            = true,
         fugitive          = true,
-        flash             = true, -- Conflicts with `leap`, enable one or the other.
+        flash             = true, -- Conflicts with `leap`, enable only one or the other.
         gitsigns          = true,
         hydra             = true,
         lazygit           = true,
         lspconfig         = true,
         marks             = true,
         mini              = true,
+        neogit            = true,
         neotest           = true,
         neotree           = true,
         nvim_tree         = true,
@@ -74,7 +74,10 @@ return {
         -- configurations needed to efficiently work in a language. You can
         -- leave these all enabled as they are only loaded when you open a file
         -- that triggers the respective language.
+        lisp              = true,
+        nix               = true,
         rust              = true,
+        zig               = true,
 
         -- Included but Disabled Plugins
         auto_session      = false,
@@ -84,10 +87,9 @@ return {
         fzf_lua           = false,
         harpoon           = false,
         indent_blankline  = false,
-        leap              = false, -- Conflicts with `flash`, enable one or the other.
+        leap              = false, -- Conflicts with `flash`, enable only one or the other.
         lualine           = false,
         mind              = false,
-        neogit            = true,
         oil               = false,
         onedark           = false,
         targets           = false,

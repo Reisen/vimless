@@ -79,10 +79,15 @@ require('lazy').setup({
     require('plugins/zen-mode')(config),
     require('plugins/cmp')(config),
     require('plugins/copilot')(config),
-    require('plugins/rust')(config),
     require('plugins/lspconfig')(config),
     require('plugins/fidget')(config),
     require('plugins/treesitter')(config),
+
+    -- Languages
+    require('plugins/lisp')(config),
+    require('plugins/nix')(config),
+    require('plugins/rust')(config),
+    require('plugins/zig')(config),
 
     -- Neovim comes with rust.vim, but a very outdated version (2017). Force
     -- updating this plugin regardless of config.
