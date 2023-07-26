@@ -6,6 +6,7 @@ return function(config)
     return {
         'zbirenbaum/copilot.lua',
         cmd    = 'Copilot',
+        event  = 'InsertEnter',
         config = function()
             if config.plugins.copilot and type(config.plugins.copilot) == 'function' then
                 config.plugins.copilot()
@@ -14,6 +15,7 @@ return function(config)
 
             local opts = {
                 suggestion = {
+                    auto_trigger = true,
                     keymap = {
                         accept = "<Tab>",
                     },
