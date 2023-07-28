@@ -87,7 +87,7 @@ function M:setup(config)
     self.mappings["Buffer"]["Other"].q                = { 'Quit', function() end, { exit = true }}
 
     -- Root Hydra ------------------------------------------------------------------
-    self.mappings["Root"]["Vim"].b   = { 'Buffers',               function() M:runHydra("Buffer") end,        { exit = true } }
+    self.mappings["Root"]["Vim"].b   = { 'Buffers',               function() M:runHydra("Buffer", false) end, { exit = true } }
     self.mappings["Root"]["Vim"].t   = { 'Tabs',                  function() M:runHydra("Tab", false) end,    { exit = true } }
     self.mappings["Root"]["Vim"].w   = { 'Windows',               function() M:runHydra("Window", false) end, { exit = true } }
     self.mappings["Root"]["Other"].p = { 'Lazy (Plugin Manager)', c.cmd('Lazy'),                              { exit = true } }
@@ -120,6 +120,7 @@ function M:bindHydra(h)
     -- NOTE: This makes some heavy assumptions about Hydra, but Hydra is a
     -- relatively complete plugin that doesn't see much churn, so we should
     -- be able to safely catch these changes.
+    ---@diagnostic disable-next-line: redefined-local
     local h = hydra(h)
 
     function h.hint:_make_win_config()
@@ -137,24 +138,27 @@ function M:runHydra(name, buffer)
         mode   = 'n',
         heads  = self.mappings[name],
         config = {
-            hint   = self.hint_options,
-            buffer = buffer == nil and true or buffer,
-            on_key = function() vim.wait(50) end,
+            hint           = self.hint_options,
+            invoke_on_body = true,
+            buffer         = buffer == nil and true or buffer,
+            on_key         = function() vim.wait(50) end,
         },
     }):activate()
 end
 
 
 function M:bind()
-    local hydra = require 'hydra'
-    local c     = require 'hydra.keymap-util'
-    vim.api.nvim_set_keymap('n', '<leader>', '', {
+    local map = {
         noremap  = true,
         silent   = true,
         callback = function()
             M:runHydra('Root')
         end,
-    })
+    }
+
+    vim.api.nvim_set_keymap('n', '<leader>', '', map)
+    vim.api.nvim_set_keymap('x', '<leader>', '', map)
+    vim.api.nvim_set_keymap('v', '<leader>', '', map)
 end
 
 function M.generate(headers, hints)
