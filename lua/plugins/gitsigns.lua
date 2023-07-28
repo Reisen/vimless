@@ -55,7 +55,7 @@ return function(config)
             gitsigns.setup(opts)
 
             -- Helper for staging hunks, detects visual mode.
-            function stage_hunk()
+            local function stage_hunk()
                 local mode = vim.api.nvim_get_mode().mode:sub(1,1)
                 if mode == 'V' then -- visual-line mode
                    local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)

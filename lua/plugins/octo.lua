@@ -28,11 +28,11 @@ return function(config)
             local keymap = require 'keymap'
 
             _G.HydraMappings['Root']['Plugins'].o = { 'Octo', function() keymap:runHydra('Octo') end, { exit = true } }
-            _G.HydraMappings['Octo']['Github'].g  = { 'Gists',  function() octo.gists(ivy) end,  { exit = true } }
-            _G.HydraMappings['Octo']['Github'].i  = { 'Issues', function() octo.issues(ivy) end, { exit = true } }
-            _G.HydraMappings['Octo']['Github'].p  = { 'PRs',    function() octo.prs(ivy) end,    { exit = true } }
-            _G.HydraMappings['Octo']['Github'].r  = { 'Repos',  function() octo.repos(ivy) end,  { exit = true } }
-            _G.HydraMappings['Octo']['Github'].s  = { 'Search', function() octo.search(ivy) end, { exit = true } }
+            _G.HydraMappings['Octo']['Github'].g  = { 'Gists',  function() octo.gists() end,          { exit = true } }
+            _G.HydraMappings['Octo']['Github'].i  = { 'Issues', function() octo.issues() end,         { exit = true } }
+            _G.HydraMappings['Octo']['Github'].p  = { 'PRs',    function() octo.prs() end,            { exit = true } }
+            _G.HydraMappings['Octo']['Github'].r  = { 'Repos',  function() octo.repos() end,          { exit = true } }
+            _G.HydraMappings['Octo']['Github'].s  = { 'Search', function() octo.search() end,         { exit = true } }
         end
     }
 end
