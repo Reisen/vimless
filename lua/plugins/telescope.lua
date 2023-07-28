@@ -32,7 +32,7 @@ return function(config)
 
                     tusk = require 'telescope.themes'.get_dropdown {
                         border        = true,
-                        layout_config = { height = 15, width = 0.9999, anchor = 'N' },
+                        layout_config = { height = 15, width = 0, anchor = 'N' },
                         borderchars   = {
                             prompt  = { ' ', '', ' ', '', '', '', '', '' },
                             results = { ' ', '', '─', '', '', '', '', '' },
@@ -43,7 +43,7 @@ return function(config)
                     ['ui-select'] = {
                         require 'telescope.themes'.get_dropdown {
                             border        = true,
-                            layout_config = { height = 15, width = 0.9999, anchor = 'N' },
+                            layout_config = { height = 15, width = 0, anchor = 'N' },
                             borderchars   = {
                                 prompt  = { ' ', '', ' ', '', '', '', '', '' },
                                 results = { ' ', '', '─', '', '', '', '', '' },
@@ -55,7 +55,7 @@ return function(config)
                     tmux = {
                         layout_config = require 'telescope.themes'.get_dropdown {
                             border        = true,
-                            layout_config = { height = 15, width = 0.9999, anchor = 'N' },
+                            layout_config = { height = 15, width = 0, anchor = 'N' },
                             borderchars   = {
                                 prompt  = { ' ', '', ' ', '', '', '', '', '' },
                                 results = { ' ', '', '─', '', '', '', '', '' },
@@ -68,7 +68,7 @@ return function(config)
                 defaults = require 'telescope.themes'.get_dropdown {
                     border           = true,
                     color_devicons   = true,
-                    layout_config    = { height = 15, width = 0.9999, anchor = 'N' },
+                    layout_config = { height = 15, width = { padding = 0 }, anchor = 'N' },
                     path_display     = { 'absolute' },
                     sorting_strategy = 'ascending',
                     borderchars      = {
