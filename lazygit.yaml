@@ -1,13 +1,17 @@
 gui:
-  border:                      'hidden'
   experimentalShowBranchHeads: true
   nerdFontsVersion:            "2"
   scrollHeight:                10
   showBranchCommitHash:        true
   showCommandLog:              false
-  windowSize:                  'half'
+  windowSize:                  'split'
+  mainPanelSplitMode:          'vertical'
 
   theme:
+    inactiveBorderColor:
+      - black
+    activeBorderColor:
+      - blue
     selectedLineBgColor:
       - default
       - bold
