@@ -258,16 +258,8 @@ function M.generateSingleColumn(headers, hints)
             -- Now iterate over the column and render each line.
             for _, key in ipairs(column.__order) do
                 local hint = column[key]
-                if type(hint) == 'function' then
-                    local hint = hint()
-                    if hint ~= nil then
-                        local line = string.format('  _%s_ %s', key, hint[1])
-                        table.insert(lines, line)
-                    end
-                else
-                    local line = string.format('  _%s_ %s', key, hint[1])
-                    table.insert(lines, line)
-                end
+                local line = string.format('  _%s_ %s', key, (type(hint) == 'function' and hint() or hint)[1])
+                table.insert(lines, line)
             end
 
             -- Sort the lines and insert them to the result.
@@ -287,18 +279,8 @@ function M.generateSingleColumn(headers, hints)
         -- Now iterate over the column and render each line.
         for _, key in ipairs(column.__order) do
             local hint = column[key]
-            -- If the hint bind is a function, and it doesn't return nil, then
-            -- we can add it to the hint map.
-            if type(hint) == 'function' then
-                local hint = hint()
-                if hint ~= nil then
-                    local line = string.format('  _%s_ %s', key, hint[1])
-                    table.insert(lines, line)
-                end
-            else
-                local line = string.format('  _%s_ %s', key, hint[1])
-                table.insert(lines, line)
-            end
+            local line = string.format('  _%s_ %s', key, (type(hint) == 'function' and hint() or hint)[1])
+            table.insert(lines, line)
         end
 
         -- Sort the lines and insert them to the result.
@@ -321,8 +303,7 @@ function M.generateSingleColumn(headers, hints)
     table.insert(result, '')
 
     -- Now we concat the result.
-    local result = table.concat(result, '\n')
-    return result
+    return table.concat(result, '\n')
 end
 
 -- Flatten, when given a Sectioned Table of Tables indexed by keycodes:
