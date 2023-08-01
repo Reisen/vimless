@@ -79,15 +79,9 @@ return function(config)
             crates.setup(opts.crates)
 
             local keymap = require 'keymap'
-            _G.HydraMappings["Root"]["Language"].c = function()
-                local languages = {
-                    rust = { 'Rust',       function() keymap:runHydra('Rust') end,   { exit = true } },
-                    toml = { 'Cargo.toml', function() keymap:runHydra('Crates') end, { exit = true } },
-                }
 
-                local language = languages[vim.bo.filetype]
-                if language then return language end
-            end
+            keymap:registerLanguage('Rust',   'rust')
+            keymap:registerLanguage('Crates', 'toml')
 
             _G.HydraMappings['Crates']['Crates'].u = { 'Update Crate',       crates.update_crate,            { exit = true }}
             _G.HydraMappings['Crates']['Crates'].U = { 'Upgrade Crate',      crates.upgrade_crate,           { exit = true }}

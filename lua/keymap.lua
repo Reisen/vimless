@@ -6,8 +6,18 @@ local M = {
         border   = {
             '│', '', '', '', '', '', '', '│',
         },
-    }
+    },
+
+    languages = {}
 }
+
+function M:registerLanguage(name, ft)
+    self.languages[ft] = {
+        name,
+        function() M:runHydra(name) end,
+        { exit = true }
+    }
+end
 
 function M:setup(config)
     if not config or not config.plugins or not config.plugins.hydra then
@@ -87,11 +97,18 @@ function M:setup(config)
     self.mappings["Buffer"]["Other"].q                = { 'Quit', function() end, { exit = true }}
 
     -- Root Hydra ------------------------------------------------------------------
-    self.mappings["Root"]["Vim"].b   = { 'Buffers',               function() M:runHydra("Buffer", false) end, { exit = true } }
-    self.mappings["Root"]["Vim"].t   = { 'Tabs',                  function() M:runHydra("Tab", false) end,    { exit = true } }
-    self.mappings["Root"]["Vim"].w   = { 'Windows',               function() M:runHydra("Window", false) end, { exit = true } }
-    self.mappings["Root"]["Other"].p = { 'Lazy (Plugin Manager)', c.cmd('Lazy'),                              { exit = true } }
-    self.mappings["Root"]["Other"].q = { 'Quit',                  function() end,                             { exit = true } }
+    self.mappings["Root"]["Vim"].b      = { 'Buffers',               function() M:runHydra("Buffer", false) end, { exit = true } }
+    self.mappings["Root"]["Vim"].t      = { 'Tabs',                  function() M:runHydra("Tab", false) end,    { exit = true } }
+    self.mappings["Root"]["Vim"].w      = { 'Windows',               function() M:runHydra("Window", false) end, { exit = true } }
+    self.mappings["Root"]["Other"].p    = { 'Lazy (Plugin Manager)', c.cmd('Lazy'),                              { exit = true } }
+    self.mappings["Root"]["Other"].q    = { 'Quit',                  function() end,                             { exit = true } }
+    self.mappings["Root"]["Language"].c = function()
+        return self.languages[vim.bo.filetype] or {
+            'Unknown',
+            function() end,
+            { exit = true }
+        }
+    end
 
     -- We use a global export for this rather than returning from the module as it
     -- is difficult to thread the mappings table through various plugins, thus we
@@ -258,7 +275,8 @@ function M.generateSingleColumn(headers, hints)
             -- Now iterate over the column and render each line.
             for _, key in ipairs(column.__order) do
                 local hint = column[key]
-                local line = string.format('  _%s_ %s', key, (type(hint) == 'function' and hint() or hint)[1])
+                local desc = type(hint) == 'function' and hint()[1] or hint[1]
+                local line = string.format('  _%s_ %s', key, desc)
                 table.insert(lines, line)
             end
 
@@ -279,7 +297,8 @@ function M.generateSingleColumn(headers, hints)
         -- Now iterate over the column and render each line.
         for _, key in ipairs(column.__order) do
             local hint = column[key]
-            local line = string.format('  _%s_ %s', key, (type(hint) == 'function' and hint() or hint)[1])
+            local desc = type(hint) == 'function' and hint()[1] or hint[1]
+            local line = string.format('  _%s_ %s', key, desc)
             table.insert(lines, line)
         end
 
