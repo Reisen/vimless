@@ -47,7 +47,7 @@ return function(config)
             end
 
             vim.cmd [[
-                set winbar+=\ \ %{%v:lua.require'nvim-navic'.get_location()%}
+                set winbar+=\ -\ %{%v:lua.require'nvim-navic'.get_location()%}
             ]]
 
             -- Setup Mason before LSPConfig.

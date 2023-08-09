@@ -45,6 +45,7 @@ return {
         flash             = true, -- Conflicts with `leap`, enable only one or the other.
         gitsigns          = true,
         hydra             = true,
+        hlchunk           = true,
         lazygit           = true,
         lspconfig         = true,
         marks             = true,

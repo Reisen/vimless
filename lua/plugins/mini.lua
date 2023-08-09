@@ -5,7 +5,8 @@ return function(config)
 
     return {
         'echasnovski/mini.nvim',
-        config = function()
+        priority = 800,
+        config   = function()
             if config.plugins.mini and type(config.plugins.mini) == 'function' then
                 config.plugins.mini()
                 return
@@ -123,7 +124,8 @@ return function(config)
                 augroup base16override
                 autocmd!
                 autocmd BufEnter *
-                    \   highlight  SignColumn             ctermbg=NONE                
+                    \   highlight  Normal                 guibg=NONE    guifg=NONE
+                    \|  highlight  SignColumn             ctermbg=NONE                
                     \|  highlight  WinSeparator           ctermbg=bg    ctermfg=18
                     \|  highlight  StatusLine             ctermbg=NONE  ctermfg=4     
                     \|  highlight  StatusLineNC           ctermbg=NONE  ctermfg=8     
@@ -164,6 +166,7 @@ return function(config)
                     \|  highlight  TabLineSel             ctermbg=NONE  ctermfg=1
                     \|  highlight  QuickScopePrimary      ctermbg=NONE  ctermfg=1 cterm=underline
                     \|  highlight  QuickScopeSecondary    ctermbg=NONE  ctermfg=8
+                    \|  highlight  Twilight               ctermfg=8
                 augroup END
             ]]
         end
