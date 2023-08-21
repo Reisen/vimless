@@ -32,7 +32,7 @@ return function(config)
 
                     tusk = require 'telescope.themes'.get_dropdown {
                         border        = true,
-                        layout_config = { height = 15, width = 0, anchor = 'N' },
+                        layout_config = { height = 15, width = { padding = 0 }, anchor = 'N' },
                         borderchars   = {
                             prompt  = { ' ', '', ' ', '', '', '', '', '' },
                             results = { ' ', '', '─', '', '', '', '', '' },
@@ -40,22 +40,20 @@ return function(config)
                         },
                     },
 
-                    ['ui-select'] = {
-                        require 'telescope.themes'.get_dropdown {
-                            border        = true,
-                            layout_config = { height = 15, width = 0, anchor = 'N' },
-                            borderchars   = {
-                                prompt  = { ' ', '', ' ', '', '', '', '', '' },
-                                results = { ' ', '', '─', '', '', '', '', '' },
-                                preview = { ' ', '', ' ', '', '', '', '', '' },
-                            },
+                    ['ui-select'] = require 'telescope.themes'.get_dropdown {
+                        border        = true,
+                        layout_config = { height = 15, width = { padding = 0 }, anchor = 'N' },
+                        borderchars   = {
+                            prompt  = { ' ', '', ' ', '', '', '', '', '' },
+                            results = { ' ', '', '─', '', '', '', '', '' },
+                            preview = { ' ', '', ' ', '', '', '', '', '' },
                         },
                     },
 
                     tmux = {
                         layout_config = require 'telescope.themes'.get_dropdown {
                             border        = true,
-                            layout_config = { height = 15, width = 0, anchor = 'N' },
+                            layout_config = { height = 15, width = { padding = 0 }, anchor = 'N' },
                             borderchars   = {
                                 prompt  = { ' ', '', ' ', '', '', '', '', '' },
                                 results = { ' ', '', '─', '', '', '', '', '' },

@@ -14,14 +14,14 @@ set nonumber                " don't show line numbers
 set nowrap                  " don't wrap lines
 set shell=/bin/bash         " use bash as the shell
 set shiftwidth=4            " number of spaces to use for autoindent by default
-set signcolumn=yes:1        " always show the sign column to avoid visual moving around
+set signcolumn=yes:2        " always show the sign column to avoid visual moving around
 set smartcase               " ignore case when lowercase, match case when uppercase
 set smartindent             " smarter indentation for C-like languages
 set softtabstop=4           " number of spaces to use for tab
 set splitkeep=screen        " prevent vertical shifting when horizontal splitting
 set tabstop=4               " number of spaces that a <Tab> in the file counts for
 set timeoutlen=1000         " time in milliseconds to wait for a mapped sequence to complete
-set winbar=\ \ %f           " set the winbar format (note navic appends to this)
+set winbar=\ \ \ %f         " set the winbar format (note navic appends to this)
 
 " Keep the status line but make it unobtrusive, show only the right aligned cursor position.
 set statusline=%=%{line('.')}\:%{col('.')}
