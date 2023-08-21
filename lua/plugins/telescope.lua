@@ -155,8 +155,9 @@ return function(config)
             _G.HydraMappings["Telescope LSP"]["LSP"].t = { 'Type Definitions',       function() builtin.lsp_type_definitions() end,  { exit = true }}
             _G.HydraMappings["Telescope LSP"]["LSP"].l = { 'Diagnostics',            function() builtin.diagnostics() end,           { exit = true }}
 
-            _G.HydraMappings["Telescope"]["Other"].e = { 'File Browser', function() file_browser.file_browser() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Other"].q = { 'Quit',         function() end,                             { exit = true }}
+            _G.HydraMappings["Telescope"]["Other"][" "] = { 'Resume',       function() builtin.resume() end, { exit = true }}
+            _G.HydraMappings["Telescope"]["Other"].e    = { 'File Browser', function() file_browser.file_browser() end, { exit = true }}
+            _G.HydraMappings["Telescope"]["Other"].q    = { 'Quit',         function() end,                             { exit = true }}
 
             _G.HydraMappings["Root"]["Other"].x = { 'Command Pallette',
                 function()
