@@ -5,6 +5,7 @@ return function(config)
 
     return {
         'folke/flash.nvim',
+        lazy = false,
         keys = {
             { 's', mode = { 'n', 'x', 'o' }, function() require 'flash'.jump({ search = { max_length = 2 } }) end, desc = 'Flash' },
             { 'S', mode = { 'n', 'x', 'o' }, function() require 'flash'.treesitter() end, desc = 'Flash Treesitter' },
