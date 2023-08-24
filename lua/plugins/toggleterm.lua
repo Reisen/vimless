@@ -20,9 +20,6 @@ return function(config)
                     shell           = 'bash',
                     shade_terminals = false,
                     direction       = 'horizontal',
-                    highlights      = {
-                        Normal = { ctermbg = 18 }
-                    },
                     float_opts = {
                         width    = vim.o.columns,
                         size     = vim.o.lines - 1,

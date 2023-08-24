@@ -20,6 +20,10 @@ return {
     -- ------------------------------------------------------------------------------------
     custom = {
         { 'ojroques/vim-oscyank', branch = 'main'},
+        { 'm4xshen/hardtime.nvim', opts = {}, dependencies = {
+            'MunifTanjim/nui.nvim',
+            'nvim-lua/plenary.nvim'
+        }}
     },
 
     -- Plugin Control
@@ -41,15 +45,14 @@ return {
         diffview          = true,
         dirbuf            = true,
         fidget            = true,
-        fugitive          = true,
         flash             = true, -- Conflicts with `leap`, enable only one or the other.
+        fugitive          = true,
         gitsigns          = true,
-        hydra             = true,
         hlchunk           = true,
+        hydra             = true,
         lazygit           = true,
         lspconfig         = true,
         marks             = true,
-        mini              = true,
         neogit            = true,
         neotest           = true,
         neotree           = true,
@@ -69,6 +72,11 @@ return {
         which_key         = true,
         zen               = true,
 
+        mini = {
+            animate  = { scroll = { enable = true } },
+            surround = false, -- Conflicts with `surround` and `flash`
+        },
+
         -- Language Specific Plugin Sets
         --
         -- These plugins enable any extensions, LSP configurations, and syntax
@@ -85,6 +93,7 @@ return {
         bufferline        = false,
         centerbuf         = false,
         dropbar           = false,
+        easy_align        = false,
         fzf_lua           = false,
         harpoon           = false,
         indent_blankline  = false,

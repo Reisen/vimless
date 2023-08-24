@@ -7,11 +7,13 @@ return function(config)
     return {
         'nvim-telescope/telescope.nvim',
         dependencies = {
-            'nvim-lua/plenary.nvim',
+            'Marskey/telescope-sg',
             'camgraff/telescope-tmux.nvim',
+            'nvim-lua/plenary.nvim',
             'nvim-telescope/telescope-file-browser.nvim',
             'nvim-telescope/telescope-github.nvim',
             'nvim-telescope/telescope-project.nvim',
+            'nvim-telescope/telescope-ui-select.nvim',
             'nvim-telescope/telescope-ui-select.nvim',
             { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
         },
@@ -61,6 +63,12 @@ return function(config)
                             },
                         },
                     },
+
+                    ast_grep = {
+                        command         = { 'sg', '--json = stream' },
+                        grep_open_files = false,
+                        lang            = nil,
+                    }
                 },
 
                 defaults = require 'telescope.themes'.get_dropdown {
@@ -89,8 +97,9 @@ return function(config)
 
             local telescope = require 'telescope'
             telescope.setup(opts)
-            telescope.load_extension('fzf')
+            telescope.load_extension('ast_grep')
             telescope.load_extension('file_browser')
+            telescope.load_extension('fzf')
             telescope.load_extension('gh')
             telescope.load_extension('project')
             telescope.load_extension('tmux')
@@ -100,6 +109,7 @@ return function(config)
             local builtin      = require 'telescope.builtin'
             local keymap       = require 'keymap'
             local file_browser = require 'telescope'.extensions.file_browser
+            local ast_grep     = require 'telescope'.extensions.ast_grep
             local ivy_bufs     = require 'telescope.themes'.get_dropdown {
                 layout_config         = { height = 15, width = 0.9999, anchor = 'N' },
                 border                = true,
@@ -122,6 +132,7 @@ return function(config)
             }
 
             _G.HydraMappings["Root"]["Plugins"].f        = { 'Telescope',  function() keymap:runHydra('Telescope') end, { exit = true } }
+            _G.HydraMappings["Telescope"]["Search"]['a'] = { 'AST', function() ast_grep.ast_grep({}) end, { exit = true } }
             _G.HydraMappings["Telescope"]["Search"]['*'] = { 'Word', function() builtin.grep_string() end, { exit = true } }
             _G.HydraMappings["Telescope"]["Search"]['/'] = { 'Grep', function() builtin.live_grep() end, { exit = true } }
             _G.HydraMappings["Telescope"]["Search"]['.'] = { 'Current Buffer', builtin.current_buffer_fuzzy_find, { exit = true } }
