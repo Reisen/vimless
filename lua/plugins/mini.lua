@@ -113,8 +113,8 @@ return function(config)
             require 'mini.files'.setup(opts.files)
             require 'mini.bufremove'.setup(opts.bufremove)
 
-            _G.HydraMappings["Buffer"]["Other"].d  = { 'Delete Buffer', require 'mini.bufremove'.delete, {} }
-            _G.HydraMappings["Root"]["Other"]["-"] = { 'MiniFiles',     require 'mini.files'.open, { exit = true } }
+            _G.HydraMappings['Buffer']['Other'].d    = { 'Delete Buffer', require 'mini.bufremove'.delete, {} }
+            _G.HydraMappings['Root']['Plugins']['-'] = { 'MiniFiles',     require 'mini.files'.open, { exit = true } }
 
             -- mini.base16 configures most colours perfectly, but gets a few that look a little gnarly.
             -- Here we override some of those colours by defining an autocommand that override some of
@@ -126,11 +126,11 @@ return function(config)
                 autocmd BufEnter *
                     \   highlight  Normal                 guibg=NONE    guifg=NONE
                     \|  highlight  SignColumn             ctermbg=NONE                
-                    \|  highlight  WinSeparator           ctermbg=bg    ctermfg=18
+                    \|  highlight  WinSeparator           ctermbg=NONE  ctermfg=bg
                     \|  highlight  StatusLine             ctermbg=NONE  ctermfg=4     
                     \|  highlight  StatusLineNC           ctermbg=NONE  ctermfg=8     
-                    \|  highlight  WinBar                 ctermbg=NONE  ctermfg=3
-                    \|  highlight  WinBarNC               ctermbg=NONE  ctermfg=3     
+                    \|  highlight  WinBar                 ctermbg=18    ctermfg=3
+                    \|  highlight  WinBarNC               ctermbg=18    ctermfg=3     
                     \|  highlight  LineNr                 ctermbg=NONE  ctermfg=8
                     \|  highlight  GitSignsAdd            ctermbg=NONE                
                     \|  highlight  GitSignsChange         ctermbg=NONE                
@@ -156,7 +156,7 @@ return function(config)
                     \|  highlight  HydraSelected          ctermbg=NONE                
                     \|  highlight  TelescopeBorder        ctermbg=NONE  ctermfg=8     
                     \|  highlight  TelescopeTitle         ctermbg=NONE  ctermfg=4
-                    \|  highlight  NeoTreeWinSeparator    ctermbg=NONE  ctermfg=19    
+                    \|  highlight  NeoTreeWinSeparator    ctermbg=NONE  ctermfg=bg
                     \|  highlight  MiniFilesBorder        ctermbg=bg    ctermfg=4
                     \|  highlight  MiniFilesNormal        ctermbg=bg                  
                     \|  highlight  MiniFilesTitle         ctermbg=bg                  

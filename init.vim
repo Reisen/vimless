@@ -21,14 +21,14 @@ set softtabstop=4           " number of spaces to use for tab
 set splitkeep=screen        " prevent vertical shifting when horizontal splitting
 set tabstop=4               " number of spaces that a <Tab> in the file counts for
 set timeoutlen=1000         " time in milliseconds to wait for a mapped sequence to complete
-set winbar=\ \ \ %f         " set the winbar format (note navic appends to this)
+set winbar=\ \ \ \ %f         " set the winbar format (note navic appends to this)
 
 " Keep the status line but make it unobtrusive, show only the right aligned cursor position.
 set statusline=%=%{line('.')}\:%{col('.')}
 
 " Automatically rebalance all windows any time a new window is created.
-autocmd BufWinEnter * :wincmd =
-autocmd WinResized  * :wincmd =
+" autocmd BufWinEnter * :wincmd =
+" autocmd WinResized  * :wincmd =
 
 " Smarter Macros
 "

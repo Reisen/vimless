@@ -104,7 +104,7 @@ function M:setup(config)
     self.mappings["Root"]["Other"].q    = { 'Quit',                  function() end,                             { exit = true } }
     self.mappings["Root"]["Language"].c = function()
         return self.languages[vim.bo.filetype] or {
-            'Unknown',
+            'Unknown Language',
             function() end,
             { exit = true }
         }

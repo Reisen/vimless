@@ -18,6 +18,8 @@ return function(config)
             end
 
             require 'neogit'.setup(opts)
+
+            _G.HydraMappings['Git']['Neogit'].g = { 'Neogit', function() vim.cmd 'Neogit' end,  { exit = true } }
         end
     }
 end

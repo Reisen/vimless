@@ -15,13 +15,17 @@ return function(config)
                 config.plugins.toggleterm()
             else
                 local opts = {
-                    size         = 40,
-                    open_mapping = "<c-\\>",
-                    shell        = 'bash',
-                    direction    = 'float',
-                    float_opts   = {
+                    size            = 20,
+                    open_mapping    = "<c-\\>",
+                    shell           = 'bash',
+                    shade_terminals = false,
+                    direction       = 'horizontal',
+                    highlights      = {
+                        Normal = { ctermbg = 18 }
+                    },
+                    float_opts = {
                         width    = vim.o.columns,
-                        height   = vim.o.lines - 1,
+                        size     = vim.o.lines - 1,
                         border   = 'none',
                         winblend = 0,
                     }
@@ -33,25 +37,27 @@ return function(config)
                 end
 
                 require("toggleterm").setup(opts)
-            end
 
-            -- Bind <esc> to switch to normal mode while in a terminal.
-            function _G.set_terminal_keymaps()
-                vim.api.nvim_buf_set_keymap(
-                    0,
-                    't',
-                    '<esc><esc>',
-                    [[<C-\><C-n>]],
-                    { noremap = true }
-                )
-            end
+                -- Bind double <esc> to switch to normal mode while in a terminal.
+                local function set_terminal_keymaps()
+                    vim.api.nvim_buf_set_keymap(0, 't', '<esc><esc>', [[<C-\><C-n>]], { noremap = true })
+                end
 
-            vim.cmd [[
-                augroup ToggleTermSettings
-                    autocmd!
-                    autocmd! TermOpen term://* lua set_terminal_keymaps()
-                augroup END
-            ]]
+                -- Note the above vim.cmd can be done in native Lua like so:
+                local keymap_group = vim.api.nvim_create_augroup("ToggleTermKeymaps", {
+                    clear = true,
+                })
+
+                vim.api.nvim_create_autocmd({'TermOpen'}, {
+                    group    = keymap_group,
+                    pattern  = { "term://*" },
+                    callback = function()
+                        set_terminal_keymaps()
+                    end
+                })
+
+                _G.HydraMappings['Root']['Plugins']['>'] = { 'Terminal', function() vim.cmd 'ToggleTerm' end, { exit = true } }
+            end
         end
     }
 end
