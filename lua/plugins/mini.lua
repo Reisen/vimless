@@ -139,6 +139,7 @@ return function(config)
                     \|  highlight  GitSignsAdd            ctermbg=NONE                
                     \|  highlight  GitSignsChange         ctermbg=NONE                
                     \|  highlight  GitSignsDelete         ctermbg=NONE                
+                    \|  highlight  GitSignsUntracked      ctermbg=NONE                
                     \|  highlight  DiagnosticSignError    ctermbg=NONE                
                     \|  highlight  DiagnosticSignWarn     ctermbg=NONE                
                     \|  highlight  DiagnosticSignInfo     ctermbg=NONE                
