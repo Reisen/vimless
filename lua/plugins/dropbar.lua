@@ -30,7 +30,7 @@ return function(config)
             }
 
             if config.plugins.dropbar and type(config.plugins.dropbar) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.dropbar)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.dropbar)
             end
 
             require 'dropbar'.setup(opts)

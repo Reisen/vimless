@@ -14,7 +14,7 @@ return function(config)
             local opts = {}
 
             if config.plugins.fzf_lua and type(config.plugins.fzf_lua) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.fzf_lua)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.fzf_lua)
             end
 
             require 'fzf-lua'.setup(opts)

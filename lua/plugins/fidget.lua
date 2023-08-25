@@ -19,7 +19,7 @@ return function(config)
             }
 
             if config.plugins.fidget and type(config.plugins.fidget) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.fidget)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.fidget)
             end
 
             require 'fidget'.setup(opts)

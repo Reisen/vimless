@@ -23,7 +23,7 @@ return function(config)
             }
 
             if config.plugins.nvimtree and type(config.plugins.nvimtree) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.nvimtree)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.nvimtree)
             end
 
             require "nvim-tree".setup(opts)

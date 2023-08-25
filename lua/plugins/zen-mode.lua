@@ -24,7 +24,7 @@ return function(config)
             }
 
             if config.plugins.zen and type(config.plugins.zen) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.zen)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.zen)
             end
 
             local zen = require 'zen-mode'

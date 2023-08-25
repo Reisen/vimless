@@ -89,7 +89,7 @@ return function(config)
             }
 
             if config.plugins.copilot and type(config.plugins.copilot) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.copilot)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.copilot)
             end
 
             require 'copilot' .setup(opts)

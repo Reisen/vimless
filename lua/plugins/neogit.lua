@@ -14,7 +14,7 @@ return function(config)
             local opts = {}
 
             if config.plugins.neogit and type(config.plugins.neogit) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.neogit)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.neogit)
             end
 
             require 'neogit'.setup(opts)

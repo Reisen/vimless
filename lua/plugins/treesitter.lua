@@ -32,7 +32,7 @@ return function(config)
             }
 
             if config.plugins.treesitter and type(config.plugins.treesitter) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.treesitter)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.treesitter)
             end
 
             require 'nvim-treesitter.configs'.setup(opts)

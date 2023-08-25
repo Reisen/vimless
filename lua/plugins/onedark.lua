@@ -23,7 +23,7 @@ return function(config)
             }
 
             if config.plugins.onedark and type(config.plugins.onedark) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.onedark)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.onedark)
             end
 
             require 'onedark'.setup(opts)

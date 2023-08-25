@@ -18,7 +18,7 @@ return function(config)
             }
 
             if config.plugins.auto_session and type(config.plugins.auto_session) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.auto_session)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.auto_session)
             end
 
             require('auto-session').setup(opts)

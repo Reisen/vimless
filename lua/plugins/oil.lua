@@ -38,7 +38,7 @@ return function(config)
             }
 
             if config.plugins.oil and type(config.plugins.oil) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.oil)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.oil)
             end
 
             require('oil').setup(opts)

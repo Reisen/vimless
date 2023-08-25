@@ -16,7 +16,7 @@ return function(config)
             }
 
             if config.plugins.nvim_web_devicons and type(config.plugins.nvim_web_devicons) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.nvim_web_devicons)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.nvim_web_devicons)
             end
 
             require 'nvim-web-devicons'.setup(opts)

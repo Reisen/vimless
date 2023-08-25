@@ -83,7 +83,7 @@ return function(config)
             }
 
             if config.plugins.cmp and type(config.plugins.cmp) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.cmp)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.cmp)
             end
 
             cmp.setup(opts)

@@ -21,7 +21,7 @@ return function(config)
             }
 
             if config.plugins.lualine and type(config.plugins.lualine) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.lualine)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.lualine)
             end
 
             require 'lualine'.setup(opts)

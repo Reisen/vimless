@@ -92,7 +92,7 @@ return function(config)
             }
 
             if config.plugins.telescope and type(config.plugins.telescope) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.telescope)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.telescope)
             end
 
             local telescope = require 'telescope'

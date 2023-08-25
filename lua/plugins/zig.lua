@@ -16,7 +16,7 @@ return function(config)
             }
 
             if config.plugins.zig and type(config.plugins.zig) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.zig)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.zig)
             end
 
             _G.zig_fmt_autosave = opts.autosave

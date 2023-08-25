@@ -40,7 +40,7 @@ return function(config)
             }
 
             if config.plugins.flash and type(config.plugins.flash) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.flash)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.flash)
             end
 
             require 'flash'.setup(opts)

@@ -17,7 +17,7 @@ return function(config)
             }
 
             if config.plugins.diffview and type(config.plugins.diffview) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.diffview)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.diffview)
             end
 
             require 'diffview'.setup(opts)

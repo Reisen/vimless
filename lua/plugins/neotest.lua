@@ -24,7 +24,7 @@ return function(config)
             }
 
             if config.plugins.neotest and type(config.plugins.neotest) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.neotest)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.neotest)
             end
 
             local neotest = require 'neotest'

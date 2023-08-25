@@ -83,7 +83,7 @@ return function(config)
             }
 
             if config.plugins.neotree and type(config.plugins.neotree) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.neotree)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.neotree)
             end
 
             vim.g.neo_tree_remove_legacy_commands = 1

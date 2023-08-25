@@ -30,7 +30,7 @@ return function(config)
 
                 -- Merge user settings with defaults if they've been specified.
                 if config.plugins.toggleterm and type(config.plugins.toggleterm) == 'table' then
-                    opts = vim.tbl_extend('force', opts, config.plugins.toggleterm)
+                    opts = vim.tbl_deep_extend('force', opts, config.plugins.toggleterm)
                 end
 
                 require("toggleterm").setup(opts)

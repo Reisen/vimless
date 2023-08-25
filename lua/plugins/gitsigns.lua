@@ -47,7 +47,7 @@ return function(config)
             }
 
             if config.plugins.gitsigns and type(config.plugins.gitsigns) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.gitsigns)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.gitsigns)
             end
 
             local gitsigns = require 'gitsigns'

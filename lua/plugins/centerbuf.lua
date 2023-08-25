@@ -14,7 +14,7 @@ return function(config)
             local opts = {}
 
             if config.plugins.centerbuf and type(config.plugins.centerbuf) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.centerbuf)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.centerbuf)
             end
 
             require 'centerbuf'.setup(opts)

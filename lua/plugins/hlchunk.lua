@@ -22,7 +22,7 @@ return function(config)
             }
 
             if config.plugins.hlchunk and type(config.plugins.hlchunk) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.hlchunk)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.hlchunk)
             end
 
             require 'hlchunk'.setup(opts)

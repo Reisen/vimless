@@ -77,7 +77,7 @@ return function(config)
             }
 
             if config.plugins.chatgpt and type(config.plugins.chatgpt) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.chatgpt)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.chatgpt)
             end
 
             require('chatgpt').setup(opts)

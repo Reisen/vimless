@@ -20,7 +20,7 @@ return function(config)
 
                 -- Merge user settings with defaults if they've been specified.
                 if config.plugins.todo_comments and type(config.plugins.todo_comments) == 'table' then
-                    opts = vim.tbl_extend('force', opts, config.plugins.todo_comments)
+                    opts = vim.tbl_deep_extend('force', opts, config.plugins.todo_comments)
                 end
 
                 require('todo-comments').setup(opts)

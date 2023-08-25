@@ -27,7 +27,7 @@ return function(config)
             }
 
             if config.plugins.trouble and type(config.plugins.trouble) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.trouble)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.trouble)
             end
 
             require 'trouble'.setup(opts)

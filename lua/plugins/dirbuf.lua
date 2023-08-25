@@ -16,7 +16,7 @@ return function(config)
             }
 
             if config.plugins.dirbuf and type(config.plugins.dirbuf) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.dirbuf)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.dirbuf)
             end
 
             require 'dirbuf'.setup(opts)

@@ -17,7 +17,7 @@ return function(config)
             }
 
             if config.plugins.marks and type(config.plugins.marks) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.marks)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.marks)
             end
 
             require 'marks'.setup(opts)

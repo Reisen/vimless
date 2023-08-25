@@ -14,7 +14,7 @@ return function(config)
             local opts = {}
 
             if config.plugins.ccc and type(config.plugins.ccc) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.ccc)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.ccc)
             end
 
             require 'ccc'.setup(opts)

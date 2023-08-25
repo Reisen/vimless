@@ -19,7 +19,7 @@ return function(config)
             }
 
             if config.plugins.harpoon and type(config.plugins.harpoon) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.harpoon)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.harpoon)
             end
 
             require 'harpoon'.setup(opts)

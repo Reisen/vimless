@@ -14,7 +14,7 @@ return function(config)
             local opts = {}
 
             if config.plugins.nix and type(config.plugins.nix) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.nix)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.nix)
             end
         end
     }

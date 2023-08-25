@@ -19,7 +19,7 @@ return function(config)
             local opts = {}
 
             if config.plugins.octo and type(config.plugins.octo) == 'table' then
-                opts = vim.tbl_extend('force', opts, config.plugins.octo)
+                opts = vim.tbl_deep_extend('force', opts, config.plugins.octo)
             end
 
             require 'octo'.setup(opts)
