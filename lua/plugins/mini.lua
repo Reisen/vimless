@@ -14,6 +14,34 @@ return function(config)
                 return
             end
 
+            local b16m = {
+                base00 = 0,
+                base01 = 18,
+                base02 = 19,
+                base03 = 8,
+                base04 = 20,
+                base05 = 7,
+                base06 = 21,
+                base07 = 15,
+                base08 = 1,
+                base09 = 16,
+                base0A = 3,
+                base0B = 2,
+                base0C = 6,
+                base0D = 4,
+                base0E = 5,
+                base0F = 17,
+            }
+
+            -- Add Aliases to b16 base numbers.
+            b16m.bg_def = b16m.base00
+            b16m.bg_bar = b16m.base01
+            b16m.bg_sel = b16m.base02
+            b16m.bg_lgt = b16m.base07
+            b16m.fg_def = b16m.base05
+            b16m.fg_drk = b16m.base04
+            b16m.fg_lgt = b16m.base06
+
             local treespec = require 'mini.ai'.gen_spec.treesitter
             local opts = {
                 align     = {},
@@ -90,7 +118,7 @@ return function(config)
                         base0D = 4,
                         base0E = 5,
                         base0F = 17,
-                    },
+                    }
                 },
 
                 files = {
@@ -124,56 +152,87 @@ return function(config)
             -- Here we override some of those colours by defining an autocommand that override some of
             -- those highlights whenever a new buffer is opened.
             ---@diagnostic disable-next-line: unused-local
-            vim.cmd [[
-                augroup base16override
-                autocmd!
-                autocmd BufEnter *
-                    \   highlight  Normal                 guibg=NONE    guifg=NONE
-                    \|  highlight  SignColumn             ctermbg=NONE                
-                    \|  highlight  WinSeparator           ctermbg=NONE  ctermfg=bg
-                    \|  highlight  StatusLine             ctermbg=NONE  ctermfg=4     
-                    \|  highlight  StatusLineNC           ctermbg=NONE  ctermfg=8     
-                    \|  highlight  WinBar                 ctermbg=18    ctermfg=3
-                    \|  highlight  WinBarNC               ctermbg=18    ctermfg=3     
-                    \|  highlight  LineNr                 ctermbg=NONE  ctermfg=8
-                    \|  highlight  GitSignsAdd            ctermbg=NONE                
-                    \|  highlight  GitSignsChange         ctermbg=NONE                
-                    \|  highlight  GitSignsDelete         ctermbg=NONE                
-                    \|  highlight  GitSignsUntracked      ctermbg=NONE                
-                    \|  highlight  DiagnosticSignError    ctermbg=NONE                
-                    \|  highlight  DiagnosticSignWarn     ctermbg=NONE                
-                    \|  highlight  DiagnosticSignInfo     ctermbg=NONE                
-                    \|  highlight  DiagnosticSignHint     ctermbg=NONE                
-                    \|  highlight  DiagnosticSignError    ctermbg=NONE                
-                    \|  highlight  GitSignsAddLn          ctermbg=18    ctermfg=NONE  
-                    \|  highlight  GitSignsChangeLn       ctermbg=18    ctermfg=NONE  
-                    \|  highlight  GitSignsDeleteLn       ctermbg=18    ctermfg=NONE  
-                    \|  highlight  GitSignsUntrackedLn    ctermbg=18    ctermfg=NONE  
-                    \|  highlight  GitSignsUntrackedLn    ctermbg=18    ctermfg=NONE  
-                    \|  highlight  EndOfBuffer            ctermbg=NONE  ctermfg=bg    
-                    \|  highlight  WhichKeyFloat          ctermbg=NONE                
-                    \|  highlight  WhichKeySeparator      ctermbg=NONE                
-                    \|  highlight  FlashMatch             ctermbg=NONE  ctermfg=1     
-                    \|  highlight  FlashCurrent           ctermbg=NONE  ctermfg=3     
-                    \|  highlight  FlashLabel             ctermbg=NONE  ctermfg=2     cterm=underline,bold
-                    \|  highlight  HydraHint              ctermbg=NONE                
-                    \|  highlight  HydraBorder            ctermbg=NONE  ctermfg=19    
-                    \|  highlight  HydraSelected          ctermbg=NONE                
-                    \|  highlight  TelescopeBorder        ctermbg=NONE  ctermfg=8     
-                    \|  highlight  TelescopeTitle         ctermbg=NONE  ctermfg=4
-                    \|  highlight  NeoTreeWinSeparator    ctermbg=NONE  ctermfg=bg
-                    \|  highlight  MiniFilesBorder        ctermbg=bg    ctermfg=4
-                    \|  highlight  MiniFilesNormal        ctermbg=bg                  
-                    \|  highlight  MiniFilesTitle         ctermbg=bg                  
-                    \|  highlight  MiniFilesTitleFocused  ctermbg=bg                  
-                    \|  highlight  TabLine                ctermbg=NONE  ctermfg=8
-                    \|  highlight  TabLineFill            ctermbg=NONE  ctermfg=8
-                    \|  highlight  TabLineSel             ctermbg=NONE  ctermfg=1
-                    \|  highlight  QuickScopePrimary      ctermbg=NONE  ctermfg=1 cterm=underline
-                    \|  highlight  QuickScopeSecondary    ctermbg=NONE  ctermfg=8
-                    \|  highlight  Twilight               ctermfg=8
-                augroup END
-            ]]
+            local base16_highlighter = vim.api.nvim_create_augroup("Base16Override", {
+                clear = true
+            });
+
+            vim.api.nvim_create_autocmd({"BufEnter"}, {
+                pattern  = "*",
+                group    = base16_highlighter,
+                callback = function()
+                    local hl = function(name, bg, fg, attr)
+                        vim.cmd(string.format(
+                            'highlight %s ctermbg=%s ctermfg=%s cterm=%s',
+                            name,
+                            bg   or 'NONE',
+                            fg   or 'NONE',
+                            attr or 'NONE'
+                        ))
+                    end
+
+                    local bg = function(name, bg)
+                        vim.cmd(string.format(
+                            'highlight %s ctermbg=%s',
+                            name,
+                            bg or 'NONE'
+                        ))
+                    end
+
+                    local fg = function(name, fg)
+                        vim.cmd(string.format(
+                            'highlight %s ctermfg=%s',
+                            name,
+                            fg or 'NONE'
+                        ))
+                    end
+
+                    hl('Normal',                b16m.bg_def, b16m.fg_def)
+                    bg('DiagnosticSignError',   nil)
+                    bg('DiagnosticSignError',   nil)
+                    bg('DiagnosticSignHint',    nil)
+                    bg('DiagnosticSignInfo',    nil)
+                    bg('DiagnosticSignWarn',    nil)
+                    bg('GitSignsAdd',           nil)
+                    bg('GitSignsChange',        nil)
+                    bg('GitSignsDelete',        nil)
+                    bg('GitSignsUntracked',     nil)
+                    bg('HydraHint',             nil)
+                    bg('HydraSelected',         nil)
+                    bg('WhichKeyFloat',         nil)
+                    bg('WhichKeySeparator',     nil)
+                    fg('EndOfBuffer',           b16m.bg_def)
+                    hl('FlashCurrent',          nil, b16m.base0A)
+                    hl('FlashLabel',            nil, b16m.base0B, 'underline,bold')
+                    hl('FlashMatch',            nil, b16m.base08)
+                    bg('LazyNormal',            b16m.bg_def)
+                    hl('GitSignsAddLn',         b16m.bg_bar, nil)
+                    hl('GitSignsChangeLn',      b16m.bg_bar, nil)
+                    hl('GitSignsDeleteLn',      b16m.bg_bar, nil)
+                    hl('GitSignsUntrackedLn',   b16m.bg_bar, nil)
+                    hl('GitSignsUntrackedLn',   b16m.bg_bar, nil)
+                    hl('HydraBorder',           nil, b16m.fg_drk)
+                    hl('LineNr',                nil, b16m.base03)
+                    hl('MiniFilesBorder',       b16m.bg_def, b16m.base0D)
+                    hl('MiniFilesNormal',       b16m.bg_def)
+                    hl('MiniFilesTitle',        b16m.bg_def)
+                    hl('MiniFilesTitleFocused', b16m.bg_def)
+                    hl('NeoTreeWinSeparator',   nil, b16m.bg_def)
+                    hl('QuickScopePrimary',     nil, b16m.base08, 'underline')
+                    hl('QuickScopeSecondary',   nil, b16m.base03)
+                    hl('SignColumn',            nil, nil)
+                    hl('StatusLineNC',          b16m.bg_def, b16m.base03)
+                    hl('StatusLine',            nil, b16m.base0D)
+                    hl('TabLineFill',           nil, b16m.base03)
+                    hl('TabLine',               nil, b16m.base03)
+                    hl('TabLineSel',            nil, b16m.base08)
+                    hl('TelescopeBorder',       nil, b16m.base03)
+                    hl('TelescopeTitle',        nil, b16m.base0D)
+                    hl('Twilight',              nil, b16m.base03)
+                    hl('WinBar',                b16m.bg_bar, b16m.fg_def)
+                    hl('WinBarNC',              b16m.bg_bar, b16m.fg_lgt)
+                    hl('WinSeparator',          nil, b16m.bg_def)
+                end
+            })
         end
     }
 end
