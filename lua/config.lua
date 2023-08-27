@@ -74,7 +74,7 @@ return {
         zen               = true,
 
         mini = {
-            animate     = { scroll = { enable = true } },
+            animate     = false,
             basics      = false,
             clue        = false,
             colors      = false,
