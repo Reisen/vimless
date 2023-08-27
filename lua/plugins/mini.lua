@@ -125,21 +125,21 @@ return function(config)
                     -- Assign bases to the correct base16 colours.
                     use_cterm = {
                         base00 = 0,
-                        base01 = 18,
-                        base02 = 19,
-                        base03 = 8,
-                        base04 = 20,
-                        base05 = 7,
-                        base06 = 21,
-                        base07 = 15,
                         base08 = 1,
-                        base09 = 16,
-                        base0A = 3,
                         base0B = 2,
-                        base0C = 6,
+                        base0A = 3,
                         base0D = 4,
                         base0E = 5,
+                        base0C = 6,
+                        base05 = 7,
+                        base03 = 8,
+                        base07 = 15,
+                        base09 = 16,
                         base0F = 17,
+                        base01 = 18,
+                        base02 = 19,
+                        base04 = 20,
+                        base06 = 21,
                     }
                 },
 
@@ -209,7 +209,6 @@ return function(config)
                         ))
                     end
 
-                    hl('Normal',                b16m.bg_def, b16m.fg_def)
                     bg('DiagnosticSignError',   nil)
                     bg('DiagnosticSignError',   nil)
                     bg('DiagnosticSignHint',    nil)
@@ -219,34 +218,36 @@ return function(config)
                     bg('GitSignsChange',        nil)
                     bg('GitSignsDelete',        nil)
                     bg('GitSignsUntracked',     nil)
+                    fg('HydraBorder',           b16m.bg_bar)
                     bg('HydraHint',             nil)
                     bg('HydraSelected',         nil)
+                    bg('LazyNormal',            b16m.bg_def)
+                    hl('NeoTreeCursorLine',     nil, b16m.fg_lgt)
                     bg('WhichKeyFloat',         nil)
                     bg('WhichKeySeparator',     nil)
                     fg('EndOfBuffer',           b16m.bg_def)
                     hl('FlashCurrent',          nil, b16m.base0A)
                     hl('FlashLabel',            nil, b16m.base0B, 'underline,bold')
                     hl('FlashMatch',            nil, b16m.base08)
-                    bg('LazyNormal',            b16m.bg_def)
                     hl('GitSignsAddLn',         b16m.bg_bar, nil)
                     hl('GitSignsChangeLn',      b16m.bg_bar, nil)
                     hl('GitSignsDeleteLn',      b16m.bg_bar, nil)
                     hl('GitSignsUntrackedLn',   b16m.bg_bar, nil)
                     hl('GitSignsUntrackedLn',   b16m.bg_bar, nil)
-                    hl('HydraBorder',           nil, b16m.fg_drk)
                     hl('LineNr',                nil, b16m.base03)
                     hl('MiniFilesBorder',       b16m.bg_def, b16m.base0D)
                     hl('MiniFilesNormal',       b16m.bg_def)
                     hl('MiniFilesTitle',        b16m.bg_def)
                     hl('MiniFilesTitleFocused', b16m.bg_def)
-                    hl('NeoTreeWinSeparator',   nil, b16m.bg_def)
+                    hl('NeoTreeWinSeparator',   nil, b16m.bg_bar)
+                    hl('Normal',                b16m.bg_def, b16m.fg_def)
                     hl('QuickScopePrimary',     nil, b16m.base08, 'underline')
                     hl('QuickScopeSecondary',   nil, b16m.base03)
                     hl('SignColumn',            nil, nil)
-                    hl('StatusLineNC',          b16m.bg_def, b16m.base03)
                     hl('StatusLine',            nil, b16m.base0D)
-                    hl('TabLineFill',           nil, b16m.base03)
+                    hl('StatusLineNC',          b16m.bg_def, b16m.base03)
                     hl('TabLine',               nil, b16m.base03)
+                    hl('TabLineFill',           nil, b16m.base03)
                     hl('TabLineSel',            nil, b16m.base08)
                     hl('TelescopeBorder',       nil, b16m.base03)
                     hl('TelescopeTitle',        nil, b16m.base0D)
