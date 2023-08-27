@@ -57,6 +57,7 @@ require('lazy').setup(
         require('plugins/fugitive')(config),
         require('plugins/fzf-lua')(config),
         require('plugins/gitsigns')(config),
+        require('plugins/hardtime')(config),
         require('plugins/hlchunk')(config),
         require('plugins/indent-blankline')(config),
         require('plugins/lazygit')(config),

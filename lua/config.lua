@@ -21,10 +21,6 @@ return {
     custom = {
         { 'will133/vim-dirdiff' },
         { 'ojroques/vim-oscyank', branch = 'main'},
-        { 'm4xshen/hardtime.nvim', opts = {}, dependencies = {
-            'MunifTanjim/nui.nvim',
-            'nvim-lua/plenary.nvim'
-        }}
     },
 
     -- Plugin Control
@@ -117,6 +113,7 @@ return {
         dropbar           = false,
         easy_align        = false,
         fzf_lua           = false,
+        hardtime          = false,
         harpoon           = false,
         indent_blankline  = false,
         leap              = false, -- Conflicts with `flash`, enable only one or the other.
