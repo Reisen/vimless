@@ -16,6 +16,8 @@ return function(config)
             end
 
             local opts = {
+                hide_root_node = true,
+
                 -- Fix icons that are no longer present in Nerd Fonts 3.0+
                 default_component_configs = {
                     git_status = {
