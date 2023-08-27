@@ -44,13 +44,35 @@ return function(config)
 
             local treespec = require 'mini.ai'.gen_spec.treesitter
             local opts = {
-                align     = {},
-                bracketed = {},
-                bufremove = {},
-                comment   = {},
-                operators = {},
-                pairs     = {},
-                surround  = {},
+                align       = {},
+                basics      = {},
+                bracketed   = {},
+                bufremove   = {},
+                clue        = {},
+                colors      = {},
+                comment     = {},
+                completion  = {},
+                cursorword  = {},
+                doc         = {},
+                fuzzy       = {},
+                hipatterns  = {},
+                hues        = {},
+                indentscope = {},
+                jump        = {},
+                jump2d      = {},
+                map         = {},
+                misc        = {},
+                move        = {},
+                operators   = {},
+                pairs       = {},
+                sessions    = {},
+                splitjoin   = {},
+                starterkit  = {},
+                statusline  = {},
+                surround    = {},
+                tabline     = {},
+                test        = {},
+                trailspace  = {},
 
                 animate = {
                     cursor = { enable = false },
@@ -132,18 +154,12 @@ return function(config)
                 opts = vim.tbl_deep_extend('force', opts, config.plugins.mini)
             end
 
-            local __ = nil
-            __ = opts.ai        and require 'mini.ai'.setup(opts.ai)
-            __ = opts.align     and require 'mini.align'.setup(opts.align)
-            __ = opts.animate   and require 'mini.animate'.setup(opts.animate)
-            __ = opts.base16    and require 'mini.base16'.setup(opts.base16)
-            __ = opts.bracketed and require 'mini.bracketed'.setup(opts.bracketed)
-            __ = opts.bufremove and require 'mini.bufremove'.setup(opts.bufremove)
-            __ = opts.comment   and require 'mini.comment'.setup(opts.comment)
-            __ = opts.files     and require 'mini.files'.setup(opts.files)
-            __ = opts.operators and require 'mini.operators'.setup(opts.operators)
-            __ = opts.pairs     and require 'mini.pairs'.setup(opts.pairs)
-            __ = opts.surround  and require 'mini.surround'.setup(opts.surround)
+            -- Forward Mini Configuration files to Mini Setup handlers.
+            for plugin in pairs(opts) do
+                if opts[plugin] then
+                    require('mini.' .. plugin).setup(opts[plugin])
+                end
+            end
 
             _G.HydraMappings['Buffer']['Other'].d    = { 'Delete Buffer', require 'mini.bufremove'.delete, {} }
             _G.HydraMappings['Root']['Plugins']['-'] = { 'MiniFiles',     require 'mini.files'.open, { exit = true } }

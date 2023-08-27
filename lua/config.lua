@@ -74,8 +74,29 @@ return {
         zen               = true,
 
         mini = {
-            animate  = { scroll = { enable = true } },
-            surround = false, -- Conflicts with `surround` and `flash`
+            animate     = { scroll = { enable = true } },
+            basics      = false,
+            clue        = false,
+            colors      = false,
+            completion  = false, -- Conflicts with `cmp`
+            cursorword  = false,
+            doc         = false,
+            fuzzy       = false,
+            hipatterns  = false,
+            hues        = false,
+            indentscope = false, -- Conflicts with `indent-blankline`
+            jump        = false, -- Conflicts with `flash / leap`
+            jump2d      = false, -- Conflicts with `flash / leap`
+            map         = false,
+            misc        = false,
+            move        = false,
+            sessions    = false, -- Conflicts with `auto-session`
+            splitjoin   = false,
+            starterkit  = false,
+            statusline  = false,
+            surround    = false, -- Conflicts with `surround` and `flash`
+            tabline     = false,
+            test        = false,
         },
 
         -- Language Specific Plugin Sets
