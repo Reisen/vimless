@@ -176,6 +176,7 @@ return function(config)
                 pattern  = "*",
                 group    = base16_highlighter,
                 callback = function()
+                    -- Helper to set a typical highlight group.
                     local hl = function(name, bg, fg, attr)
                         vim.cmd(string.format(
                             'highlight %s ctermbg=%s ctermfg=%s cterm=%s',
@@ -186,6 +187,9 @@ return function(config)
                         ))
                     end
 
+                    -- Helper to set just the background of a highlight group.
+                    -- Useful when you want to inherit the existing foreground
+                    -- colour and attrs.
                     local bg = function(name, bg)
                         vim.cmd(string.format(
                             'highlight %s ctermbg=%s',
@@ -194,6 +198,9 @@ return function(config)
                         ))
                     end
 
+                    -- Helper to set just the foreground of a highlight group.
+                    -- Useful when you want to inherit the existing background
+                    -- colour and attrs.
                     local fg = function(name, fg)
                         vim.cmd(string.format(
                             'highlight %s ctermfg=%s',
