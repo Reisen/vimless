@@ -19,6 +19,7 @@ return {
     -- Additional plugins can be added using the iackage syntax provided by lazy.nvim
     -- ------------------------------------------------------------------------------------
     custom = {
+        { 'will133/vim-dirdiff' },
         { 'ojroques/vim-oscyank', branch = 'main'},
         { 'm4xshen/hardtime.nvim', opts = {}, dependencies = {
             'MunifTanjim/nui.nvim',
