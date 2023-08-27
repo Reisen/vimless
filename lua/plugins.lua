@@ -99,6 +99,12 @@ require('lazy').setup(
         -- --------------------------------------------------------------------------------
         unpack(config.custom)
     },
+    {
+        ui = {
+            size   = { width = 1, height = 1},
+            wrap   = false,
+        }
+    }
 )
 
 -- Hook up the Keymapper
