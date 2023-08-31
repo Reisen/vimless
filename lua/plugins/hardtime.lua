@@ -30,6 +30,17 @@ return function(config)
                    ["<C-N>"] = { "n", "x" },
                    ["<C-P>"] = { "n", "x" },
                 },
+                disabled_filetypes = {
+                    "NvimTree",
+                    "dirbuf",
+                    "lazy",
+                    "mason",
+                    "minifiles",
+                    "neo-tree",
+                    "netrw",
+                    "oil",
+                    "qf",
+                },
             }
 
             if config.plugins.hardtime and type(config.plugins.hardtime) == 'table' then
