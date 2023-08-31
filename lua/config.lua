@@ -21,6 +21,7 @@ return {
     custom = {
         { 'will133/vim-dirdiff' },
         { 'ojroques/vim-oscyank', branch = 'main'},
+        { 'yorickpeterse/nvim-pqf', opts = {} },
     },
 
     -- Plugin Control
