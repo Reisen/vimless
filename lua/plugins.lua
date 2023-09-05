@@ -48,6 +48,7 @@ require('lazy').setup(
         require('plugins/chatgpt')(config),
         require('plugins/circles')(config),
         require('plugins/cmp')(config),
+        require('plugins/conform')(config),
         require('plugins/copilot')(config),
         require('plugins/diffview')(config),
         require('plugins/dirbuf')(config),

@@ -36,6 +36,7 @@ return function(config)
                                 buffer
                             )
                         end,
+
                         settings = {
                             ["rust-analyzer"] = {
                                 checkOnSave = {

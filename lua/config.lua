@@ -40,6 +40,7 @@ return {
         chatgpt           = true,
         circles           = true,
         cmp               = true,
+        conform           = true,
         diffview          = true,
         dirbuf            = true,
         fidget            = true,
