@@ -31,14 +31,13 @@ return function(config)
             neotest.setup(opts)
 
             local keymap = require 'keymap'
-            _G.HydraMappings["Root"]["Plugins"].n       = { 'Neotest', function() keymap:runHydra('Neotest') end,                 { exit = true } }
-            _G.HydraMappings["Neotest"]["Neotest"]["."] = { 'Run Current Test', neotest.run.run,                                  { exit = true } }
-            _G.HydraMappings["Neotest"]["Neotest"].a    = { 'Attach to Running Test ', neotest.run.attach,                        { exit = true } }
-            _G.HydraMappings["Neotest"]["Neotest"].f    = { 'Run File Tests', function() neotest.run.run(vim.fn.expand('%')) end, { exit = true } }
-            _G.HydraMappings["Neotest"]["Neotest"].s    = { 'Stop Running Tests', neotest.run.stop,                               { exit = true } }
-
-            _G.HydraMappings["Neotest"]["UI"].l = { 'Toggle Test List', neotest.summary.toggle,      { exit = true }}
-            _G.HydraMappings["Neotest"]["UI"].p = { 'Toggle Panel',     neotest.output_panel.toggle, { exit = true }}
+            _G.HydraMappings.Root.Plugins.n       = { 'Neotest',                 function() keymap:runHydra('Neotest') end,          { exit = true } }
+            _G.HydraMappings.Neotest.Neotest["."] = { 'Run Current Test',        neotest.run.run,                                    { exit = true } }
+            _G.HydraMappings.Neotest.Neotest.a    = { 'Attach to Running Test ', neotest.run.attach,                                 { exit = true } }
+            _G.HydraMappings.Neotest.Neotest.f    = { 'Run File Tests',          function() neotest.run.run(vim.fn.expand('%')) end, { exit = true } }
+            _G.HydraMappings.Neotest.Neotest.s    = { 'Stop Running Tests',      neotest.run.stop,                                   { exit = true } }
+            _G.HydraMappings.Neotest.UI.l         = { 'Toggle Test List',        neotest.summary.toggle,                             { exit = true }}
+            _G.HydraMappings.Neotest.UI.p         = { 'Toggle Panel',            neotest.output_panel.toggle,                        { exit = true }}
         end
     }
 end

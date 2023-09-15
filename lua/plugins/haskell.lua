@@ -18,9 +18,8 @@ return function(config)
 
             -- local opts = {}
 
-            local keymap = require 'keymap'
-            keymap:registerLanguage('Haskell', 'haskell')
-            _G.HydraMappings['Haskell']['Haskell'].k = { 'Move Item Up', function() end, { exit = true }}
+            require('keymap'):registerLanguage('Haskell', 'haskell')
+            _G.HydraMappings.Haskell.Haskell.k = { 'Move Item Up', function() end, { exit = true } }
         end
     }
 end

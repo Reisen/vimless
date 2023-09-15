@@ -161,8 +161,8 @@ return function(config)
                 end
             end
 
-            _G.HydraMappings['Buffer']['Other'].d    = { 'Delete Buffer', require 'mini.bufremove'.delete, {} }
-            _G.HydraMappings['Root']['Plugins']['-'] = { 'MiniFiles',     require 'mini.files'.open, { exit = true } }
+            _G.HydraMappings.Buffer.Other.d    = { 'Delete Buffer', require 'mini.bufremove'.delete, {} }
+            _G.HydraMappings.Root.Plugins['-'] = { 'MiniFiles',     require 'mini.files'.open,       { exit = true } }
 
             -- mini.base16 configures most colours perfectly, but gets a few that look a little gnarly.
             -- Here we override some of those colours by defining an autocommand that override some of

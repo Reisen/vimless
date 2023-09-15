@@ -30,7 +30,7 @@ return function(config)
             local zen = require 'zen-mode'
             zen.setup(opts)
 
-            _G.HydraMappings['Root']['Other'].z = { 'Zen', zen.toggle, { exit = true } }
+            _G.HydraMappings.Root.Other.z = { 'Zen', zen.toggle, { exit = true } }
         end
     }
 end

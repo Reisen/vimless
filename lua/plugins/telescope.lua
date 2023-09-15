@@ -131,50 +131,39 @@ return function(config)
                 end,
             }
 
-            _G.HydraMappings["Root"]["Plugins"].f        = { 'Telescope',  function() keymap:runHydra('Telescope') end, { exit = true } }
-            _G.HydraMappings["Telescope"]["Search"]['a'] = { 'AST', function() ast_grep.ast_grep({}) end, { exit = true } }
-            _G.HydraMappings["Telescope"]["Search"]['*'] = { 'Word', function() builtin.grep_string() end, { exit = true } }
-            _G.HydraMappings["Telescope"]["Search"]['/'] = { 'Grep', function() builtin.live_grep() end, { exit = true } }
-            _G.HydraMappings["Telescope"]["Search"]['.'] = { 'Current Buffer', builtin.current_buffer_fuzzy_find, { exit = true } }
-
-            _G.HydraMappings["Telescope"]["Git"].b = { 'Branches', function() builtin.git_branches() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Git"].c = { 'Commits (Repo)', function() builtin.git_commits() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Git"].C = { 'Commits (File)', function() builtin.git_bcommits() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Git"].p = { 'Files (Repo)', function() builtin.git_files() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Git"].f = { 'Files (CWD)', function() builtin.find_files() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Git"].r = { 'Files (Relative)', function() builtin.find_files({ cwd = vim.fn.expand('%:p:h') }) end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Git"].s = { 'Status', function() builtin.git_status() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Git"].z = { 'Stash',  function() builtin.git_stash() end,  { exit = true }}
-
-            _G.HydraMappings["Telescope"]["Vim"].h = { 'Highlight Groups', function() builtin.highlights() end,   { exit = true }}
-            _G.HydraMappings["Telescope"]["Vim"].j = { 'Buffers',          function() builtin.buffers(ivy_bufs) end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Vim"].k = { 'Keymaps',          function() builtin.keymaps() end,      { exit = true }}
-            _G.HydraMappings["Telescope"]["Vim"].o = { 'Options',          function() builtin.vim_options() end,  { exit = true }}
-            _G.HydraMappings["Telescope"]["Vim"].t = { 'Colorschemes',     function() builtin.colorscheme() end,  { exit = true }}
-            _G.HydraMappings["Telescope"]["Vim"].x = { 'Commands',         function() builtin.commands() end,     { exit = true }}
-
-            _G.HydraMappings["Telescope"]["LSP"].l     = { 'LSP', function() keymap:runHydra('Telescope LSP') end, { exit = true } }
-            _G.HydraMappings["Telescope LSP"]["LSP"].c = { 'Incoming Calls',         function() builtin.lsp_incoming_calls() end,    { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].C = { 'Outgoing Calls',         function() builtin.lsp_outgoing_calls() end,    { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].d = { 'Definitions',            function() builtin.lsp_definitions() end,       { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].i = { 'Implementations',        function() builtin.lsp_implementations() end,   { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].r = { 'References',             function() builtin.lsp_references() end,        { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].s = { 'Symbols (Current File)', function() builtin.lsp_document_symbols() end,  { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].S = { 'Symbols (Project)',      function() builtin.lsp_workspace_symbols() end, { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].t = { 'Type Definitions',       function() builtin.lsp_type_definitions() end,  { exit = true }}
-            _G.HydraMappings["Telescope LSP"]["LSP"].l = { 'Diagnostics',            function() builtin.diagnostics() end,           { exit = true }}
-
-            _G.HydraMappings["Telescope"]["Other"][" "] = { 'Resume',       function() builtin.resume() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Other"].e    = { 'File Browser', function() file_browser.file_browser() end, { exit = true }}
-            _G.HydraMappings["Telescope"]["Other"].q    = { 'Quit',         function() end,                             { exit = true }}
-
-            _G.HydraMappings["Root"]["Other"].x = { 'Command Pallette',
-                function()
-                    local tusk = require 'telescope'.extensions.tusk
-                    tusk.tusk()
-                end,
-                { exit = true }
-            }
+            _G.HydraMappings.Root.Plugins.f         = { 'Telescope',              function() keymap:runHydra('Telescope') end,                         { exit = true } }
+            _G.HydraMappings.Telescope.Search['a']  = { 'AST',                    function() ast_grep.ast_grep({}) end,                                { exit = true } }
+            _G.HydraMappings.Telescope.Search['*']  = { 'Word',                   function() builtin.grep_string() end,                                { exit = true } }
+            _G.HydraMappings.Telescope.Search['/']  = { 'Grep',                   function() builtin.live_grep() end,                                  { exit = true } }
+            _G.HydraMappings.Telescope.Search['.']  = { 'Current Buffer',         builtin.current_buffer_fuzzy_find,                                   { exit = true } }
+            _G.HydraMappings.Telescope.Git.b        = { 'Branches',               function() builtin.git_branches() end,                               { exit = true } }
+            _G.HydraMappings.Telescope.Git.c        = { 'Commits (Repo)',         function() builtin.git_commits() end,                                { exit = true } }
+            _G.HydraMappings.Telescope.Git.C        = { 'Commits (File)',         function() builtin.git_bcommits() end,                               { exit = true } }
+            _G.HydraMappings.Telescope.Git.p        = { 'Files (Repo)',           function() builtin.git_files() end,                                  { exit = true } }
+            _G.HydraMappings.Telescope.Git.f        = { 'Files (CWD)',            function() builtin.find_files() end,                                 { exit = true } }
+            _G.HydraMappings.Telescope.Git.r        = { 'Files (Relative)',       function() builtin.find_files({ cwd = vim.fn.expand('%:p:h') }) end, { exit = true } }
+            _G.HydraMappings.Telescope.Git.s        = { 'Status',                 function() builtin.git_status() end,                                 { exit = true } }
+            _G.HydraMappings.Telescope.Git.z        = { 'Stash',                  function() builtin.git_stash() end,                                  { exit = true } }
+            _G.HydraMappings.Telescope.Vim.h        = { 'Highlight Groups',       function() builtin.highlights() end,                                 { exit = true } }
+            _G.HydraMappings.Telescope.Vim.j        = { 'Buffers',                function() builtin.buffers(ivy_bufs) end,                            { exit = true } }
+            _G.HydraMappings.Telescope.Vim.k        = { 'Keymaps',                function() builtin.keymaps() end,                                    { exit = true } }
+            _G.HydraMappings.Telescope.Vim.o        = { 'Options',                function() builtin.vim_options() end,                                { exit = true } }
+            _G.HydraMappings.Telescope.Vim.t        = { 'Colorschemes',           function() builtin.colorscheme() end,                                { exit = true } }
+            _G.HydraMappings.Telescope.Vim.x        = { 'Commands',               function() builtin.commands() end,                                   { exit = true } }
+            _G.HydraMappings.Telescope.LSP.l        = { 'LSP',                    function() keymap:runHydra('Telescope LSP') end,                     { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.c = { 'Incoming Calls',         function() builtin.lsp_incoming_calls() end,                         { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.C = { 'Outgoing Calls',         function() builtin.lsp_outgoing_calls() end,                         { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.d = { 'Definitions',            function() builtin.lsp_definitions() end,                            { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.i = { 'Implementations',        function() builtin.lsp_implementations() end,                        { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.r = { 'References',             function() builtin.lsp_references() end,                             { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.s = { 'Symbols (Current File)', function() builtin.lsp_document_symbols() end,                       { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.S = { 'Symbols (Project)',      function() builtin.lsp_workspace_symbols() end,                      { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.t = { 'Type Definitions',       function() builtin.lsp_type_definitions() end,                       { exit = true } }
+            _G.HydraMappings['Telescope LSP'].LSP.l = { 'Diagnostics',            function() builtin.diagnostics() end,                                { exit = true } }
+            _G.HydraMappings.Telescope.Other[" "]   = { 'Resume',                 function() builtin.resume() end,                                     { exit = true } }
+            _G.HydraMappings.Telescope.Other.e      = { 'File Browser',           function() file_browser.file_browser() end,                          { exit = true } }
+            _G.HydraMappings.Telescope.Other.q      = { 'Quit',                   function() end,                                                      { exit = true } }
+            _G.HydraMappings.Root.Other.x           = { 'Command Pallette',       require 'telescope'.extensions.tusk.tusk,                            { exit = true } }
         end
     }
 end

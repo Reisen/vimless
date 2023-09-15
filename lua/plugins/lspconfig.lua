@@ -99,20 +99,24 @@ return function(config)
             local keymap = require 'keymap'
             local c      = require 'hydra.keymap-util'
 
-            _G.HydraMappings['Root']['Language'].l   = { 'LSP', function() keymap:runHydra('LSP') end, { exit = true } }
-
-            _G.HydraMappings['LSP']['Diagnostics'].l = { 'LSP', function() keymap:runHydra('LSP') end, { exit = true } }
-            _G.HydraMappings['LSP']['Diagnostics'].n = { 'Next Error',  vim.diagnostic.goto_next,  {} }
-            _G.HydraMappings['LSP']['Diagnostics'].p = { 'Prev Error',  vim.diagnostic.goto_prev,  {} }
-            _G.HydraMappings['LSP']['Diagnostics'].l = { 'List Errors', vim.diagnostic.setloclist, { exit = true } }
-
-            _G.HydraMappings['LSP']['Goto'].D = { 'Declaration',          vim.lsp.buf.declaration,     { exit = true }}
-            _G.HydraMappings['LSP']['Goto'].K = { 'Documentation',        vim.lsp.buf.hover,           { exit = true }}
-            _G.HydraMappings['LSP']['Goto'].d = { 'Definition',           vim.lsp.buf.definition,      { exit = true }}
-            _G.HydraMappings['LSP']['Goto'].i = { 'Implementations',      vim.lsp.buf.implementation,  { exit = true }}
-            _G.HydraMappings['LSP']['Goto'].r = { 'References',           vim.lsp.buf.references,      { exit = true }}
-            _G.HydraMappings['LSP']['Goto'].t = { 'Type Definitions',     vim.lsp.buf.type_definition, { exit = true }}
-            _G.HydraMappings['LSP']['Goto'].s = { 'Definition in Split',
+            _G.HydraMappings.Root.Language.l   = { 'LSP',              function() keymap:runHydra('LSP') end, { exit = true } }
+            _G.HydraMappings.LSP.Diagnostics.l = { 'LSP',              function() keymap:runHydra('LSP') end, { exit = true } }
+            _G.HydraMappings.LSP.Diagnostics.n = { 'Next Error',       vim.diagnostic.goto_next,              {} }
+            _G.HydraMappings.LSP.Diagnostics.p = { 'Prev Error',       vim.diagnostic.goto_prev,              {} }
+            _G.HydraMappings.LSP.Diagnostics.l = { 'List Errors',      vim.diagnostic.setloclist,             { exit = true} }
+            _G.HydraMappings.LSP.Refactor.a    = { 'Actions',     vim.lsp.buf.code_action, { exit                    = true } }
+            _G.HydraMappings.LSP.Refactor.f    = { 'Format File', vim.lsp.buf.format,      { exit                    = true } }
+            _G.HydraMappings.LSP.Refactor.R    = { 'Rename',      vim.lsp.buf.rename,      { exit                    = true } }
+            _G.HydraMappings.LSP.Other.m       = { 'Mason',       c.cmd('Mason'),          { exit                    = true } }
+            _G.HydraMappings.LSP.Other["?"]    = { 'LSP Status',  c.cmd('LspInfo'),        { exit                    = true } }
+            _G.HydraMappings.LSP.Other.q       = { 'Quit',        function() end,          { exit                    = true } }
+            _G.HydraMappings.LSP.Goto.D        = { 'Declaration',      vim.lsp.buf.declaration,               { exit = true }}
+            _G.HydraMappings.LSP.Goto.K        = { 'Documentation',    vim.lsp.buf.hover,                     { exit = true }}
+            _G.HydraMappings.LSP.Goto.d        = { 'Definition',       vim.lsp.buf.definition,                { exit = true }}
+            _G.HydraMappings.LSP.Goto.i        = { 'Implementations',  vim.lsp.buf.implementation,            { exit = true }}
+            _G.HydraMappings.LSP.Goto.r        = { 'References',       vim.lsp.buf.references,                { exit = true }}
+            _G.HydraMappings.LSP.Goto.t        = { 'Type Definitions', vim.lsp.buf.type_definition,           { exit = true }}
+            _G.HydraMappings.LSP.Goto.s        = { 'Definition in Split',
                 function()
                     -- This opens a split to the right with the cursor
                     -- in the same space. It then focuses that window,
@@ -127,14 +131,6 @@ return function(config)
                 end,
                 { exit = true }
             }
-
-            _G.HydraMappings['LSP']['Refactor'].a = { 'Actions',     vim.lsp.buf.code_action, { exit = true } }
-            _G.HydraMappings['LSP']['Refactor'].f = { 'Format File', vim.lsp.buf.formatting,  { exit = true } }
-            _G.HydraMappings['LSP']['Refactor'].R = { 'Rename',      vim.lsp.buf.rename,      { exit = true } }
-
-            _G.HydraMappings['LSP']['Other'].m    = { 'Mason',      c.cmd('Mason'), { exit = true } }
-            _G.HydraMappings['LSP']['Other']["?"] = { 'LSP Status', c.cmd('LspInfo'), { exit = true } }
-            _G.HydraMappings['LSP']['Other'].q    = { 'Quit',       function() end, { exit = true } }
         end
     }
 

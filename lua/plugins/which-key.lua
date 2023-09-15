@@ -51,7 +51,7 @@ return function(config)
             local keymap = require 'keymap'
             local c      = require 'hydra.keymap-util'
 
-            _G.HydraMappings['Root']['Plugins'].k = { 'WhichKey', c.cmd('WhichKey'), { exit = true } }
+            _G.HydraMappings.Root.Plugins.k = { 'WhichKey', c.cmd('WhichKey'), { exit = true } }
         end
     }
 end

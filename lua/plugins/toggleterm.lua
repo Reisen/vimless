@@ -53,7 +53,7 @@ return function(config)
                     end
                 })
 
-                _G.HydraMappings['Root']['Plugins']['>'] = { 'Terminal', function() vim.cmd 'ToggleTerm' end, { exit = true } }
+                _G.HydraMappings.Root.Plugins['>'] = { 'Terminal', function() vim.cmd 'ToggleTerm' end, { exit = true } }
             end
         end
     }
